@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rahul Jha</title>
+<meta name="description" content="Rahul Jha, product designer who ships in code. Booking products, design systems and AI tools for startups.">
+<meta property="og:title" content="Rahul Jha · Design Engineer">
+<meta property="og:description" content="Product designer who ships in code. Project 831, coss ui contributions, BiteSpeed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,600..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <h1>Rahul Jha<em>.</em></h1>
+    <p>Product designer who ships in code. I design and build booking products, design systems and AI tools for small teams, from the first sketch to production.</p>
+    <nav class="links" aria-label="Elsewhere">
+      <a class="local" href="resume.html">Résumé</a>
+      <a href="https://www.linkedin.com/in/rahuljha5/">LinkedIn</a>
+      <a href="https://github.com/rkj-builds">GitHub</a>
+      <a class="local" href="mailto:rahul.rkj55@gmail.com">rahul.rkj55@gmail.com</a>
+    </nav>
+  </header>
+
+  <section aria-labelledby="work-h">
+    <span class="k" id="work-h">Selected work</span>
+    <ul class="list">
+      <li class="item">
+        <h2>Project 831</h2><span class="meta">2026 · side project</span>
+        <p>A pickleball venue that takes bookings and payments inside WhatsApp and on the web, on one engine I designed and built. Self-serve bookings went from 15% to 74%.</p>
+        <div class="go"><a href="https://rkj-builds.github.io/project-831-case-study/">Case study</a></div>
+      </li>
+      <li class="item">
+        <h2>Court booking on coss ui</h2><span class="meta">2026 · open source</span>
+        <p>The 831 product rebuilt end to end on Cal.com's design system: booking with part payments and holds, the venue desk, settings. All 55 components, unmodified.</p>
+        <div class="go"><a href="https://rkj-builds.github.io/slot-picker/">Live</a><a href="https://github.com/rkj-builds/slot-picker">Code</a></div>
+      </li>
+      <li class="item">
+        <h2>coss ui · Calendar locale fix<span class="badge">Merged</span></h2><span class="meta">2026 · contribution</span>
+        <p>The month dropdown ignored the calendar's locale. A one-line fix to Cal.com's design system.</p>
+        <div class="go"><a class="local" href="work/coss-calendar.html">Write-up</a><a href="https://github.com/cosscom/ui/pull/890">Pull request</a></div>
+      </li>
+      <li class="item">
+        <h2>BiteSpeed</h2><span class="meta">2022 – 2026</span>
+        <p>The only designer at a funded startup, across product and marketing. Later, as a consultant, I built its AI Marketing Agent end to end.</p>
+        <div class="go"><span>Case study coming soon</span></div>
+      </li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="exp-h">
+    <span class="k" id="exp-h">Experience</span>
+    <ul class="list">
+      <li class="item"><h3>Travelopia</h3><span class="meta">2024 – now</span><p>Product Designer & Design Engineer · remote</p></li>
+      <li class="item"><h3>BiteSpeed</h3><span class="meta">2022 – 2026</span><p>Product Designer, then Product Design Consultant</p></li>
+      <li class="item"><h3>Dukaan</h3><span class="meta">2022 – 2023</span><p>Product Designer</p></li>
+      <li class="item"><h3>10kdesigners</h3><span class="meta">2021 – 2024</span><p>Designer in Residence, then Design Mentor</p></li>
+      <li class="item"><h3>Film &amp; series, Mumbai</h3><span class="meta">2018 – 2021</span><p>Production sound mixer on The Fame Game (Netflix), Bandish Bandits (Prime Video), Hundred and Hostages (Hotstar). BSc in Filmmaking, sound design and recording, TISS.</p><div class="go"><a href="https://www.imdb.com/name/nm10309302/">IMDb</a></div></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="gh-h">
+    <span class="k" id="gh-h">On GitHub</span>
+    <div class="grid-wrap"><div class="grid" id="grid" role="img" aria-label="GitHub contributions over the last year"></div></div>
+    <div class="grid-foot"><span id="grid-total"></span><a href="https://github.com/rkj-builds">github.com/rkj-builds</a></div>
+  </section>
+
+  <footer><span>Bengaluru, India · works remote</span><span>Built by hand, 2026</span></footer>
+</main>
+<script>
+  // Contributions come from data/contributions.json, refreshed daily by a GitHub Action.
+  fetch("data/contributions.json").then((r) => r.json()).then(({ total, days }) => {
+    const max = Math.max(1, ...days.map((d) => d[1]));
+    const level = (n) => (n === 0 ? 0 : Math.min(4, Math.ceil((n / max) * 4)));
+    const first = new Date(days[0][0] + "T00:00:00Z").getUTCDay();
+    const cells = Array.from({ length: first }, () => "<i style=\"visibility:hidden\"></i>");
+    for (const [date, n] of days) cells.push(`<i data-l="${level(n)}" title="${n} on ${date}"></i>`);
+    document.getElementById("grid").innerHTML = cells.join("");
+    const wrap = document.querySelector(".grid-wrap"); wrap.scrollLeft = wrap.scrollWidth; // phones: start at the latest week
+    document.getElementById("grid-total").textContent = `${total.toLocaleString("en-IN")} contributions in the last year`;
+  }).catch(() => { document.getElementById("grid-total").textContent = "Contributions unavailable right now."; });
+</script>
+</body>
+</html>
