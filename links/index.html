@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rahul Jha · Links</title>
+<meta name="description" content="Rahul Jha, product design engineer: work, CV, case studies and how to reach me.">
+<meta property="og:title" content="Rahul Jha · Product Design Engineer">
+<meta property="og:image" content="https://rkj-builds.github.io/card/img/rahul-800.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* Where the "full album" QR lands: the same now-playing world, as a tracklist of links.
+     Opened on someone else's phone, often in a dark room, so one dark look, big tap targets. */
+  :root{
+    --ink:#fff; --ink-2:rgba(255,255,255,.74); --ink-3:rgba(255,255,255,.5); --line:rgba(255,255,255,.12);
+    --amber:#ffb35c; --glass:rgba(255,248,235,.08); --glass-2:rgba(255,248,235,.14);
+    --sans:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif; --serif:'Instrument Serif',Georgia,serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100dvh;background:#0f0e0c;color:var(--ink);font:400 15px/1.4 var(--sans);-webkit-font-smoothing:antialiased;position:relative;isolation:isolate;overflow-x:hidden}
+  body::before{content:"";position:fixed;inset:-30%;z-index:-2;background:url(../card/img/rahul-800.jpg) center/cover;filter:blur(56px) saturate(1.5) brightness(.7)}
+  body::after{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(15,14,12,.35),rgba(12,11,9,.9) 55%)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:440px;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 36px) 18px calc(env(safe-area-inset-bottom,0px) + 32px);display:grid;gap:22px}
+
+  .me{display:grid;grid-template-columns:84px 1fr;gap:16px;align-items:center}
+  .me img{width:84px;height:84px;border-radius:12px;object-fit:cover;object-position:50% 15%;box-shadow:0 14px 30px -10px rgba(0,0,0,.7)}
+  .me p{font:500 10.5px/1.2 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .me h1{font:700 28px/1.05 var(--sans);letter-spacing:-.02em;margin-top:5px}
+  .me span{display:block;margin-top:4px;color:var(--ink-2)}
+  .me em{font:italic 400 17px/1 var(--serif);color:var(--amber)}
+
+  .pitch{font:400 21px/1.25 var(--serif);color:var(--ink);text-wrap:pretty}
+  .pitch i{color:var(--amber)}
+
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:50px;border-radius:99px;font:600 15px/1 var(--sans);background:var(--glass-2);border:.5px solid var(--line)}
+  .btn.primary{background:#fff;color:#111;border:0}
+  .btn svg{width:18px;height:18px}
+
+  h2{display:flex;justify-content:space-between;font:600 14px/1 var(--sans);margin-bottom:4px}
+  h2 span{font:500 10.5px/1.3 var(--mono);color:var(--ink-3);letter-spacing:.1em;text-transform:uppercase}
+  ol{list-style:none;background:var(--glass);border:.5px solid var(--line);border-radius:16px;padding:2px 14px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  li + li{border-top:.5px solid var(--line)}
+  li a{display:grid;grid-template-columns:22px 1fr auto;gap:12px;align-items:center;min-height:62px;padding:10px 0}
+  .n{font:500 11px/1 var(--mono);color:var(--ink-3)}
+  li b{display:block;font:600 15.5px/1.2 var(--sans)}
+  li small{display:block;font-size:12.5px;color:var(--ink-3);margin-top:2px}
+  .go{font:500 11px/1 var(--mono);color:var(--ink-2);background:var(--glass-2);border-radius:6px;padding:5px 7px;white-space:nowrap}
+  li:first-child .n{color:var(--amber)}
+
+  .mail{display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--glass);border:.5px solid var(--line);border-radius:16px;padding:12px 14px}
+  .mail small{display:block;font:500 10.5px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+  .mail span{font:500 15px/1.3 var(--mono);user-select:all;word-break:break-all}
+  .mail button{flex:none;font:600 13px/1 var(--sans);color:#111;background:var(--amber);border:0;border-radius:99px;padding:10px 14px;cursor:pointer}
+  footer{font:500 11px/1.5 var(--mono);color:var(--ink-3);text-align:center}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:8px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="me">
+    <img src="../card/img/rahul-800.jpg" alt="Rahul Jha">
+    <div>
+      <p>Now playing</p>
+      <h1>Rahul Jha</h1>
+      <span>Product Design Engineer · <em>ex film sound</em></span>
+    </div>
+  </header>
+
+  <p class="pitch">I design products and <i>ship them in code</i>, usually as the only designer at a startup. Open to product design engineer roles, remote.</p>
+
+  <div class="actions">
+    <a class="btn primary" href="rahul-jha.vcf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-7 7-7s7 3 7 7M19 8v6M16 11h6"/></svg>Save contact</a>
+    <a class="btn" href="https://www.linkedin.com/in/rahuljha5/">LinkedIn</a>
+  </div>
+
+  <section>
+    <h2>The full album <span>8 tracks</span></h2>
+    <ol>
+      <li><a href="https://rkj-builds.github.io/project-831-case-study/"><span class="n">01</span><span><b>Project 831</b><small>A venue booked over WhatsApp. I built it and run it.</small></span><span class="go">case study</span></a></li>
+      <li><a href="https://rkj-builds.github.io/slot-picker/"><span class="n">02</span><span><b>Venue dashboard on coss ui</b><small>831 rebuilt on Cal.com's design system</small></span><span class="go">live</span></a></li>
+      <li><a href="../work/bitespeed/"><span class="n">03</span><span><b>AI Marketing Agent</b><small>BiteSpeed, built end to end</small></span><span class="go">case study</span></a></li>
+      <li><a href="https://github.com/cosscom/ui/pull/890"><span class="n">04</span><span><b>My fix in coss ui</b><small>A Calendar locale bug, merged</small></span><span class="go">#890</span></a></li>
+      <li><a href="../resume.pdf"><span class="n">05</span><span><b>CV</b><small>One page, PDF</small></span><span class="go">pdf</span></a></li>
+      <li><a href="https://rkj-builds.github.io"><span class="n">06</span><span><b>Portfolio</b><small>Everything in one place</small></span><span class="go">site</span></a></li>
+      <li><a href="https://github.com/rkj-builds"><span class="n">07</span><span><b>GitHub</b><small>The code behind it</small></span><span class="go">code</span></a></li>
+      <li><a href="https://www.imdb.com/name/nm10309302/"><span class="n">08</span><span><b>The B-side</b><small>Sound on The Fame Game, Bandish Bandits</small></span><span class="go">IMDb</span></a></li>
+    </ol>
+  </section>
+
+  <div class="mail">
+    <div><small>Say hi</small><span id="mail">rahul.rkj55@gmail.com</span></div>
+    <button type="button" id="copy">Copy</button>
+  </div>
+
+  <footer>Bengaluru · Remote · rkj-builds.github.io</footer>
+</main>
+<script>
+  const copy = document.getElementById('copy');
+  copy.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(document.getElementById('mail').textContent); copy.textContent = 'Copied'; }
+    catch { getSelection().selectAllChildren(document.getElementById('mail')); copy.textContent = 'Selected'; }
+    setTimeout(() => { copy.textContent = 'Copy'; }, 1800);
+  });
+</script>
+</body>
+</html>

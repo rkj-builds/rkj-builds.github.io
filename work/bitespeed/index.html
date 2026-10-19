@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BiteSpeed · Rahul Jha</title>
+<meta name="description" content="The only designer at BiteSpeed, a WhatsApp marketing platform for Shopify brands; later, as a consultant, I built its AI Marketing Agent end to end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Portfolio family (Bricolage / Geist / Geist Mono on paper), with BiteSpeed's navy and blue as the accent. */
+:root{
+  --paper:#f3f3f0; --band:#ebebe7; --sheet:#ffffff; --ink:#12141c; --ink-2:#3c4152; --ink-3:#5f647a;
+  --rule:#dcdde3; --rule-2:#e9e9ee;
+  --navy:#030852; --blue:#2f54eb; --blue-ink:#1d39c4; --blue-wash:#e6ebff;
+  --shadow:0 1px 0 rgba(18,20,28,.04), 0 22px 48px -22px rgba(18,20,28,.32);
+  --fd:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --fb:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --fm:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --col:680px; --wide:1180px; --gut:clamp(16px,4vw,40px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0e1018; --band:#141724; --sheet:#161926; --ink:#eceef6; --ink-2:#c1c5d6; --ink-3:#8b90a6;
+  --rule:#272b3b; --rule-2:#1e2130; --blue:#6f8cff; --blue-ink:#9db0ff; --blue-wash:#1b2350;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 22px 48px -22px rgba(0,0,0,.75); color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#0e1018; --band:#141724; --sheet:#161926; --ink:#eceef6; --ink-2:#c1c5d6; --ink-3:#8b90a6;
+  --rule:#272b3b; --rule-2:#1e2130; --blue:#6f8cff; --blue-ink:#9db0ff; --blue-wash:#1b2350;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 22px 48px -22px rgba(0,0,0,.75); color-scheme:dark; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--fb);-webkit-font-smoothing:antialiased}
+a{color:var(--blue-ink);text-underline-offset:3px}
+.col{max-width:var(--col);margin-inline:auto;padding-inline:var(--gut)}
+.wide{max-width:var(--wide);margin-inline:auto;padding-inline:var(--gut)}
+.tag{font:500 12px/1.3 var(--fm);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.tag b{color:var(--blue-ink);font-weight:500}
+h1{font:700 clamp(38px,6.4vw,64px)/1.0 var(--fd);letter-spacing:-.035em;font-stretch:85%;text-wrap:balance}
+h2{font:700 clamp(28px,4vw,40px)/1.05 var(--fd);letter-spacing:-.03em;font-stretch:88%;text-wrap:balance}
+h3{font:600 17px/1.3 var(--fb)}
+.lede{font-size:19px;line-height:1.55;color:var(--ink-2);max-width:60ch;text-wrap:pretty}
+p{text-wrap:pretty}
+
+header.hero{padding-block:clamp(56px,10vw,112px) 40px;display:grid;gap:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1.5px solid var(--ink);margin-top:18px}
+.stat{padding:16px 18px 6px 0;display:grid;gap:6px;align-content:start;min-width:0}
+.stat + .stat{padding-left:18px;border-left:1px solid var(--rule)}
+.stat b{font:700 clamp(28px,3.6vw,40px)/1 var(--fd);letter-spacing:-.03em;font-stretch:85%}
+.stat span{font-size:14px;color:var(--ink-3);line-height:1.4}
+@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(3){padding-left:0;border-left:0}.stat:nth-child(n+3){border-top:1px solid var(--rule)}}
+
+section.ch{padding-block:clamp(56px,9vw,104px) 0;display:grid;gap:28px}
+.chap{display:flex;align-items:baseline;gap:14px}
+.chap .n{font:500 13px/1 var(--fm);color:var(--blue-ink);border:1px solid var(--blue);border-radius:999px;padding:5px 9px}
+
+figure{display:grid;gap:12px}
+.frame{background:var(--sheet);border:1px solid var(--rule);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.frame img{display:block;width:100%;height:auto}
+figcaption{font-size:14px;color:var(--ink-3);max-width:70ch}
+figcaption b{color:var(--ink-2);font-weight:500}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media (max-width:760px){.pair{grid-template-columns:1fr}}
+
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ink)}
+.fact{padding:16px 18px 0 0;display:grid;gap:6px;align-content:start;min-width:0}
+.fact + .fact{padding-left:18px;border-left:1px solid var(--rule)}
+.fact .k{font:500 12px/1.2 var(--fm);color:var(--blue-ink);letter-spacing:.04em}
+.fact p{font-size:15px;line-height:1.55;color:var(--ink-2)}
+@media (max-width:760px){.facts{grid-template-columns:1fr}.fact + .fact{padding-left:0;border-left:0;border-top:1px solid var(--rule);margin-top:12px}}
+
+.flow{display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;align-items:stretch}
+.step{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:16px;display:grid;gap:6px;align-content:start}
+.step .k{font:500 12px/1 var(--fm);color:var(--ink-3)}
+.step.end{border-color:var(--blue);background:var(--blue-wash)}
+.step p{font-size:14.5px;line-height:1.5;color:var(--ink-2)}
+.arrow{display:grid;place-items:center;color:var(--ink-3);font:500 14px var(--fm)}
+@media (max-width:760px){.flow{grid-template-columns:1fr}.arrow{transform:rotate(90deg);height:24px}}
+
+.owned{display:flex;flex-wrap:wrap;gap:8px}
+.owned span{font:500 13px/1 var(--fm);padding:8px 11px;border-radius:999px;background:var(--sheet);border:1px solid var(--rule);color:var(--ink-2)}
+.owned span:last-child{background:var(--navy);border-color:var(--navy);color:#fff}
+
+.callout{border-left:3px solid var(--blue);padding:4px 0 4px 18px;font:500 clamp(19px,2.2vw,23px)/1.4 var(--fd);letter-spacing:-.01em;max-width:42ch}
+footer{margin-top:clamp(64px,10vw,112px);border-top:1px solid var(--rule);padding-block:24px 56px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:var(--ink-3)}
+/* Subtle alternating section tints */
+main > section.ch:nth-of-type(odd){background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax);--paper:var(--band)}
+main > section.ch{padding-bottom:clamp(56px,9vw,104px)}
+</style>
+</head>
+<body>
+<main>
+  <header class="hero col">
+    <p class="tag"><b>BiteSpeed</b> · Feb 2023 – Jun 2026 · Product Designer, then Consultant</p>
+    <h1>The only designer, from a growing startup to its AI agent.</h1>
+    <p class="lede">BiteSpeed helps Shopify brands sell over WhatsApp, email and SMS. For almost two years I was its only designer, across product and marketing. Then I came back as a consultant and built its AI Marketing Agent end to end.</p>
+    <div class="stats">
+      <div class="stat"><b>3+ yrs</b><span>two roles, one company</span></div>
+      <div class="stat"><b>1</b><span>designer for product and marketing</span></div>
+      <div class="stat"><b>×3</b><span>Best Employee, quarterly, 2023–24</span></div>
+      <div class="stat"><b>4.9★</b><span>BiteSpeed on the Shopify App Store</span></div>
+    </div>
+  </header>
+
+  <section class="ch wide">
+    <div class="col" style="padding:0;margin:0;display:grid;gap:14px">
+      <p class="chap"><span class="n">01</span><span class="tag">2023 – 2024 · Product Designer</span></p>
+      <h2>Everything a merchant touched, designed by one person.</h2>
+      <p class="lede">Campaigns, automations, the ads that brought merchants in and the deck that raised the next round.</p>
+    </div>
+    <figure>
+      <div class="frame"><img src="agent-mock/shots/broadcasts.jpg" width="2912" height="1638" alt="Broadcasts: revenue, messages sent and ROI on top, then every campaign across WhatsApp, email, SMS and RCS with its revenue, cost, ROI and delivery." loading="lazy"></div>
+      <figcaption><b>Broadcasts.</b> One place for every channel, and every send shows what it earned: revenue, cost and ROI sit next to delivery.</figcaption>
+    </figure>
+    <figure>
+      <div class="frame"><img src="agent-mock/shots/journey.jpg" width="2912" height="1638" alt="Journey builder: an order-placed trigger, a 15-day wait, conditional splits by collection, and WhatsApp sends, with a palette of actions, AI actions, conditions and control flow." loading="lazy"></div>
+      <figcaption><b>Journeys.</b> A trigger, a wait, a question about the customer, then the right message. Channels, AI actions and conditions sit in one palette.</figcaption>
+    </figure>
+    <div class="facts">
+      <div class="fact"><span class="k">Product</span><h3>Campaigns and automations</h3><p>Broadcasts across WhatsApp, email, SMS and RCS, the Journeys builder, and the surfaces around them.</p></div>
+      <div class="fact"><span class="k">Marketing</span><h3>The way merchants found us</h3><p>Ads, landing pages and customer case-study decks.</p></div>
+      <div class="fact"><span class="k">Fundraise</span><h3>The investor deck</h3><p>I designed the deck for BiteSpeed's fundraise, and the round closed.</p></div>
+    </div>
+  </section>
+
+  <section class="ch wide">
+    <div class="col" style="padding:0;margin:0;display:grid;gap:14px">
+      <p class="chap"><span class="n">02</span><span class="tag">2024 – 2026 · Product Design Consultant</span></p>
+      <h2>An agent that finds the money a brand is leaving on the table.</h2>
+      <p class="lede">Every brand on BiteSpeed has the same question: what should we send next? The AI Marketing Agent answers it from the brand's own data.</p>
+    </div>
+    <div class="flow" aria-label="How the agent works">
+      <div class="step"><span class="k">1 · Read</span><h3>Every send, every order</h3><p>Months of broadcasts and messages, with retention, channel and co-purchase patterns.</p></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="step"><span class="k">2 · Benchmark</span><h3>Against category peers</h3><p>Each number sits next to what similar brands achieve with the same kind of campaign.</p></div>
+      <div class="arrow" aria-hidden="true">→</div>
+      <div class="step end"><span class="k">3 · Write</span><h3>The campaigns to run</h3><p>A verdict, the gaps with their ₹ upside, and ready campaigns: segment, message, creative.</p></div>
+    </div>
+    <figure>
+      <div class="frame"><img src="agent-mock/shots/overview.jpg" width="2912" height="1638" alt="AI Marketing Agent: a one-sentence verdict with a ₹ range, what's working and what's missing with evidence, three insight cards, and a table of generated campaigns with segment, confidence and status." loading="lazy"></div>
+      <figcaption><b>Verdict first.</b> One sentence a founder can act on, then the evidence: what's working, what's missing, and what each gap is worth.</figcaption>
+    </figure>
+    <div class="pair">
+      <figure>
+        <div class="frame"><img src="agent-mock/shots/why.jpg" width="2912" height="1638" alt="Campaign analysis: ROI estimate, channel and audience size; why this campaign; the segment; and the message with creative options." loading="lazy"></div>
+        <figcaption><b>Why this?</b> Every suggestion explains itself: the gap, the signal, the benchmark, the size of the prize.</figcaption>
+      </figure>
+      <figure>
+        <div class="frame"><img src="agent-mock/shots/report.jpg" width="2912" height="1638" alt="Full campaign strategy report with contents, main summary and campaign ideas with estimated ROI." loading="lazy"></div>
+        <figcaption><b>The full report.</b> The same analysis as a document a team can read, share and download.</figcaption>
+      </figure>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="k">Decision</span><h3>Lead with a sentence</h3><p>A dashboard of charts makes the brand do the analysis. The agent states the conclusion and shows its working underneath.</p></div>
+      <div class="fact"><span class="k">Decision</span><h3>Every claim carries its proof</h3><p>No number appears without its benchmark, so a marketer can trust it, or argue with it.</p></div>
+      <div class="fact"><span class="k">Decision</span><h3>End in a campaign</h3><p>Each gap becomes a campaign with a segment, message, creative and confidence, opening straight into a campaign.</p></div>
+    </div>
+    <div style="display:grid;gap:12px">
+      <span class="tag">What I owned</span>
+      <div class="owned"><span>Problem framing</span><span>UX and UI</span><span>Front end</span><span>Analysis and prompts</span><span>End to end</span></div>
+    </div>
+    <p class="callout">The same instinct, three years apart: show people what to do next, not just what happened.</p>
+  </section>
+
+  <footer class="wide"><span>Rahul Jha · Design Engineer</span><span>Screens are recreated with an invented brand, Tarnwell. No customer data is shown.</span></footer>
+</main>
+</body>
+</html>

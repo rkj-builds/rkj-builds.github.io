@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Now Playing · Rahul Jha</title>
+<meta name="description" content="Rahul Jha, product design engineer, as a now-playing screen. Scan the code for everything else.">
+<!-- Added to the home screen it opens full screen, edge to edge, like an app -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Rahul Jha">
+<meta name="theme-color" content="#0e0d0b">
+<link rel="apple-touch-icon" href="img/rahul-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* A now-playing screen for a person: the photo is the album art, the career is
+     the waveform, the work is the tracklist, the QR is "the full album".
+     One deliberate dark look (it is shown on a phone at night), so colours are set
+     explicitly rather than themed.
+     Built for iPhones with a Dynamic Island (15 and later): a black "live activity" pill sits
+     exactly where the island is, so the hardware cut-out reads as the player, not a hole.
+     ?export=1 drops the phone frame; ?device=15|16pro|plus|promax sets the size and island
+     position; ?qr=linkedin swaps the code to LinkedIn for before the site is live. */
+  :root{
+    --ink:#fff; --ink-2:rgba(255,255,255,.72); --ink-3:rgba(255,255,255,.5); --line:rgba(255,255,255,.14);
+    --amber:#ffb35c; --amber-2:#ff8a3d; --glass:rgba(255,248,235,.09); --glass-2:rgba(255,248,235,.14);
+    --desk:#121110;
+    /* iPhone 15 / 15 Pro / 16 by default: 393×852 pt, island 126×37 at 11 pt from the top */
+    --w:393px; --h:852px; --island-top:11px;
+    --sans:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif; --serif:'Instrument Serif',Georgia,serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--desk);color:var(--ink);font:400 14px/1.35 var(--sans);-webkit-font-smoothing:antialiased;display:grid;place-items:center;padding:24px 16px}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+  /* The prototype frame (desktop only) */
+  .stage{display:flex;align-items:center;gap:56px}
+  .phone{width:calc(var(--w) + 24px);height:calc(var(--h) + 24px);padding:12px;border-radius:67px;background:linear-gradient(145deg,#2b2a28,#0d0c0b);box-shadow:0 0 0 1.5px #3a3835 inset,0 40px 80px -30px rgba(0,0,0,.8),0 0 0 1px #000;position:relative;flex:none}
+  /* The hardware island, drawn only in the prototype frame */
+  .hw{position:absolute;top:var(--island-top);left:50%;translate:-50% 0;width:126px;height:37px;border-radius:20px;background:#000;z-index:7}
+  .hw::after{content:"";position:absolute;right:22px;top:12px;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 40% 40%,#1d2433,#05060a 70%)}
+  .note{max-width:260px;display:grid;gap:14px;color:#b9b2a6}
+  .note b{font:400 30px/1.05 var(--serif);color:#fff}
+  .note b i{color:var(--amber)}
+  .note p{font-size:14px;line-height:1.5}
+  .note kbd{font:500 12px var(--mono);color:#fff;background:#2a2826;border-radius:6px;padding:2px 6px}
+
+  /* The screen */
+  .screen{width:var(--w);height:var(--h);border-radius:55px;overflow:hidden;position:relative;isolation:isolate;container-type:inline-size}
+  .ambient{position:absolute;inset:-30%;z-index:-2;background:url(img/rahul-800.jpg) center/cover;filter:blur(48px) saturate(1.5) brightness(.8)}
+  .screen::after{content:"";position:absolute;inset:0;z-index:-1;background:
+    radial-gradient(120% 60% at 50% 0%,rgba(255,190,110,.18),transparent 60%),
+    linear-gradient(180deg,rgba(18,16,10,.25) 0%,rgba(14,13,10,.62) 45%,rgba(10,9,8,.92) 100%)}
+  .inner{height:100%;padding:calc(var(--island-top) + 37px + 16px) 22px 26px;display:flex;flex-direction:column;gap:12px}
+
+  /* The live activity around the island: thumbnail on the left ear, levels on the right.
+     It is a touch taller and wider than the island so a few points of difference between
+     models never shows an edge. The middle stays empty: that is the camera. */
+  .island{position:absolute;z-index:6;top:calc(var(--island-top) - 2px);left:50%;translate:-50% 0;width:236px;height:41px;border-radius:99px;background:#000;display:flex;align-items:center;justify-content:space-between;padding:0 12px 0 7px;box-shadow:0 6px 18px -6px rgba(0,0,0,.6)}
+  .island img{width:27px;height:27px;border-radius:8px;object-fit:cover;object-position:50% 15%}
+
+  .eq{display:flex;gap:2px;align-items:flex-end;height:15px;width:22px}
+  .eq i{flex:1;background:var(--amber);border-radius:1px;height:40%;animation:eq 1s ease-in-out infinite}
+  .eq i:nth-child(2){animation-delay:-.35s}.eq i:nth-child(3){animation-delay:-.7s}.eq i:nth-child(4){animation-delay:-.2s}
+  @keyframes eq{0%,100%{height:30%}50%{height:100%}}
+  .paused .eq i{animation-play-state:paused}
+  .from{display:flex;justify-content:center;gap:8px;font:500 10px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .from b{font:600 12px/1 var(--sans);letter-spacing:0;text-transform:none;color:var(--ink)}
+
+  .art{position:relative;width:100%;flex:1 1 0;min-height:200px;max-height:440px;border-radius:14px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.7),0 0 0 .5px rgba(255,255,255,.12) inset;transition:scale .5s cubic-bezier(.2,.8,.2,1)}
+  .paused .art{scale:.92}
+  .art img{width:100%;height:100%;object-fit:cover;object-position:50% 12%;display:block}
+  .art .label{position:absolute;left:12px;bottom:12px;background:#0b0b0b;color:#fff;border:1.5px solid #fff;padding:5px 7px 4px;font:700 9px/1.05 var(--sans);letter-spacing:.06em;text-transform:uppercase;text-align:center}
+  .art .label small{display:block;font-size:6.5px;letter-spacing:.14em;border-top:1px solid #fff;margin-top:3px;padding-top:3px;font-weight:600}
+  .art .open{position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:6px;background:rgba(10,10,10,.55);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:99px;padding:6px 10px 6px 8px;font:600 11px/1 var(--sans)}
+  .art .open i{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.25)}
+
+  .track{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .track h1{font:700 27px/1.05 var(--sans);letter-spacing:-.02em}
+  .track p{margin-top:4px;color:var(--ink-2);font-size:15px}
+  .track p em{font:italic 400 17px/1 var(--serif);color:var(--amber)}
+  .heart{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;background:var(--glass-2)}
+  .heart svg{width:16px;height:16px}
+
+  .scrub{display:grid;gap:6px}
+  .wave{height:30px;display:flex;align-items:center;gap:2px;position:relative}
+  .wave b{flex:1;border-radius:2px;background:rgba(255,255,255,.28);min-height:3px}
+  .wave b.on{background:linear-gradient(var(--amber),var(--amber-2))}
+  .times{display:flex;justify-content:space-between;font:500 10px/1 var(--mono);color:var(--ink-3)}
+  .times span:nth-child(2){color:var(--ink-2)}
+
+  .controls{display:flex;justify-content:space-between;align-items:center;padding:0 8px}
+  .controls svg{width:22px;height:22px;display:block}
+  .controls .small svg{width:18px;height:18px;opacity:.6}
+  .play{width:46px;height:46px;border-radius:50%;background:#fff;color:#111;display:grid;place-items:center}
+  .play svg{width:22px;height:22px}
+
+  .hits{background:var(--glass);border:.5px solid var(--line);border-radius:16px;padding:11px 14px 6px;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+  .hits h2{display:flex;justify-content:space-between;font:600 13px/1 var(--sans);margin-bottom:6px}
+  .hits h2 span{font:500 10px/1.3 var(--mono);color:var(--ink-3);letter-spacing:.08em;text-transform:uppercase}
+  .hits ol{list-style:none}
+  .hits li{display:grid;grid-template-columns:16px 1fr auto;gap:10px;align-items:center;padding:5px 0;border-top:.5px solid var(--line)}
+  .hits li:first-child{border-top:0}
+  .hits .n{font:500 11px/1 var(--mono);color:var(--ink-3)}
+  .hits li.now .n{color:var(--amber)}
+  .hits b{display:block;font:600 13.5px/1.2 var(--sans);letter-spacing:-.005em}
+  .hits small{display:block;font-size:11.5px;color:var(--ink-3);margin-top:1px}
+  .hits .tag{font:500 10.5px/1 var(--mono);color:var(--ink-2);background:var(--glass-2);border-radius:6px;padding:4px 6px;white-space:nowrap}
+  .hits li.now .tag{color:#1a1206;background:var(--amber)}
+
+  .qr{margin-top:auto;display:flex;align-items:center;gap:14px;background:#fffaf2;color:#16130e;border-radius:18px;padding:10px 14px 10px 10px;text-align:left;width:100%}
+  .qr img{width:86px;height:86px;flex:none;display:block}
+  .qr b{display:block;font:700 16px/1.1 var(--sans);letter-spacing:-.01em}
+  .qr span{display:block;font-size:12px;color:#6b6457;margin-top:3px}
+  .qr code{display:block;font:500 11px/1 var(--mono);color:#b8441c;margin-top:7px}
+
+  /* Tap the code: it fills the screen so someone across the table can scan it */
+  .big{position:absolute;inset:0;z-index:10;background:#fffaf2;color:#16130e;display:grid;place-content:center;justify-items:center;gap:18px;padding:32px;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s}
+  .big.on{opacity:1;pointer-events:auto}
+  .big img{width:290px;height:290px}
+  .big b{font:400 34px/1 var(--serif)}
+  .big b i{color:#b8441c}
+  .big p{font-size:13px;color:#6b6457}
+
+  @media (prefers-reduced-motion:reduce){.eq i{animation:none;height:70%}.art{transition:none}}
+  /* On an actual phone the screen is the page */
+  @media (max-width:520px){
+    body{padding:0;display:block;background:#0e0d0b}
+    .stage{display:block}.note{display:none}
+    .phone{width:100%;height:100dvh;min-height:760px;padding:0;border-radius:0;background:none;box-shadow:none}.hw{display:none}
+    .screen{width:100%;height:100%;border-radius:0}
+    /* Full screen from the home screen, the safe area starts below the island (59 pt on a 15 Pro);
+       the island itself sits 48 pt above that. In Safari the inset is 0 and the pill is a chip. */
+    :root{--island-top:max(11px, calc(env(safe-area-inset-top, 0px) - 48px))}
+    .inner{padding:calc(var(--island-top) + 37px + 16px) 20px calc(env(safe-area-inset-bottom,0px) + 18px)}
+  }
+  .export,.export body{background:#000}
+  .export body{padding:0!important;display:block!important;width:var(--w)}
+  .export .stage{display:block!important}
+  .export .note,.export .hw{display:none}.export .phone{width:var(--w);height:var(--h);padding:0;border-radius:0;background:none;box-shadow:none}
+  .export .screen{border-radius:0}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone">
+    <main class="screen" id="screen">
+      <div class="ambient" aria-hidden="true"></div>
+      <div class="hw" aria-hidden="true"></div>
+      <div class="island" aria-hidden="true"><img src="img/rahul-180.png" alt=""><div class="eq"><i></i><i></i><i></i><i></i></div></div>
+      <div class="inner">
+        <p class="from">Playing from album <b>Ships in Code</b></p>
+
+        <figure class="art">
+          <img src="img/rahul-800.jpg" alt="Rahul Jha">
+          <span class="open"><i></i>Open to roles</span>
+          <span class="label">Designs it.<br>Ships it.<small>In code</small></span>
+        </figure>
+
+        <section class="track">
+          <div>
+            <h1>Rahul Jha</h1>
+            <p>Product Design Engineer · <em>ex film sound</em></p>
+          </div>
+          <span class="heart" aria-hidden="true"><svg viewBox="0 0 24 24" fill="#ffb35c"><path d="M12 21s-7.5-4.6-9.6-9.3C.9 8.2 3 4.5 6.7 4.5c2.1 0 3.6 1.1 5.3 3 1.7-1.9 3.2-3 5.3-3 3.7 0 5.8 3.7 4.3 7.2C19.5 16.4 12 21 12 21z"/></svg></span>
+        </section>
+
+        <section class="scrub" aria-label="Career so far">
+          <div class="wave" id="wave" aria-hidden="true"></div>
+          <div class="times"><span>2018 · film</span><span>design · code · now</span><span>∞</span></div>
+        </section>
+
+        <div class="controls" aria-hidden="true">
+          <span class="small"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></span>
+          <span><svg viewBox="0 0 24 24" fill="#fff"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></span>
+          <button class="play" id="play" aria-label="Pause"><svg viewBox="0 0 24 24" fill="currentColor" id="playIcon"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+          <span><svg viewBox="0 0 24 24" fill="#fff"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></span>
+          <span class="small"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14M7 22l-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg></span>
+        </div>
+
+        <section class="hits">
+          <h2>Greatest hits <span>Side A</span></h2>
+          <ol>
+            <li class="now"><span class="n">01</span><span><b>15% → 74% self-serve</b><small>Project 831 · I built it and run it</small></span><span class="tag">₹5.6L</span></li>
+            <li><span class="n">02</span><span><b>Fix merged into coss ui</b><small>Cal.com's design system</small></span><span class="tag">#890</span></li>
+            <li><span class="n">03</span><span><b>AI Marketing Agent</b><small>BiteSpeed · built end to end</small></span><span class="tag">0 → 1</span></li>
+            <li><span class="n">04</span><span><b>The Fame Game, Bandish Bandits</b><small>B-side · on-set sound mixer</small></span><span class="tag">♪ film</span></li>
+          </ol>
+        </section>
+
+        <button class="qr" id="qr" aria-label="Show the code bigger">
+          <img src="img/qr-links.svg" alt="" id="qrImg">
+          <span><b id="qrHead">Scan for the full album</b><span id="qrLine">Work, CV, case studies, LinkedIn, GitHub</span><code id="qrText">rkj-builds.github.io/links</code></span>
+        </button>
+      </div>
+
+      <div class="big" id="big" role="dialog" aria-label="QR code" tabindex="-1">
+        <img src="img/qr-links.svg" alt="QR code to Rahul Jha's links" id="bigImg">
+        <b>Rahul <i>Jha</i></b>
+        <p>Point your camera here. Tap anywhere to go back.</p>
+      </div>
+    </main>
+  </div>
+
+  <aside class="note">
+    <b>Now playing:<br>Rahul <i>Jha</i></b>
+    <p>A phone screen to hand across the table. The photo is the album art, the career is the waveform, the work is the tracklist.</p>
+    <p>Tap the code and it fills the screen so anyone can scan it. Pause to stop the music.</p>
+  </aside>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  if (params.has('export')) document.documentElement.classList.add('export');
+  // Points and island position for each iPhone size since the 15.
+  const DEVICES = {
+    '15':     { w: 393, h: 852, island: 11 }, // iPhone 15, 15 Pro, 16
+    'plus':   { w: 430, h: 932, island: 11 }, // iPhone 15 Plus, 15 Pro Max, 16 Plus
+    '16pro':  { w: 402, h: 874, island: 14 }, // iPhone 16 Pro, 17, 17 Pro
+    'promax': { w: 440, h: 956, island: 14 }, // iPhone 16 Pro Max, 17 Pro Max
+  };
+  const device = DEVICES[params.get('device')];
+  if (device) {
+    const root = document.documentElement.style;
+    root.setProperty('--w', device.w + 'px');
+    root.setProperty('--h', device.h + 'px');
+    root.setProperty('--island-top', device.island + 'px');
+  }
+  if (params.get('qr') === 'linkedin') {
+    for (const id of ['qrImg', 'bigImg']) document.getElementById(id).src = 'img/qr-linkedin.svg';
+    document.getElementById('qrText').textContent = 'linkedin.com/in/rahuljha5';
+    document.getElementById('qrHead').textContent = 'Scan to connect';
+    document.getElementById('qrLine').textContent = 'My LinkedIn: work, posts, a way to reach me';
+  }
+
+  // A fixed, seeded waveform: quiet in the film years, louder once the code starts.
+  const wave = document.getElementById('wave');
+  let seed = 831;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const bars = 54, played = 0.86;
+  for (let i = 0; i < bars; i++) {
+    const t = i / (bars - 1);
+    const h = Math.max(12, Math.min(100, (24 + 60 * t) * (0.45 + rand() * 0.75)));
+    const b = document.createElement('b');
+    b.style.height = h + '%';
+    if (t <= played) b.className = 'on';
+    wave.append(b);
+  }
+
+  const screen = document.getElementById('screen');
+  const play = document.getElementById('play');
+  play.addEventListener('click', () => {
+    const paused = screen.classList.toggle('paused');
+    play.setAttribute('aria-label', paused ? 'Play' : 'Pause');
+    document.getElementById('playIcon').innerHTML = paused ? '<path d="M7 4.5v15l12-7.5z"/>' : '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>';
+  });
+
+  const big = document.getElementById('big');
+  document.getElementById('qr').addEventListener('click', () => { big.classList.add('on'); big.focus(); });
+  big.addEventListener('click', () => { big.classList.remove('on'); document.getElementById('qr').focus(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') big.classList.remove('on'); });
+</script>
+</body>
+</html>

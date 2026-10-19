@@ -1,6 +1,6 @@
 /* rkj — one visual family with the 831 case study: chalk paper, ink, one ember accent. */
 :root{
-  --paper:#f2f3ef; --sheet:#ffffff; --ink:#14181a; --ink-2:#3d4549; --ink-3:#6b7479;
+  --paper:#f2f3ef; --band:#ebece6; --sheet:#ffffff; --ink:#14181a; --ink-2:#3d4549; --ink-3:#5f686d;
   --rule:#d9ddd6; --rule-2:#e8eae5; --ember:#c8461c; --ember-ink:#a83a15; --ember-wash:#f7e3da;
   --g0:#e3e6df; --g1:#f2c9b7; --g2:#e59a78; --g3:#d4693f; --g4:#a83a15;
   --fd:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
@@ -9,12 +9,12 @@
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --paper:#0f1312; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
+  --paper:#0f1312; --band:#151a18; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
   --rule:#2a312f; --rule-2:#202625; --ember:#ec6a3d; --ember-ink:#f28a63; --ember-wash:#33201a;
   --g0:#1d2321; --g1:#4a2a1f; --g2:#7d3b23; --g3:#c4532a; --g4:#f28a63;
   color-scheme:dark; } }
 :root[data-theme="dark"]{
-  --paper:#0f1312; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
+  --paper:#0f1312; --band:#151a18; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
   --rule:#2a312f; --rule-2:#202625; --ember:#ec6a3d; --ember-ink:#f28a63; --ember-wash:#33201a;
   --g0:#1d2321; --g1:#4a2a1f; --g2:#7d3b23; --g3:#c4532a; --g4:#f28a63;
   color-scheme:dark; }
@@ -62,3 +62,7 @@ section > .k{display:block;margin-bottom:14px}
 footer{padding-block:28px 56px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
 @media (max-width:560px){.item{grid-template-columns:1fr}.item .meta{text-align:left}}
+
+/* Subtle alternating section tints */
+main > section:nth-of-type(even){background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax);--paper:var(--band)}
+main > section{border-top:0;padding-block:36px}
