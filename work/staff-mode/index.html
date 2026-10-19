@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Staff Mode · Project 831</title>
+<meta name="description" content="A mini case study: how a pickleball venue's front desk stopped negotiating over extra time. Two taps, one number, a bill the customer can read.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,500..800&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Atkinson+Hyperlegible:wght@400;700&family=Archivo:wght@500;800&family=Barlow+Condensed:wght@600;700&family=Chivo+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+/* Same family as the main Project 831 case study: chalk paper, ink, the 831 ember.
+   The staff app's own terracotta appears only inside its screens. */
+:root{
+  --paper:#f2f3ef; --band:#eaece6; --sheet:#ffffff; --ink:#14181a; --ink-2:#3d4549; --ink-3:#5f686d;
+  --rule:#d9ddd6; --rule-2:#e8eae5;
+  --ember:#c8461c; --ember-ink:#a83a15; --ember-wash:#f7e3da;
+  --ok:#1e8a55; --ok-wash:#e2f2e8; --bad:#b42332; --bad-wash:#fbe4e6;
+  --shadow:0 1px 0 rgba(20,24,26,.04), 0 18px 40px -18px rgba(20,24,26,.28);
+  --fd:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --fb:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --fm:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  --col:680px; --wide:1180px; --gut:clamp(16px,4vw,40px);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0f1312; --band:#151a18; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
+  --rule:#2a312f; --rule-2:#202625;
+  --ember:#ec6a3d; --ember-ink:#f28a63; --ember-wash:#33201a;
+  --ok:#3ec777; --ok-wash:#16291f; --bad:#f06a76; --bad-wash:#33181b;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -18px rgba(0,0,0,.7);
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#0f1312; --band:#151a18; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
+  --rule:#2a312f; --rule-2:#202625;
+  --ember:#ec6a3d; --ember-ink:#f28a63; --ember-wash:#33201a;
+  --ok:#3ec777; --ok-wash:#16291f; --bad:#f06a76; --bad-wash:#33181b;
+  --shadow:0 1px 0 rgba(0,0,0,.3), 0 18px 40px -18px rgba(0,0,0,.7);
+  color-scheme:dark; }
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 var(--fb);-webkit-font-smoothing:antialiased;padding-inline:var(--gut);overflow-x:hidden}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--ember-ink);text-underline-offset:3px;text-decoration-thickness:1px}
+a:focus-visible,button:focus-visible{outline:2px solid var(--ember);outline-offset:3px;border-radius:4px}
+.col{max-width:var(--col);margin-inline:auto}
+.wide{max-width:var(--wide);margin-inline:auto}
+.mono{font-family:var(--fm);font-variant-numeric:tabular-nums}
+
+h1,h2,h3{font-family:var(--fd);font-weight:700;letter-spacing:-.025em;text-wrap:balance;margin:0}
+h1{font-size:clamp(44px,7.6vw,92px);line-height:.92;font-stretch:80%;font-weight:800}
+h1 em{font-style:normal;color:var(--ember)}
+h2{font-size:clamp(28px,3.6vw,38px);line-height:1.05;font-stretch:88%}
+h3{font-size:19px;line-height:1.25;letter-spacing:-.01em;font-weight:650}
+p{margin:0;color:var(--ink-2)}
+p strong{color:var(--ink);font-weight:600}
+.lede{font-size:clamp(18px,2vw,21px);line-height:1.5;color:var(--ink)}
+.tag{font:500 12px/1.3 var(--fm);letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+.tag b{color:var(--ember-ink);font-weight:500}
+.note{font-size:14px;color:var(--ink-3);line-height:1.5}
+
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:10;margin-inline:calc(-1*var(--gut));padding:12px var(--gut);display:flex;justify-content:space-between;align-items:center;gap:16px;background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule-2)}
+.top nav{display:flex;gap:18px;font-size:14px}
+.top nav a{color:var(--ink-3);text-decoration:none;white-space:nowrap}
+.top nav a:hover{color:var(--ink)}
+.mark{font:800 18px/1 var(--fd);letter-spacing:-.03em;white-space:nowrap;color:var(--ink);text-decoration:none}
+.mark span{color:var(--ember)}
+.mark small{font:500 13px/1 var(--fb);letter-spacing:0;color:var(--ink-3);margin-left:8px}
+.theme{display:flex;border:1px solid var(--rule);border-radius:999px;padding:2px;flex:none}
+.theme button{font:500 12px/1 var(--fb);color:var(--ink-3);background:none;border:0;padding:6px 10px;border-radius:999px;cursor:pointer}
+.theme button[aria-pressed="true"]{background:var(--rule-2);color:var(--ink)}
+@media (max-width:820px){.top nav{display:none}}
+
+section{padding-block:clamp(56px,9vw,104px);border-top:1px solid var(--rule)}
+section.band{background:var(--band);margin-inline:calc(-1*var(--gut));padding-inline:var(--gut)}
+.head{display:grid;gap:14px;margin-bottom:clamp(28px,4vw,44px)}
+.head p{max-width:60ch}
+
+/* Hero */
+.hero{padding-block:clamp(40px,7vw,80px) clamp(48px,7vw,88px);border-top:0}
+.hero .intro{display:grid;gap:22px;max-width:800px}
+.byline{font-size:14px;color:var(--ink-3)}
+.byline b{color:var(--ink);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--ink);margin-top:44px}
+.stat{padding:16px 18px 4px 0;display:grid;gap:6px;align-content:start;min-width:0}
+.stat + .stat{padding-left:18px;border-left:1px solid var(--rule)}
+.stat b{font:700 clamp(30px,4vw,46px)/1 var(--fd);letter-spacing:-.03em;font-stretch:85%}
+.stat span{font-size:14px;color:var(--ink-3);line-height:1.4}
+@media (max-width:720px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(3){padding-left:0;border-left:0}.stat:nth-child(n+3){border-top:1px solid var(--rule);padding-top:16px}}
+
+/* Timeline of one evening */
+.chart{margin:0;display:grid;gap:12px}
+.chart svg{width:100%;height:auto;display:block;overflow:visible}
+.chart text{font-family:var(--fm);font-size:12px;fill:var(--ink-3)}
+.chart .lbl{font-family:var(--fb);font-size:13px;fill:var(--ink-2)}
+.chart .big{font-family:var(--fd);font-weight:700;font-size:15px;fill:var(--ink)}
+.scroll-x{overflow-x:auto;scrollbar-width:thin;padding-bottom:6px}
+.scroll-x > svg{min-width:760px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-3)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* Voices under the timeline */
+.voices{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.voice{background:var(--sheet);border:1px solid var(--rule);border-radius:14px 14px 14px 4px;padding:14px 16px;display:grid;gap:6px;align-content:start}
+.voice .tag{font-size:11px}
+.voice q{quotes:none;font:600 16px/1.35 var(--fd);letter-spacing:-.01em;color:var(--ink)}
+.voice.staff{border-radius:14px 14px 4px 14px;background:var(--ember-wash);border-color:color-mix(in srgb,var(--ember) 35%,var(--rule))}
+@media (max-width:900px){.voices{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.voices{grid-template-columns:1fr}}
+
+/* Fact grids */
+.facts{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--rule)}
+.fact{padding:18px 20px 20px 0;display:grid;gap:6px;align-content:start;border-bottom:1px solid var(--rule);min-width:0}
+.fact:not(:nth-child(3n+1)){padding-left:20px;border-left:1px solid var(--rule)}
+.fact p{font-size:15px;line-height:1.55}
+.fact .k{font:500 12px/1.2 var(--fm);color:var(--ember-ink);letter-spacing:.04em}
+@media (max-width:860px){.facts{grid-template-columns:1fr 1fr}.fact:not(:nth-child(3n+1)){padding-left:0;border-left:0}.fact:nth-child(2n){padding-left:20px;border-left:1px solid var(--rule)}}
+@media (max-width:560px){.facts{grid-template-columns:1fr}.fact:nth-child(2n){padding-left:0;border-left:0}}
+
+/* Pull line */
+.pull{font:700 clamp(30px,4.6vw,54px)/1.02 var(--fd);letter-spacing:-.03em;font-stretch:84%;color:var(--ink);max-width:18ch;text-wrap:balance}
+.pull em{font-style:normal;color:var(--ember)}
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,3vw,36px);margin-top:clamp(32px,5vw,56px)}
+.principle{display:grid;gap:8px;align-content:start;border-top:2px solid var(--ink);padding-top:14px}
+.principle .n{font:500 12px var(--fm);color:var(--ember-ink)}
+.principle p{font-size:15.5px}
+@media (max-width:820px){.principles{grid-template-columns:1fr}}
+
+/* Rule: chart + table */
+.two{display:grid;grid-template-columns:1.4fr 1fr;gap:clamp(24px,4vw,56px);align-items:start}
+.two > *{min-width:0}
+@media (max-width:900px){.two{grid-template-columns:1fr}}
+table.rule{width:100%;border-collapse:collapse;font-size:15px}
+table.rule th{font:500 11px/1.2 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:0 0 10px;border-bottom:1px solid var(--ink)}
+table.rule th:last-child,table.rule td:last-child{text-align:right}
+table.rule td{padding:11px 0;border-bottom:1px solid var(--rule);font-family:var(--fm);font-variant-numeric:tabular-nums;color:var(--ink-2)}
+table.rule td b{color:var(--ink);font-weight:500}
+table.rule tr.hl td{color:var(--ember-ink)}
+table.rule tr.hl td b{color:var(--ember-ink)}
+
+/* Iterations */
+.iters{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.iter{display:grid;gap:14px;align-content:start;min-width:0}
+.spec{border-radius:20px;padding:20px 20px 22px;min-height:236px;display:grid;gap:10px;align-content:start;border:1px solid var(--rule);box-shadow:var(--shadow);overflow:hidden}
+.spec.v1{background:#16110d;color:#f3ede6;border-color:#16110d}
+.spec.v1 .s-tag{font:600 13px/1 'Barlow Condensed',sans-serif;letter-spacing:.14em;color:#e8905a}
+.spec.v1 .s-name{font:800 30px/1 'Archivo',sans-serif;letter-spacing:-.02em}
+.spec.v1 .s-big{font:700 64px/.9 'Barlow Condensed',sans-serif;color:#4ade9c}
+.spec.v1 .s-sub{font:500 14px/1.3 'Archivo',sans-serif;color:#b8aa9b}
+.spec.v1 .s-btn{margin-top:6px;font:700 18px/1 'Barlow Condensed',sans-serif;letter-spacing:.16em;background:#e8905a;color:#16110d;border-radius:10px;padding:14px;text-align:center}
+.spec.v2{background:#120d0a;color:#f3ede6;border-color:#120d0a}
+.spec.v2 .s-row{display:flex;justify-content:space-between;align-items:baseline}
+.spec.v2 .s-tag{font:600 12px/1 'Chivo Mono',monospace;letter-spacing:.06em;color:#120d0a;background:#e8905a;padding:5px 7px;border-radius:4px}
+.spec.v2 .s-court{font:600 12px/1 'Chivo Mono',monospace;color:#b8aa9b}
+.spec.v2 .s-name{font:800 24px/1 'Archivo',sans-serif}
+.spec.v2 .s-big{font:800 72px/.85 'Barlow Condensed',sans-serif;color:#e8905a}
+.spec.v2 .s-big small{font:600 13px 'Chivo Mono',monospace;color:#b8aa9b;margin-left:8px;letter-spacing:0}
+.spec.v2 .s-sub{font:500 13px/1.3 'Chivo Mono',monospace;color:#4ade9c}
+.spec.v3{background:#fff;color:#1e1712;border:2px solid #c62d3a;font-family:'Atkinson Hyperlegible',sans-serif}
+.spec.v3 .s-head{display:flex;gap:12px;align-items:center}
+.spec.v3 .s-n{width:44px;height:44px;border-radius:50%;background:#c62d3a;color:#fff;display:grid;place-items:center;font-weight:700;font-size:22px;flex:none}
+.spec.v3 .s-pill{font-weight:700;font-size:15px;color:#b42332;background:#fbe4e6;border-radius:999px;padding:4px 12px}
+.spec.v3 .s-name{font-weight:700;font-size:24px;line-height:1.1}
+.spec.v3 .s-big{font-weight:700;font-size:28px;line-height:1.1;color:#b42332}
+.spec.v3 .s-sub{font-size:16px;color:#5e5045}
+.spec.v3 .s-btn{margin-top:4px;font-weight:700;font-size:18px;background:#c62d3a;color:#fff;border-radius:12px;padding:13px;text-align:center}
+.verdict{display:grid;gap:4px}
+.verdict .tag b{color:var(--bad)}
+.verdict .tag.ok b{color:var(--ok)}
+.verdict p{font-size:15px}
+@media (max-width:900px){.iters{grid-template-columns:1fr}.spec{min-height:0}}
+
+.constraints{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule);margin-top:clamp(36px,5vw,56px)}
+.constraints div{padding:16px 18px 0 0;display:grid;gap:4px;align-content:start}
+.constraints div + div{padding-left:18px;border-left:1px solid var(--rule)}
+.constraints b{font:700 22px/1.1 var(--fd);letter-spacing:-.02em}
+.constraints span{font-size:14px;color:var(--ink-3);line-height:1.45}
+@media (max-width:820px){.constraints{grid-template-columns:1fr 1fr}.constraints div:nth-child(3){padding-left:0;border-left:0}.constraints div:nth-child(n+3){border-top:1px solid var(--rule);padding-top:16px;margin-top:16px}}
+
+/* Phone rail */
+.rail{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(196px,1fr);gap:18px;overflow-x:auto;padding:6px 2px 18px;scroll-snap-type:x mandatory}
+.rail figure{margin:0;display:grid;gap:12px;scroll-snap-align:start;min-width:0;align-content:start}
+.phone{border-radius:28px;overflow:hidden;background:#f5ede3;box-shadow:var(--shadow);aspect-ratio:390/844;border:1px solid var(--rule)}
+.phone img{width:100%;height:100%;object-fit:cover;object-position:top}
+.rail figcaption{display:grid;gap:3px;font-size:14px;line-height:1.4;color:var(--ink-2)}
+.rail figcaption .mono{font-size:12px;color:var(--ember-ink)}
+.rail figcaption b{color:var(--ink);font-weight:600}
+@media (max-width:900px){.rail{grid-auto-columns:64%}}
+
+/* The bill */
+.bill{display:grid;grid-template-columns:minmax(0,400px) 1fr;gap:clamp(28px,5vw,72px);align-items:start}
+.slip{border-radius:18px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--rule);background:#fbf8f3;position:sticky;top:76px}
+.marks{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:m}
+.marks li{display:grid;grid-template-columns:36px 1fr;gap:4px 14px;padding:20px 0;border-bottom:1px solid var(--rule);counter-increment:m}
+.marks li:first-child{border-top:1px solid var(--rule)}
+.marks li::before{content:counter(m);grid-row:span 2;width:28px;height:28px;border-radius:50%;border:1.5px solid var(--ink);display:grid;place-items:center;font:500 13px var(--fm)}
+.marks h3{font-size:18px}
+.marks p{font-size:15px}
+.swatches{display:inline-flex;gap:6px;vertical-align:-1px;margin-left:4px}
+.swatches i{width:12px;height:12px;border-radius:3px;display:inline-block}
+@media (max-width:820px){.bill{grid-template-columns:1fr}.slip{position:static;max-width:400px}}
+
+/* Close */
+.ledger{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,4vw,56px)}
+.ledger ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
+.ledger li{padding:13px 0;border-bottom:1px solid var(--rule);display:grid;gap:2px;font-size:15px;color:var(--ink-2)}
+.ledger li b{color:var(--ink);font-weight:600}
+.ledger .tag{margin-bottom:12px;display:block}
+@media (max-width:820px){.ledger{grid-template-columns:1fr}}
+
+footer{padding-block:40px 64px;border-top:1px solid var(--rule)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="#top">831<span>.</span><small>Staff mode</small></a>
+  <nav aria-label="Sections">
+    <a href="#problem">Problem</a><a href="#reframe">Reframe</a><a href="#rule">The rule</a><a href="#desk">The desk</a><a href="#flow">Flow</a><a href="#bill">The bill</a><a href="#build">Build</a><a href="#status">Status</a>
+  </nav>
+  <div class="theme" role="group" aria-label="Theme">
+    <button type="button" data-t="light">Light</button><button type="button" data-t="auto">Auto</button><button type="button" data-t="dark">Dark</button>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wide">
+    <div class="intro">
+      <span class="tag">Mini case study · <b>Project 831</b> · Staff mode · October 2026</span>
+      <p style="margin:0 0 18px"><a href="../../index.html" style="font-size:14px;color:var(--ink-3);text-decoration:none">← Rahul Jha</a></p>
+<h1>The desk stopped doing <em>maths.</em></h1>
+      <p class="lede">At a two-court pickleball venue, every booking that ran over turned into a negotiation at the front desk. I designed and built a staff mode where two taps, Start and Finish, produce the number, and a bill the customer can read settles it.</p>
+      <p class="byline"><b>Rahul Jha</b> · Design Engineer · research, interaction design, visual design, front end, API and data model</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>303</b><span>court bookings in the last 90 days</span></div>
+      <div class="stat"><b>30%</b><span>were walk-ins, entered by the desk on the day</span></div>
+      <div class="stat"><b>53%</b><span>had no full payment recorded in the system</span></div>
+      <div class="stat"><b>2 taps</b><span>from game over to the money, with nothing typed</span></div>
+    </div>
+    <p class="note" style="margin-top:14px">Live data, 21 Jul – 19 Oct 2026: confirmed court bookings only, cancelled and deleted rows excluded. The owner's account: most of the unrecorded money was cash collected at the desk and never written down.</p>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>01</b> · The problem</span>
+      <h2>One hour, four versions of it.</h2>
+      <p>A booking says 6 to 7. What actually happens is a phone call, a late start, a late finish and a group waiting for the court. Everyone has a different hour in mind, and the person at the desk is left to referee with mental arithmetic.</p>
+    </div>
+
+    <figure class="chart">
+      <div class="scroll-x">
+      <svg viewBox="0 0 1000 250" role="img" aria-label="Timeline of one booking: booked 6:00 to 7:00 PM, the group arrives at 6:12 and leaves at 7:13, while the next group waits from 7:00.">
+        <!-- grid: x = 60 + minutes after 5:45 × 8.5 -->
+        <g stroke="var(--rule)" stroke-width="1">
+          <line x1="187.5" y1="40" x2="187.5" y2="215"/><line x1="315" y1="40" x2="315" y2="215"/><line x1="442.5" y1="40" x2="442.5" y2="215"/><line x1="570" y1="40" x2="570" y2="215"/><line x1="697.5" y1="40" x2="697.5" y2="215"/><line x1="825" y1="40" x2="825" y2="215"/>
+        </g>
+        <g text-anchor="middle"><text x="187.5" y="236">6:00</text><text x="315" y="236">6:15</text><text x="442.5" y="236">6:30</text><text x="570" y="236">6:45</text><text x="697.5" y="236">7:00</text><text x="825" y="236">7:15</text></g>
+
+        <text class="lbl" x="0" y="82">Booked</text>
+        <rect x="187.5" y="66" width="510" height="24" rx="5" fill="var(--ink)"/>
+        <text x="197" y="83" style="fill:var(--paper);font-size:12px">Court 1 · 6:00 – 7:00 · ₹700</text>
+
+        <text class="lbl" x="0" y="132">Played</text>
+        <rect x="289.5" y="116" width="408" height="24" rx="5" fill="var(--ok)"/>
+        <rect x="697.5" y="116" width="110.5" height="24" rx="5" fill="var(--ember)"/>
+        <text x="299" y="133" style="fill:#fff;font-size:12px">6:12 – 7:13 · 61 minutes</text>
+
+        <text class="lbl" x="0" y="182">Next group</text>
+        <defs><pattern id="hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="var(--bad-wash)"/><line x1="0" y1="0" x2="0" y2="7" stroke="var(--bad)" stroke-width="2.4"/></pattern></defs>
+        <rect x="697.5" y="166" width="110.5" height="24" rx="5" fill="url(#hatch)"/>
+        <rect x="808" y="166" width="190" height="24" rx="5" fill="var(--ink-3)" opacity=".45"/>
+        <text x="818" y="183" style="fill:var(--ink);font-size:12px">starts 13 min late</text>
+
+        <!-- pins -->
+        <g fill="var(--ink)"><circle cx="102.5" cy="30" r="5"/><circle cx="289.5" cy="30" r="5"/><circle cx="697.5" cy="30" r="5"/><circle cx="808" cy="30" r="5"/></g>
+        <g stroke="var(--ink)" stroke-dasharray="2 3"><line x1="102.5" y1="35" x2="102.5" y2="215"/><line x1="289.5" y1="35" x2="289.5" y2="215"/><line x1="808" y1="35" x2="808" y2="215"/></g>
+        <text class="big" x="112" y="20">5:50 · a call</text>
+        <text class="big" x="299" y="20">6:12 · arrives</text>
+        <text class="big" x="560" y="20">7:00 · booked end</text>
+        <text class="big" x="818" y="20">7:13 · leaves</text>
+      </svg>
+      </div>
+      <div class="legend"><span><i style="background:var(--ink)"></i>what was booked</span><span><i style="background:var(--ok)"></i>played inside the booking</span><span><i style="background:var(--ember)"></i>played past it</span><span><i style="background:var(--bad)"></i>someone else waiting</span></div>
+    </figure>
+
+    <div class="voices">
+      <div class="voice"><span class="tag">Customer, 5:50</span><q>“Running ten minutes late. Hold it for us?”</q></div>
+      <div class="voice"><span class="tag">Customer, 7:13</span><q>“We started late, so we're not over.”</q></div>
+      <div class="voice staff"><span class="tag">Desk, 7:14</span><q>“Thirteen minutes at ₹700 an hour is… make it ₹100?”</q></div>
+      <div class="voice"><span class="tag">Next group, 7:14</span><q>“We waited too. Take it off ours.”</q></div>
+    </div>
+
+    <div class="facts" style="margin-top:clamp(36px,5vw,56px)">
+      <div class="fact"><span class="k">Phone calls</span><p>Late, early, "hold it", "add a court". Every change came in by voice and lived in someone's memory.</p></div>
+      <div class="fact"><span class="k">Mental maths</span><p>Per-minute pricing worked out at the counter, with a queue watching. Every desk worker rounded differently.</p></div>
+      <div class="fact"><span class="k">Negotiated discounts</span><p>An uncertain number invites a counter-offer. The person with the least authority set the price.</p></div>
+      <div class="fact"><span class="k">Staggered starts</span><p>Groups arrive at different times from the hour they booked, so "your hour" means something different to each side.</p></div>
+      <div class="fact"><span class="k">Booked ≠ played</span><p>The booking was the only record. Nothing captured when play actually began or ended.</p></div>
+      <div class="fact"><span class="k">Late start, late finish</span><p>Starting late became the reason to finish late, and finishing late became the reason not to pay.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="reframe" class="band">
+  <div class="wide">
+    <span class="tag"><b>02</b> · The reframe</span>
+    <p class="pull" style="margin-top:18px">Every argument was about <em>one number</em>. So the system should own that number, not the desk.</p>
+    <div class="principles">
+      <div class="principle"><span class="n">01</span><h3>The clock is the witness.</h3><p>Time starts when staff tap <strong>Start</strong>, not when the booking says. Arriving late costs the customer nothing, and the overrun is measured from when they really began.</p></div>
+      <div class="principle"><span class="n">02</span><h3>The rule is published, not argued.</h3><p>A grace window and fixed steps, printed on every bill. The customer argues with a sentence on paper, not with a person.</p></div>
+      <div class="principle"><span class="n">03</span><h3>The desk records, it doesn't calculate.</h3><p>Staff never type an amount. They tap what happened: started, finished, two waters, paid by UPI. The number follows.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="rule">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>03</b> · The rule</span>
+      <h2>Ten minutes free, then fifteen-minute steps.</h2>
+      <p>Per-minute billing is precise and impossible to defend at a counter. Steps are coarse and easy to say out loud. The grace window absorbs packing up and saying bye, so the first charge only lands when someone has clearly kept playing.</p>
+    </div>
+    <div class="two">
+      <figure class="chart">
+        <svg viewBox="0 0 660 320" role="img" aria-label="Step chart: minutes played against minutes charged for a one-hour booking. Up to 70 minutes played is charged as 60; each further 15 minutes adds a step after a 10 minute grace.">
+          <!-- x = 40 + (played-60)*10 ; y = 280 - (charged-60)*4 -->
+          <g fill="var(--ok-wash)"><rect x="40" y="40" width="100" height="240"/><rect x="190" y="40" width="100" height="240"/><rect x="340" y="40" width="100" height="240"/><rect x="490" y="40" width="100" height="240"/></g>
+          <g stroke="var(--rule)"><line x1="40" y1="280" x2="640" y2="280"/><line x1="40" y1="220" x2="640" y2="220"/><line x1="40" y1="160" x2="640" y2="160"/><line x1="40" y1="100" x2="640" y2="100"/><line x1="40" y1="40" x2="640" y2="40"/></g>
+          <line x1="40" y1="280" x2="640" y2="40" stroke="var(--ink-3)" stroke-dasharray="4 5"/>
+          <path d="M40 280 H140 V220 H290 V160 H440 V100 H590 V40 H640" fill="none" stroke="var(--ember)" stroke-width="3" stroke-linejoin="round"/>
+          <g text-anchor="end"><text x="32" y="284">1h</text><text x="32" y="224">1h15</text><text x="32" y="164">1h30</text><text x="32" y="104">1h45</text><text x="32" y="44">2h</text></g>
+          <g text-anchor="middle"><text x="40" y="304">1h</text><text x="140" y="304">1h10</text><text x="290" y="304">1h25</text><text x="440" y="304">1h40</text><text x="590" y="304">1h55</text></g>
+          <circle cx="50" cy="280" r="6" fill="var(--ink)"/>
+          <text class="big" x="50" y="262" text-anchor="middle">A</text>
+          <circle cx="170" cy="220" r="6" fill="var(--ember)"/>
+          <text class="big" x="170" y="202" text-anchor="middle">B</text>
+          <text x="634" y="30" text-anchor="end" style="fill:var(--ink-3)">per minute</text>
+        </svg>
+        <div class="legend"><span><i style="background:var(--ember)"></i>what is charged</span><span><i style="background:var(--ok-wash);outline:1px solid var(--rule)"></i>grace minutes, never charged</span><span>‒ ‒ per-minute, for comparison</span></div>
+        <div class="legend"><span><b style="color:var(--ink)">A</b> · the game from section 01, 61 minutes, ₹0 extra</span><span><b style="color:var(--ember-ink)">B</b> · the game in the screens below, 73 minutes, ₹175</span></div>
+      </figure>
+      <div>
+        <table class="rule">
+          <thead><tr><th>Played</th><th>Charged</th><th>Extra at ₹700/h</th></tr></thead>
+          <tbody>
+            <tr><td><b>1h 01</b></td><td>1h</td><td>₹0</td></tr>
+            <tr><td><b>1h 10</b></td><td>1h</td><td>₹0</td></tr>
+            <tr class="hl"><td><b>1h 11</b></td><td>1h 15</td><td>₹175</td></tr>
+            <tr><td><b>1h 25</b></td><td>1h 15</td><td>₹175</td></tr>
+            <tr><td><b>1h 26</b></td><td>1h 30</td><td>₹350</td></tr>
+            <tr><td><b>1h 41</b></td><td>1h 45</td><td>₹525</td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:16px">The evening from section 01 comes out at <strong>₹0</strong>: 61 minutes from Start. The rule settled what the desk couldn't, and the answer happened to favour the customer, which is the point: a fair default is what makes the rule enforceable.</p>
+        <p class="note" style="margin-top:10px">Owner settings: 15 or 30-minute steps, the grace window, and a step price that rounds up to the next ₹10.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="desk" class="band">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>04</b> · Designing for the desk</span>
+      <h2>Written for one person, who doesn't read much.</h2>
+      <p>The desk worker is the user, not the owner. He reads slowly, works standing up, and is often mid-conversation. That ruled out labels, abbreviations, status codes, timers in <span class="mono">mm:ss</span> and any icon without a word next to it. It took three directions to get there. The same moment, a court twelve minutes over, in each:</p>
+    </div>
+    <div class="iters">
+      <div class="iter">
+        <div class="spec v1" aria-label="Iteration 1 specimen">
+          <span class="s-tag">PLAYING NOW · COURT 3</span>
+          <span class="s-name">Neha + 3</span>
+          <span class="s-big">+12 MIN</span>
+          <span class="s-sub">Booked till 6:00 · ₹175 extra</span>
+          <span class="s-btn">FINISH</span>
+        </div>
+        <div class="verdict"><span class="tag">Iteration 1 · <b>rejected</b></span><p>A competent dark dashboard. Generic, and the owner said so: "looks bad".</p></div>
+      </div>
+      <div class="iter">
+        <div class="spec v2" aria-label="Iteration 2 specimen">
+          <div class="s-row"><span class="s-tag">OVER TIME</span><span class="s-court">COURT 03</span></div>
+          <span class="s-name">Neha + 3</span>
+          <span class="s-big">+12<small>min over</small></span>
+          <span class="s-sub">+ ₹175 extra so far</span>
+        </div>
+        <div class="verdict"><span class="tag">Iteration 2 · <b>rejected</b></span><p>A court board with character. Also a cockpit: mono type, caps, numbers without sentences. "Too tech-savvy, intimidating."</p></div>
+      </div>
+      <div class="iter">
+        <div class="spec v3" aria-label="Iteration 3 specimen">
+          <div class="s-head"><span class="s-n">3</span><span class="s-pill">Time is over</span></div>
+          <span class="s-name">Neha + 3</span>
+          <span class="s-big">12 minutes extra</span>
+          <span class="s-sub">Ended at 6:00 PM</span>
+          <span class="s-btn">Finish game</span>
+        </div>
+        <div class="verdict"><span class="tag ok">Iteration 3 · <b>shipped</b></span><p>Light, warm and plain. Reads like a person talking. Typeset in Atkinson Hyperlegible, drawn so that similar letters and digits can't be confused.</p></div>
+      </div>
+    </div>
+    <div class="constraints">
+      <div><b>Sentences</b><span>"Take this money", "Count the cash. It should be this much." Never "Balance due".</span></div>
+      <div><b>One number</b><span>Each screen has one figure to act on, set at 60px or larger.</span></div>
+      <div><b>Colour + word</b><span>Green, orange, red always arrive with "Playing", "Coming soon", "Time is over".</span></div>
+      <div><b>58px targets</b><span>Every button is reachable with a thumb while holding cash in the other hand.</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="flow">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>05</b> · The flow</span>
+      <h2>Courts now, Finish, take the money.</h2>
+      <p>Three tabs: Courts, New player, Money. The home screen is a live board of the courts. Countdowns tick every 30 seconds, new bookings arrive within five minutes, and Refresh is one tap away, so nobody has to phone the owner to ask who's next.</p>
+    </div>
+    <div class="rail" tabindex="0" aria-label="Staff app screens, scroll sideways">
+      <figure><div class="phone"><img src="img/home.jpg" alt="Courts now: Court 1 playing, Rohan, 19 minutes left, extra time free till 7:10 PM." loading="lazy" width="390" height="844"></div>
+        <figcaption><span class="mono">6:41 PM · Courts now</span><b>The board tells the time for you.</b> Minutes left, and when the free minutes run out.</figcaption></figure>
+      <figure><div class="phone"><img src="img/home-over.jpg" alt="Court 1 card turned red: Time is over, 13 minutes extra, extra money so far ₹175." loading="lazy" width="390" height="844"></div>
+        <figcaption><span class="mono">7:13 PM · Time is over</span><b>The overrun is visible before anyone asks.</b> The money counts up on the card.</figcaption></figure>
+      <figure><div class="phone"><img src="img/game.jpg" alt="Game over screen: Take this money ₹175. Court 1 hour 15 minutes ₹875, already paid ₹700." loading="lazy" width="390" height="844"></div>
+        <figcaption><span class="mono">Finish · Take this money</span><b>One number, already net of what was paid online.</b> Drinks and payment method are taps below.</figcaption></figure>
+      <figure><div class="phone"><img src="img/bill-slip.jpg" alt="The bill: started 6:00 PM, finished 7:13 PM, booked 1 hour ₹700, extra 15 minutes ₹175, to pay now ₹175." loading="lazy" width="390" height="792"></div>
+        <figcaption><span class="mono">Show the bill</span><b>Turned round to the customer.</b> The dispute ends here.</figcaption></figure>
+      <figure><div class="phone"><img src="img/money.jpg" alt="Today's money: cash with you ₹3,900. Count the cash. It should be this much." loading="lazy" width="390" height="844"></div>
+        <figcaption><span class="mono">Money · End of day</span><b>"Count the cash. It should be this much."</b> Handover becomes a check, not a reconstruction.</figcaption></figure>
+    </div>
+    <p class="note">Screens from the shipped app running on mock data; the names are made up.</p>
+  </div>
+</section>
+
+<section id="bill" class="band">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>06</b> · The bill</span>
+      <h2>A till slip the customer trusts.</h2>
+      <p>The first bill was a list of rows, and the owner called it "plain and random". A receipt is the most trusted document at any counter, so the redesign borrows its grammar: warm paper, dark ink, a torn edge, and exactly one accent colour.</p>
+    </div>
+    <div class="bill">
+      <div class="slip"><img src="img/bill-slip.jpg" alt="The bill for Rohan on Court 1, as a till slip." width="390" height="792"></div>
+      <ol class="marks">
+        <li><h3>The two facts both sides agree on, boxed.</h3><p>Started and Finished sit in their own boxes at the top. Every other line on the slip follows from them.</p></li>
+        <li><h3>A bar you can match to the lines.</h3><p>Booked, extra and not charged share the same three marks on the bar and beside each line <span class="swatches" aria-hidden="true"><i style="background:#2b2018"></i><i style="background:#b0532a"></i><i style="border:2px solid #b6aa9c"></i></span>, so the customer can point at the bar and find the price.</p></li>
+        <li><h3>One accent, with a job.</h3><p>Terracotta is used only for extra time and for what's left to pay. Colour means "this is the part that costs you".</p></li>
+        <li><h3>Net of what's already paid.</h3><p>Money paid online before the game is taken off on the slip, so nobody is asked to pay twice and nobody has to check a phone.</p></li>
+        <li><h3>The rule, in one sentence, at the bottom.</h3><p>"Extra time is ₹175 for every 15 minutes. The first 10 minutes of each 15 are not charged." The slip makes the argument so the desk doesn't have to.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="build">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>07</b> · Under the hood</span>
+      <h2>The bill can't disagree with the books.</h2>
+      <p>The design only holds if the number on screen is the number on record. Most of the engineering went into making that true, and into making mistakes reversible.</p>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="k">billFor()</span><p>One pure function in a shared module. The server charges with it and the screen draws the slip with it, so the two cannot drift apart.</p></div>
+      <div class="fact"><span class="k">Finish + Undo</span><p>Finish stamps the time and adds the extra to the booking. Wrong tap? Undo within an hour restores the money and removes the drinks.</p></div>
+      <div class="fact"><span class="k">Early finish</span><p>A one-hour game that ends early gives the court back, so the desk can sell the rest to a walk-in. The booked length is kept for the record.</p></div>
+      <div class="fact"><span class="k">Phone numbers</span><p>An owner switch. When off, the API itself replaces customer numbers with the last four digits for staff accounts. Not hidden with CSS.</p></div>
+      <div class="fact"><span class="k">Code before schema</span><p>Four new columns are optional. The app deployed first and returned a clear error naming the SQL file until the migration ran.</p></div>
+      <div class="fact"><span class="k">View as</span><p>The owner opens the app as staff from Settings, with real taps, to see exactly what the desk sees. A collaborator view is read-only, enforced on the server.</p></div>
+    </div>
+    <div class="stats" style="margin-top:clamp(36px,5vw,56px)">
+      <div class="stat"><b>3</b><span>design directions on a shared canvas before any code</span></div>
+      <div class="stat"><b>55</b><span>tests on the rule, checkout, court board and access</span></div>
+      <div class="stat"><b>5</b><span>pull requests, merged and live by 16 Oct 2026</span></div>
+      <div class="stat"><b>0</b><span>numbers the desk types to settle a game</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="status" class="band">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>08</b> · Where it stands</span>
+      <h2>Shipped. The first real shift is the test.</h2>
+      <p>It's live, and so far only the owner has used it, through View as. The plan for the first week: keep the paper sheet running alongside, and compare the two every night.</p>
+    </div>
+    <div class="ledger">
+      <div>
+        <span class="tag">Not built yet</span>
+        <ul>
+          <li><b>Part cash, part UPI</b>A game is paid one way. A real split goes to the owner, who fixes it from the dashboard.</li>
+          <li><b>Close the day</b>Cash counted against the app, UPI checked against the bank, then the day locked. Designed next.</li>
+          <li><b>Alerts on the staff phone</b>New bookings show within five minutes while the app is open. Nothing reaches a locked phone yet; push comes in phase 2.</li>
+        </ul>
+      </div>
+      <div>
+        <span class="tag">What I'll measure</span>
+        <ul>
+          <li><b>Disputes per week</b>Counted from the paper sheet, before and after.</li>
+          <li><b>Cash gap at close</b>"It should be this much" against what is actually in the drawer.</li>
+          <li><b>Evening calls to the owner</b>The board exists so the desk doesn't need to ask who's next.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wide"><p class="note">Project 831 is a pickleball venue in Jamshedpur, India, and a booking system I built on the side. Booking figures come from the live database, read-only; screens are the shipped app on mock data.</p></div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement, KEY='cs-theme', btns=document.querySelectorAll('.theme button');
+  function apply(t){ if(t==='auto') root.removeAttribute('data-theme'); else root.setAttribute('data-theme',t);
+    btns.forEach(function(b){ b.setAttribute('aria-pressed', String(b.dataset.t===t)); }); }
+  var q=new URLSearchParams(location.search).get('theme'), saved=null;
+  try{ saved=localStorage.getItem(KEY); }catch(e){}
+  apply(q||saved||'auto');
+  btns.forEach(function(b){ b.addEventListener('click',function(){ apply(b.dataset.t); try{ localStorage.setItem(KEY,b.dataset.t); }catch(e){} }); });
+})();
+</script>
+</body>
+</html>
