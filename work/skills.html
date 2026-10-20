@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Helix skills — Rahul Jha</title>
+<meta name="description" content="Fourteen skills that build a design system, and the rule that stops any of them running alone.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="comments.html">&larr; Comments</a><a href="tools.html">The toolbar &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>The skills that build the system</h1>
+  <p class="what">Helix is where the design system is read. The skills are how work gets into it. Fourteen of them, each with one job, and one rule that stops any of them running alone.</p>
+  <p class="mono">
+    <span>2026</span><span>Mine</span><span>14 skills, 2 harnesses, 1 source</span><span>Claude Code and OpenCode</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/helix/06-get-started.jpg" alt="The Get started page: seven numbered steps from Get access to Merge then promote, one of seven complete, an install step with a copyable command, and a side panel of everyday commands including slash helix-explore for a new exploration and slash helix-install to update the chrome." width="1600" height="1089"></button>
+    <figcaption><b>Onboarding is a page, not a document.</b> Seven steps, progress saved as you go, and the everyday commands beside them. A designer gets from access to their first exploration on main in under an hour.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Why a skill instead of documentation</h2>
+    <div class="body">
+      <p>Design system rules fail in a specific way. They are written down, they are correct, and nobody reads them at the moment they matter, which is halfway through building something at four in the afternoon.</p>
+      <p>A skill is the same rules, loaded at that moment. The designer asks for a component; the rules arrive as part of the work, not as a link in the review after it is already wrong. <strong>Nothing has to be remembered for the system to hold.</strong></p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Two ways in, because teams arrive from two places</h2>
+    <div class="body">
+      <p>Most design system tooling assumes a greenfield. Almost nobody is on a greenfield.</p>
+    </div>
+    <ul class="notes">
+      <li><b>You already have a production site.</b> Install reads the repository you have. It finds the token files, the component directories and the app router shape that already exist, asks where each one lives, and writes the config to match. Nothing is rewritten and nothing is renamed. The site you ship <em>becomes</em> the design system: the components are the real ones, the tokens are the real ones, and the layouts are pages that were already live.</li>
+      <li><b>You are starting from nothing.</b> Init runs the other way. Domain, personality, an OKLCH colour ramp, type and spacing scales, themes, then the starter primitives. From there it is explore, approve, promote.</li>
+      <li><b>The direction is not fixed either.</b> Components first, then compose a page from them. Or a whole page first as a lightweight exploration, approved as a link by someone who will never clone anything, then promoted into components. <strong>Both routes end in the same library</strong>, which is the only thing that has to be true.</li>
+    </ul>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/helix/05-layouts.jpg" alt="The Layouts page, reading Production-faithful starting points wired to the design system, pick one to get the command that scaffolds a new exploration from it; below are five cards, Enews Signup, Home, Paid Landing, Paid Landing Generic and Reviews, each a screenshot of the real page." loading="lazy"></button>
+    <figcaption><b>The production site, as the starting line.</b> Each card is a page the brand actually ships. Picking one hands you the command that scaffolds an exploration from it, so a redesign starts from what is live rather than from an empty file.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Fourteen skills, grouped by what they are for</h2>
+    <ul class="notes">
+      <li><b>Getting in.</b> <code>helix-install</code> puts the runtime into a host and re-interviews on every run, so an update is the same command as a first install. <code>helix-design-system-init</code> is the bootstrap for a system that does not exist yet.</li>
+      <li><b>Diverging.</b> <code>helix-explore</code> is a scratchpad with real tokens and real type, for the half of the job that needs five answers rather than one. It runs permissive on purpose: an exploration that has to pass the full gate is an exploration nobody makes.</li>
+      <li><b>Converging.</b> <code>helix-exploration-promote</code> is the hinge. It runs a token-gap pass, either proposing a token or snapping the ad-hoc value to one that exists, classifies the pattern as landmark, content or primitive, extracts the API, and only then builds. The exploration is not deleted on success, because it is the visual contract the result gets checked against.</li>
+      <li><b>Building.</b> <code>helix-component</code> and <code>helix-compose-layout</code>. Both apply to every change regardless of size, <strong>including a one-line padding tweak</strong>, because small changes are where invariants quietly break.</li>
+      <li><b>Verifying.</b> <code>helix-design-system-audit</code> owns the rules, <code>helix-a11y</code> owns the accessibility gate, <code>helix-a11y-interactions</code> owns the deeper interaction model, and <code>helix-visual-verify</code> catches the two things an audit cannot see: drift from token snapping, and a missing interaction state.</li>
+      <li><b>Extending.</b> <code>helix-tool</code> builds a new toolbar tool inside the kit, and refuses to run inside a brand repository.</li>
+      <li><b>Routing and housekeeping.</b> <code>helix</code> reads the request and pairs the right skills. <code>helix-wireframe</code> sketches page structure. <code>helix-local-prune</code> clears worktrees and dev servers, and never touches origin.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>The rule that makes it a system</h2>
+    <div class="body">
+      <p>No build skill loads on its own. Every one of them loads the audit and the accessibility gate in the same response, and the build is not finished until both come back clean.</p>
+      <p>That is enforced in four places that do not depend on each other: the router's pairing table, each build skill's own description, a hook that re-states it on every message, and a second hook that blocks writes into the runtime directory. <strong>Belt and braces on purpose</strong>, because the one time it was asserted in only three places, a harness quietly lost it when a script grew a rule and a copy of that script did not.</p>
+      <p>So there is no door into a build that skips verification, and accessibility is not a phase at the end that gets cut when the sprint is tight.</p>
+    </div>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/helix/40-component.jpg" alt="A component page for HighlightedReviews, tagged Compound with two parts, with a long description covering composition, how it adapts to its column, and a WCAG pause requirement; controls to copy the import, open the source, and edit with slash helix-component; Specimen, API and Usage tabs; and a details panel naming the file, the owner and the specimen." loading="lazy"></button>
+    <figcaption><b>Where the loop closes.</b> The description is the argument from the component's own file, pulled onto the page. <em>Edit with /helix-component</em> is a button, so the next change starts from the skill rather than from someone's memory of the rules.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Headless, and kept that way</h2>
+    <div class="body">
+      <p>The workspace runtime is not owned by the brand that hosts it. It is copied in on install, restored at the start of every session if it has drifted, and a hook blocks writes into it, so a designer cannot quietly fork the browser for one brand.</p>
+      <p>When a build hits something the runtime cannot do, the skill reports the gap and composes with what exists. It does not write the missing piece locally. <strong>That one refusal is what keeps ten brands on one runtime</strong> instead of on ten slowly diverging copies of it.</p>
+      <p>The same source ships to two different agent harnesses. One fix lands once.</p>
+    </div>
+    <table class="tbl">
+      <caption>The fourteen skills and what each is for</caption>
+      <thead><tr><th scope="col">Skill</th><th scope="col">For</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">helix</th><td>Router: reads intent, pairs the right skills</td></tr>
+        <tr><th scope="row">helix-install</th><td>Install or update the runtime in a host repo</td></tr>
+        <tr><th scope="row">helix-design-system-init</th><td>Bootstrap: tokens, themes, foundation specimens</td></tr>
+        <tr><th scope="row">helix-explore</th><td>Divergent work, permissive on purpose</td></tr>
+        <tr><th scope="row">helix-exploration-promote</th><td>An exploration into components and a layout</td></tr>
+        <tr><th scope="row">helix-component</th><td>Build or change a component, any size</td></tr>
+        <tr><th scope="row">helix-compose-layout</th><td>Assemble a page from real components</td></tr>
+        <tr><th scope="row">helix-design-system-audit</th><td>Co-loads with every build</td></tr>
+        <tr><th scope="row">helix-a11y</th><td>Co-loads with every build</td></tr>
+        <tr><th scope="row">helix-a11y-interactions</th><td>Tab flow, focus, announcements, error UX</td></tr>
+        <tr><th scope="row">helix-visual-verify</th><td>Token drift and missing states</td></tr>
+        <tr><th scope="row">helix-tool</th><td>A new toolbar tool; refuses in a brand repo</td></tr>
+        <tr><th scope="row">helix-wireframe</th><td>Page structure before components exist</td></tr>
+        <tr><th scope="row">helix-local-prune</th><td>Worktrees and dev servers; never touches origin</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/helix/12-explorations-dark.jpg" alt="The Explorations grid in dark mode, cards showing real screenshots with Active and Promoted status chips." loading="lazy"></button>
+      <figcaption><b>Promoted is a state, not a folder.</b> An exploration keeps its card after it becomes real, so the sketch and the component it produced stay next to each other.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/05-components-dark.jpg" alt="The Components tab in dark mode, each component a card with its specimen as the picture." loading="lazy"></button>
+      <figcaption><b>Twenty-five components, nine specimens.</b> The counts come from the files. There is no register to fall behind.</figcaption>
+    </figure>
+  </div>
+
+  <p class="pull">A design system holds because the rules arrive with the work, not because someone remembered to read them.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    <a href="index.html">Index</a> &middot; <a href="helix.html">Helix</a> &middot; <a href="tools.html">The toolbar</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

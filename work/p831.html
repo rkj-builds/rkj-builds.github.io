@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 831 — Rahul Jha</title>
+<meta name="description" content="A booking platform that runs a sports venue: a bot, a desk, a widget and an API over one availability module.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="growth-design.html">&larr; The skill</a><a href="checkout.html">Checkout &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>A booking platform that runs a place</h1>
+  <p class="what">My own product. A sports venue takes its bookings through a WhatsApp bot, its staff run the day on a desk, the public books from a widget, and a voice agent books by phone. All four ask the same module what is free.</p>
+  <p class="mono">
+    <span>Mar&ndash;Oct 2026</span><span>Mine</span><span>React 19, Vercel functions, Postgres</span><span>Live, in daily use</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/p831/01-bookings-day.jpg" alt="A day view: courts as columns, time down the side, bookings drawn as blocks with names and amounts, held coaching slots hatched, a line marking the current time, and a header reading 13 hours of 26 booked." width="1600" height="1000"></button>
+    <figcaption><b>The day, as the desk sees it.</b> Half-hour slots priced per court, holds hatched, the current time drawn across. The header is the only number the owner asks for: how much of today is sold.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>One answer about what is free</h2>
+    <div class="body">
+      <p>Four surfaces can take a booking and they cannot disagree. The desk, the public widget, the WhatsApp bot and the voice API all call one availability module, and the same module runs on the server when the booking is written.</p>
+      <p>So the desk never offers a slot the bot has just taken, and a race on the last court comes back as <strong>409 SLOT_TAKEN</strong> rather than a double booking.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/p831/11-new-booking.jpg" alt="A New booking dialog: sport, area set to any free court, start time, duration, customer, how they booked, payment options, price, and a line reading will book on Court 1." loading="lazy"></button>
+      <figcaption><b>Any free court.</b> The desk asks for a time, not a court, and the dialog resolves which one it will be before you commit. Payment is three honest choices, not a dropdown.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/p831/09-bookings-390.jpg" alt="The same day view at phone width, with a bottom tab bar." loading="lazy"></button>
+      <figcaption><b>On a phone.</b> The desk is a phone at the counter most evenings, so the controls come first and the grid scrolls under them.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Recurrence, in three layers</h2>
+    <div class="body">
+      <p>A weekly programme needs a rule for what repeats and something that stops a weekend selling once it has happened. I split those apart on purpose, because the obvious design puts correctness in the cron job.</p>
+      <p><strong>A dead cron should degrade to "nothing available", never to "book a date that already passed."</strong></p>
+    </div>
+<pre tabindex="0" role="region" aria-label="The three layers of the recurrence model"><span class="c">// lib/eventRecurrence.js</span>
+<span class="c">// THREE LAYERS, deliberately independent:</span>
+<span class="c">//</span>
+<span class="c">//   1. The rule            — events.recurrence (JSONB).</span>
+<span class="c">//   2. Read-time selection — sessionHasStarted() / runEndDate().</span>
+<span class="c">//                            <b>THIS is what makes the site correct.</b></span>
+<span class="c">//   3. The nightly roll    — adds supply, retires spent runs.</span>
+<span class="c">//                            Pure housekeeping.</span>
+<span class="c">//</span>
+<span class="c">// The layering is the point. If the cron owned correctness, one missed</span>
+<span class="c">// fire would put a past weekend on sale.</span></pre>
+  </section>
+
+  <section class="block">
+    <h2>Dates that never slip a day</h2>
+    <div class="body">
+      <p>A booking date has no time in it, and a date with no time is the classic off-by-one: stored as midnight UTC, shown in a browser two zones west, it becomes the day before. So every date-only value is formatted with <strong>timeZone: 'UTC'</strong>, and every clock time is formatted in the venue's own zone, named, never the device's.</p>
+      <p>The venue has no daylight saving, so the slot maths uses a fixed offset. That is a shortcut, so <strong>a recurrence rule naming any other zone is rejected outright rather than computed wrongly</strong>. The first venue abroad fails loudly on its first save, which is how I want a bug I can already name to behave.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/p831/03-events.jpg" alt="The Events page: cards for a recurring programme and a one-off class, each with people registered, money received and money still to collect." loading="lazy"></button>
+      <figcaption><b>Programmes and one-offs.</b> A programme repeats weekly and carries its options inside; a class happens once. Both sell through the same page.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/p831/02-dashboard.jpg" alt="The dashboard: confirmed, pending and cancelled counts, money collected against money due, and a list of memberships to renew." loading="lazy"></button>
+      <figcaption><b>The morning screen.</b> Four numbers and a list of who to chase. Renewal reminders go out on their own; the list says who they went to.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>What it is in practice</h2>
+    <ul class="notes">
+      <li><b>Live since March</b>, and the venue runs on it every day. The data is real, which is why every screen here is in mock mode.</li>
+      <li><b>2,900 tests</b>, run with a guard that fails any test file that opens a network connection.</li>
+      <li><b>A REST API for a voice agent</b>: availability, slots, bookings, with its own key per tenant and rate limits in front of it.</li>
+      <li><b>Payments, reminders and a register</b>, because a booking tool that cannot take money is a calendar.</li>
+    </ul>
+  </section>
+
+  <p class="pull">Four ways to book, one module that decides. Everything else is interface.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Screens captured in mock mode, so no customer appears. Source is private to the venue; happy to walk anyone through it.<br>
+    <a href="index.html">Index</a> &middot; <a href="checkout.html">Le Boat checkout</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

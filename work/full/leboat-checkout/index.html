@@ -1,0 +1,2637 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Complete Your Trip — rebuilding the Le Boat checkout around the decision, not the form.</title>
+  <meta name="description" content="A growth design-engineering case study on restructuring the Le Boat checkout: the research baseline, the twelve findings that drove it, the five decisions, and how we'd know it worked." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" />
+  <style>
+    /* ════════════════════════════════════════════════════════════════
+       Le Boat checkout — growth case study.
+
+       Visual identity: a sounding chart. Cool slate ground (hue 250°,
+       the colour of survey paper and depth charts), a single ochre
+       accent pulled from Le Boat's own brand yellow and darkened until
+       it passes as text. Two data signals — clay and moss — used ONLY
+       inside evidence panels, never as decoration.
+
+       Same discipline as the system it documents: semantic tokens,
+       no raw values in components, one accent spent carefully.
+       ──────────────────────────────────────────────────────────────── */
+    :root {
+      color-scheme: light;
+
+      /* ── Tier 1 · Primitives ─────────────────────────────────
+         Never referenced by a component. Semantic tokens only. */
+      --slate-50:  oklch(0.986 0.003 250);
+      --slate-100: oklch(0.968 0.006 250);
+      --slate-200: oklch(0.925 0.010 250);
+      --slate-300: oklch(0.862 0.014 250);
+      --slate-400: oklch(0.700 0.018 250);
+      --slate-500: oklch(0.552 0.020 250);
+      --slate-600: oklch(0.438 0.022 250);
+      --slate-700: oklch(0.338 0.024 250);
+      --slate-800: oklch(0.248 0.022 250);
+      --slate-900: oklch(0.186 0.018 250);
+      --slate-950: oklch(0.138 0.014 250);
+
+      /* Ochre — the accent. Le Boat's brand yellow, taken down in
+         lightness until it holds 4.5:1 on paper. Used sparingly. */
+      --ochre-50:  oklch(0.962 0.024 80);
+      --ochre-100: oklch(0.920 0.048 80);
+      --ochre-300: oklch(0.720 0.095 80);
+      --ochre-500: oklch(0.545 0.098 80);
+      --ochre-700: oklch(0.420 0.080 80);
+
+      /* Data signals — evidence panels only. */
+      --clay:  oklch(0.505 0.088 35);   /* the "before" / cost side */
+      --moss:  oklch(0.472 0.070 150);  /* the "after" / gain side */
+      --clay-soft: oklch(0.955 0.020 35);
+      --moss-soft: oklch(0.955 0.018 150);
+
+      /* ── Tier 2 · Semantic ───────────────────────────────────── */
+      --paper:       var(--slate-50);
+      --paper-deep:  var(--slate-100);
+      --paper-ink:   var(--slate-950);
+      --ink:         var(--slate-950);
+      --ink-2:       var(--slate-700);
+      --ink-3:       oklch(0.530 0.020 250);
+      --ink-invert:  var(--slate-50);
+      --rule:        var(--slate-200);
+      --rule-strong: var(--slate-400);
+      --accent:      var(--ochre-500);
+      --accent-deep: var(--ochre-700);
+      --accent-soft: var(--ochre-50);
+      --accent-line: var(--ochre-300);
+      --code-bg:     var(--slate-100);
+
+      /* ── Chart palette ───────────────────────────────────────
+         Computed, not chosen. An ordinal ramp (before → after) on
+         the ochre hue, a categorical pair for the two years, and a
+         de-emphasis grey reserved — always and only — for the
+         control row. Each step was checked against the lightness
+         band, the chroma floor, protan/deutan separation and
+         surface contrast before anything was drawn. */
+      --viz-step-1:  oklch(0.700 0.115 80);
+      --viz-step-2:  oklch(0.450 0.110 80);
+      --viz-ochre:   oklch(0.600 0.130 80);
+      --viz-blue:    oklch(0.520 0.120 250);
+      --viz-mute:    oklch(0.700 0.018 250);
+      --viz-surface: var(--paper-deep);
+
+      /* ── Type ─────────────────────────────────────────────────── */
+      --display: "Newsreader", Georgia, "Times New Roman", serif;
+      --body:    "IBM Plex Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+      --mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+      --text-mega: clamp(44px, 8.4vw, 104px);
+      --text-h1:   clamp(31px, 4.4vw, 52px);
+      --text-h2:   clamp(23px, 2.5vw, 31px);
+      --text-h3:   18px;
+      --text-body: 17px;
+      --text-meta: 13px;
+      --text-mn:   13.5px;
+
+      /* ── Layout ───────────────────────────────────────────────── */
+      --col:      660px;
+      --col-wide: 1100px;
+      --gutter:   clamp(20px, 4.5vw, 56px);
+      --section-y: clamp(76px, 10.5vw, 140px);
+
+      --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html {
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--body);
+      font-size: var(--text-body);
+      line-height: 1.62;
+      overflow-x: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ── Layout primitives ──────────────────────────────────────── */
+    main { display: block; }
+    section { padding-block: var(--section-y); position: relative; }
+    section + section { border-top: 1px solid var(--rule); }
+    section.deep { background: var(--paper-deep); }
+    section.ink { background: var(--paper-ink); color: var(--ink-invert); border-top: 0; }
+    .col      { max-width: var(--col);      margin-inline: auto; padding-inline: var(--gutter); }
+    .col-wide { max-width: var(--col-wide); margin-inline: auto; padding-inline: var(--gutter); }
+    .stack    { display: flex; flex-direction: column; }
+
+    /* ── Type ───────────────────────────────────────────────────── */
+    h1, h2, h3, h4 {
+      margin: 0;
+      font-family: var(--display);
+      font-weight: 500;
+      letter-spacing: -0.018em;
+      color: inherit;
+      text-wrap: balance;
+    }
+    h1 { font-size: var(--text-h1); line-height: 1.06; }
+    h2 { font-size: var(--text-h2); line-height: 1.18; }
+    h3 {
+      font-size: var(--text-h3); line-height: 1.34; font-weight: 600;
+      font-family: var(--body); letter-spacing: -0.003em;
+    }
+    p, li { text-wrap: pretty; }
+    p { margin: 0 0 1.1em; max-width: 64ch; }
+    ul, ol { margin: 0 0 1.2em; padding-left: 1.15em; }
+    li { margin-bottom: 0.5em; }
+    li::marker { color: var(--ink-3); }
+
+    a {
+      color: var(--accent-deep);
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color 180ms var(--ease);
+    }
+    a:hover { color: var(--accent); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+    strong { font-weight: 600; color: inherit; }
+
+    .lede {
+      font-family: var(--display);
+      font-size: 21px; line-height: 1.46; font-weight: 400;
+      color: var(--ink-2); max-width: 52ch; letter-spacing: -0.004em;
+    }
+    .meta  { font-size: var(--text-meta); color: var(--ink-3); letter-spacing: 0.06em; text-transform: uppercase; }
+    .muted { color: var(--ink-2); }
+    .quiet { color: var(--ink-3); }
+    .num   { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+    .kicker {
+      font-family: var(--body); font-size: 12px; font-weight: 600;
+      color: var(--accent-deep); letter-spacing: 0.17em; text-transform: uppercase;
+      margin-bottom: 18px; display: flex; align-items: baseline; gap: 10px;
+    }
+    .kicker .n { font-family: var(--mono); font-weight: 500; color: var(--ink-3); }
+    section.ink .kicker { color: var(--ochre-300); }
+    section.ink .kicker .n { color: var(--slate-400); }
+    section.ink .muted { color: var(--slate-300); }
+    section.ink .quiet { color: var(--slate-400); }
+
+    .rule-short { width: 54px; height: 1px; background: var(--ink); opacity: 0.45; margin: 30px 0; }
+    .head { margin-bottom: 44px; }
+    .head .lede { margin-top: 18px; }
+
+    /* ── Cover ──────────────────────────────────────────────────── */
+    .cover {
+      padding-block: clamp(56px, 12vw, 132px) clamp(64px, 10vw, 116px);
+      border-top: 0;
+    }
+    .cover-title {
+      font-size: var(--text-mega); line-height: 0.96; font-weight: 400;
+      letter-spacing: -0.032em; margin-bottom: 30px;
+    }
+    .cover-title em { font-style: italic; color: var(--accent-deep); }
+    .cover-meta {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 26px 32px; margin-top: 52px; padding-top: 26px; border-top: 1px solid var(--rule);
+    }
+    .cover-meta .k { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 7px; }
+    .cover-meta .v { font-size: 15px; color: var(--ink-2); line-height: 1.45; }
+
+    /* ── Note (honesty / caveat block) ──────────────────────────── */
+    .note {
+      border-left: 2px solid var(--accent-line);
+      background: var(--accent-soft);
+      padding: 18px 22px; margin: 32px 0;
+      font-size: 15px; line-height: 1.55; color: var(--ink-2);
+      border-radius: 0 3px 3px 0;
+    }
+    .note strong { color: var(--ink); }
+    .note p:last-child { margin-bottom: 0; }
+    .note .label {
+      display: block; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--accent-deep); font-weight: 600; margin-bottom: 8px;
+    }
+
+    /* ── Quote ──────────────────────────────────────────────────── */
+    blockquote {
+      margin: 0 0 20px; padding-left: 20px; border-left: 2px solid var(--rule-strong);
+      font-family: var(--display); font-size: 19px; line-height: 1.45; color: var(--ink-2);
+      font-style: italic;
+    }
+    blockquote cite {
+      display: block; margin-top: 10px; font-family: var(--body); font-style: normal;
+      font-size: 12.5px; letter-spacing: 0.05em; color: var(--ink-3); text-transform: uppercase;
+    }
+
+    /* ── Stat row ───────────────────────────────────────────────── */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 36px 0;
+    }
+    .stat {
+      background: var(--paper); padding: 22px 20px;
+    }
+    section.deep .stat { background: var(--paper-deep); }
+    .stat .figure {
+      font-family: var(--display); font-size: 34px; line-height: 1; font-weight: 500;
+      letter-spacing: -0.02em; font-variant-numeric: tabular-nums; margin-bottom: 9px;
+    }
+    .stat .figure small { font-size: 17px; color: var(--ink-3); font-weight: 400; }
+    .stat .label { font-size: 12.5px; color: var(--ink-3); line-height: 1.4; }
+
+    /* ── Tables ─────────────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; margin: 32px 0; }
+    table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 520px; }
+    th, td { text-align: left; padding: 12px 16px 12px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    th {
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3);
+      font-weight: 600; border-bottom: 1px solid var(--rule-strong); padding-bottom: 9px;
+    }
+    td.n, th.n { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+    tbody tr:last-child td { border-bottom: 0; }
+
+    /* ── Findings list ──────────────────────────────────────────── */
+    .findings { display: flex; flex-direction: column; gap: 1px; background: var(--rule); border-block: 1px solid var(--rule); margin: 36px 0; }
+    .finding { background: var(--paper); padding: 20px 0 20px 0; display: grid; grid-template-columns: 34px 1fr auto; gap: 0 18px; align-items: baseline; }
+    section.deep .finding { background: var(--paper-deep); }
+    .finding .idx { font-family: var(--mono); font-size: 12.5px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .finding .text { font-size: 15.5px; line-height: 1.5; }
+    .finding .text .sub { display: block; color: var(--ink-3); font-size: 13.5px; margin-top: 5px; }
+    .tag {
+      font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+      padding: 3px 8px; border-radius: 2px; white-space: nowrap;
+    }
+    .tag.pos  { background: var(--moss-soft); color: var(--moss); }
+    .tag.neg  { background: var(--clay-soft); color: var(--clay); }
+    .tag.mix  { background: var(--slate-200); color: var(--ink-2); }
+    @media (max-width: 620px) {
+      .finding { grid-template-columns: 26px 1fr; }
+      .finding .tag { grid-column: 2; justify-self: start; margin-top: 9px; }
+    }
+
+    /* ── Decision panels (the narrative spine) ──────────────────── */
+    .decision { margin-bottom: clamp(64px, 8vw, 104px); }
+    .decision:last-child { margin-bottom: 0; }
+    .decision-head { margin-bottom: 26px; }
+    .decision-head h2 { margin-bottom: 14px; }
+    .decision-head .seq {
+      font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+      color: var(--ink-3); display: block; margin-bottom: 11px;
+    }
+    .ba {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+      background: var(--rule); border: 1px solid var(--rule); margin: 26px 0;
+    }
+    @media (max-width: 720px) { .ba { grid-template-columns: 1fr; } }
+    .ba-cell { background: var(--paper); padding: 22px; }
+    section.deep .ba-cell { background: var(--paper-deep); }
+    .ba-cell .ba-label {
+      font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 600;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .ba-cell.was .ba-label { color: var(--clay); }
+    .ba-cell.now .ba-label { color: var(--moss); }
+    .ba-cell .ba-label::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+    .ba-cell p { font-size: 15px; margin-bottom: 0.8em; }
+    .ba-cell p:last-child { margin-bottom: 0; }
+    .ba-cell ul { font-size: 14.5px; margin-bottom: 0; }
+    .specimen {
+      font-family: var(--body); font-size: 14.5px; line-height: 1.45;
+      background: var(--paper); border: 1px solid var(--rule); padding: 14px 16px;
+      margin: 12px 0 0; border-radius: 3px;
+    }
+    section.deep .specimen { background: var(--paper); }
+    .specimen .s-title { font-weight: 600; margin-bottom: 4px; }
+    .specimen .s-value { color: var(--ink-2); }
+    .specimen .s-price { font-family: var(--mono); font-size: 13px; color: var(--ink-3); margin-top: 8px; display: block; }
+
+    /* ── Footnotes ──────────────────────────────────────────────── */
+    .fn-marker {
+      font-family: var(--mono); font-size: 11px; vertical-align: super; line-height: 1;
+      background: none; border: 0; color: var(--accent-deep); cursor: pointer;
+      padding: 2px 3px; margin-left: 1px; border-radius: 2px;
+    }
+    .fn-marker:hover, .fn-marker:focus-visible { background: var(--accent-soft); }
+    .fn-marker[aria-expanded="true"] { background: var(--accent-soft); }
+    .fn-body {
+      display: grid; grid-template-columns: 20px 1fr; gap: 10px;
+      font-size: 14px; line-height: 1.5; color: var(--ink-2);
+      border-left: 2px solid var(--accent-line); padding: 14px 0 14px 16px; margin: 14px 0;
+    }
+    .fn-body .fn-n { font-family: var(--mono); font-size: 11px; color: var(--accent-deep); }
+    .fn-body .fn-cite {
+      display: block; margin-top: 8px; font-family: var(--mono); font-size: 12px; color: var(--ink-3);
+    }
+
+    /* ── Code / data blocks ─────────────────────────────────────── */
+    pre {
+      font-family: var(--mono); font-size: var(--text-mn); line-height: 1.6;
+      background: var(--code-bg); border: 1px solid var(--rule); border-radius: 3px;
+      padding: 18px 20px; overflow-x: auto; margin: 22px 0; color: var(--ink-2);
+    }
+    section.deep pre { background: var(--paper); }
+    pre .c { color: var(--ink-3); }
+    pre .k { color: var(--accent-deep); }
+    code {
+      font-family: var(--mono); font-size: 0.89em; background: var(--code-bg);
+      padding: 2px 5px; border-radius: 2px; color: var(--ink-2);
+    }
+    section.ink code { background: var(--slate-800); color: var(--slate-200); }
+
+    /* ── Definition list ────────────────────────────────────────── */
+    dl.compact { display: grid; grid-template-columns: max-content 1fr; gap: 10px 26px; margin: 26px 0; font-size: 15px; }
+    dl.compact dt { font-family: var(--mono); font-size: 13px; color: var(--ink-3); }
+    dl.compact dd { margin: 0; color: var(--ink-2); }
+    @media (max-width: 620px) { dl.compact { grid-template-columns: 1fr; gap: 3px 0; } dl.compact dd { margin-bottom: 12px; } }
+
+    /* ── Interactive: model widget ──────────────────────────────── */
+    .model {
+      border: 1px solid var(--rule-strong); background: var(--paper);
+      margin: 36px 0; border-radius: 3px; overflow: hidden;
+    }
+    section.deep .model { background: var(--paper); }
+    .model-head {
+      padding: 18px 22px; border-bottom: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    }
+    .model-head .t { font-weight: 600; font-size: 15px; }
+    .model-head .badge {
+      font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent-deep); background: var(--accent-soft); padding: 4px 9px; border-radius: 2px; font-weight: 600;
+    }
+    .model-body { padding: 22px; display: grid; gap: 20px; }
+    .field { display: grid; gap: 8px; }
+    .field .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .field label { font-size: 13.5px; color: var(--ink-2); }
+    .field .val { font-family: var(--mono); font-size: 14px; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
+    input[type="range"] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 3px;
+      background: var(--slate-300); border-radius: 2px; outline-offset: 6px;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none; width: 17px; height: 17px; border-radius: 50%;
+      background: var(--accent); border: 2px solid var(--paper); cursor: pointer;
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 15px; height: 15px; border-radius: 50%; background: var(--accent);
+      border: 2px solid var(--paper); cursor: pointer; box-shadow: 0 0 0 1px var(--accent);
+    }
+    .model-out {
+      border-top: 1px solid var(--rule); background: var(--paper-deep);
+      padding: 20px 22px; display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 20px;
+    }
+    .model-out .o .k { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 7px; }
+    .model-out .o .v {
+      font-family: var(--display); font-size: 27px; font-weight: 500; line-height: 1;
+      font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+    }
+    .model-out .o .v.lift { color: var(--moss); }
+    .model-out .o .n { font-size: 12.5px; color: var(--ink-3); margin-top: 7px; line-height: 1.4; }
+    .model-foot {
+      padding: 14px 22px; border-top: 1px solid var(--rule);
+      font-size: 12.5px; color: var(--ink-3); line-height: 1.5;
+    }
+
+    /* ── Metric plan table ──────────────────────────────────────── */
+    .metric-kind {
+      font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+      padding: 3px 8px; border-radius: 2px; white-space: nowrap;
+    }
+    .metric-kind.primary { background: var(--ochre-50); color: var(--accent-deep); }
+    .metric-kind.secondary { background: var(--slate-200); color: var(--ink-2); }
+    .metric-kind.guardrail { background: var(--clay-soft); color: var(--clay); }
+
+    /* ── Ink section cards ──────────────────────────────────────── */
+    .ink-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1px; background: var(--slate-800); border: 1px solid var(--slate-800); margin: 36px 0; }
+    .ink-card { background: var(--paper-ink); padding: 22px; }
+    .ink-card h3 { color: var(--ink-invert); margin-bottom: 14px; font-size: 15px; }
+    .ink-card .row { display: flex; justify-content: space-between; gap: 14px; padding: 7px 0; border-bottom: 1px solid var(--slate-800); font-size: 14px; }
+    .ink-card .row:last-child { border-bottom: 0; }
+    .ink-card .row .k { color: var(--slate-400); }
+    .ink-card .row .v { color: var(--slate-200); font-family: var(--mono); font-size: 13px; text-align: right; }
+
+    /* ── Footer ─────────────────────────────────────────────────── */
+    footer { padding-block: 56px; border-top: 1px solid var(--rule); }
+    footer .f {
+      display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+      font-size: 13px; color: var(--ink-3);
+    }
+
+    /* ── Figures ────────────────────────────────────────────────
+       Every screenshot is labelled with its provenance, because
+       "what I inherited" and "what I decided" are different claims. */
+    figure.fig { margin: 34px 0; }
+    .fig-media {
+      border: 1px solid var(--rule-strong); border-radius: 3px;
+      overflow: hidden; background: var(--paper); line-height: 0;
+    }
+    .fig-media img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+    .fig-media.tall { max-height: 620px; overflow: hidden; position: relative; }
+    .fig-media.tall::after {
+      content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 90px;
+      background: linear-gradient(to bottom, transparent, var(--paper));
+      pointer-events: none;
+    }
+    figcaption {
+      margin-top: 13px; font-size: 13.5px; line-height: 1.55; color: var(--ink-3);
+      display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap;
+    }
+    figcaption .cap-t { flex: 1 1 260px; min-width: 0; }
+    figcaption strong { color: var(--ink-2); font-weight: 600; }
+    .prov {
+      font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600;
+      padding: 3px 8px; border-radius: 2px; white-space: nowrap; flex: 0 0 auto;
+    }
+    .prov.shipped { background: var(--moss-soft); color: var(--moss); }
+    .prov.tested  { background: var(--ochre-50); color: var(--accent-deep); }
+    .prov.parked  { background: var(--slate-200); color: var(--ink-2); }
+    .fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; margin: 34px 0; }
+    .fig-grid figure.fig { margin: 0; }
+    @media (max-width: 760px) { .fig-grid { grid-template-columns: 1fr; } }
+    .zoom-hint {
+      font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--ink-3); margin-top: 6px;
+    }
+
+    /* ── Gallery (receipts index) ───────────────────────────────── */
+    .gal { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 20px; margin: 34px 0; }
+    .gal figure { margin: 0; }
+    .gal .fig-media { max-height: 190px; overflow: hidden; border-color: var(--slate-700); background: var(--slate-900); }
+    .gal figcaption { margin-top: 10px; font-size: 12.5px; color: var(--slate-400); display: block; }
+    .gal figcaption .prov { display: inline-block; margin-bottom: 5px; }
+
+    /* ── Lightbox ───────────────────────────────────────────────── */
+    .lb {
+      position: fixed; inset: 0; z-index: 9999; background: rgba(14, 17, 24, 0.94);
+      overflow: auto; padding: 56px 16px 40px; text-align: center;
+    }
+    .lb[hidden] { display: none !important; }
+    .lb img { width: auto; max-width: min(100%, 1400px); border-radius: 3px; }
+    .lb-cap {
+      color: var(--slate-300); font-size: 13px; margin: 14px auto 0; max-width: 70ch;
+      font-family: var(--body); line-height: 1.5;
+    }
+    .lb-close {
+      position: fixed; top: 14px; right: 16px; z-index: 1;
+      background: var(--slate-800); color: var(--slate-100); border: 1px solid var(--slate-700);
+      border-radius: 3px; font-family: var(--body); font-size: 13px; font-weight: 600;
+      padding: 9px 14px; cursor: pointer;
+    }
+    .lb-close:hover { background: var(--slate-700); }
+
+    /* Tables on the ink ground (the receipts section). */
+    section.ink table { color: var(--slate-200); }
+    section.ink th { color: var(--slate-400); border-bottom-color: var(--slate-700); }
+    section.ink td { border-bottom-color: var(--slate-800); }
+    section.ink strong { color: var(--slate-100); }
+
+    section { scroll-margin-top: 24px; }
+
+    /* ── Print — one section per page, slide-style PDF ──────────── */
+    /* ── Charts ─────────────────────────────────────────────────
+       The results needed a picture, not another table. Palette is
+       computed, not chosen: an ordinal ramp (before → after) on one
+       hue, a categorical pair for the two years, and a de-emphasis
+       grey reserved — always and only — for the control. Checked
+       against the lightness band, the chroma floor, protan/deutan
+       separation and surface contrast before anything was drawn. */
+    figure.chart { margin: 40px 0; }
+    .chart-top { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; }
+    .chart-title { font-size: 15.5px; font-weight: 600; color: var(--ink); line-height: 1.4; max-width: 46ch; }
+    .chart-key { display: flex; gap: 15px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-3); }
+    .chart-key span { display: inline-flex; align-items: center; gap: 6px; }
+    .chart-key i { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+    .chart-sub { font-size: 12.5px; line-height: 1.55; color: var(--ink-3); margin: 10px 0 20px; max-width: 76ch; }
+    .chart-sub code { font-size: 11.5px; }
+    .chart-plot { position: relative; }
+    .chart-plot svg { width: 100%; height: auto; display: block; }
+    .chart svg text { font-family: var(--body); fill: var(--ink-3); }
+    .chart svg text.lbl  { font-size: 13.5px; fill: var(--ink); }
+    .chart svg text.sub  { font-size: 11px; }
+    .chart svg text.v    { font-family: var(--mono); font-size: 13px; fill: var(--ink); font-variant-numeric: tabular-nums; }
+    .chart svg text.tick { font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .chart svg .grid { stroke: var(--rule); stroke-width: 1; }
+    .chart .mk { outline: none; }
+    .chart .mk:hover .hit, .chart .mk:focus-visible .hit { fill: var(--accent); fill-opacity: 0.12; }
+    .chart-tip {
+      position: absolute; z-index: 6; pointer-events: none; opacity: 0;
+      transform: translate(-50%, -100%); transition: opacity 0.12s var(--ease);
+      background: var(--ink); color: var(--paper); font-size: 12px; line-height: 1.45;
+      padding: 7px 11px; border-radius: 3px; white-space: nowrap; max-width: 90vw;
+    }
+    .chart-tip.on { opacity: 1; }
+    .chart-scroll { display: none; }
+    .chart-note { font-size: 12.5px; line-height: 1.6; color: var(--ink-3); margin: 16px 0 0; max-width: 76ch; }
+    .chart-table { margin-top: 14px; }
+    .chart-table > summary {
+      font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600;
+      color: var(--ink-3); cursor: pointer; list-style: none; padding: 7px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .chart-table > summary::-webkit-details-marker { display: none; }
+    .chart-table > summary::before { content: "+ "; font-family: var(--mono); }
+    .chart-table[open] > summary::before { content: "– "; }
+    .chart-table .table-wrap { margin: 4px 0 0; }
+    @media (max-width: 820px) {
+      .chart-plot { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .chart-scroll {
+        display: block; margin: 9px 0 0; font-size: 10.5px; letter-spacing: 0.09em;
+        text-transform: uppercase; font-weight: 600; color: var(--ink-3);
+      }
+      .chart-plot svg { min-width: 680px; }
+      .chart-title { max-width: none; }
+    }
+
+    @media print {
+      figure.chart { page-break-inside: avoid; }
+      .chart-tip { display: none !important; }
+      .chart-table > summary { display: none; }
+      .chart-table .table-wrap { display: block; }
+
+      :root { --section-y: 0; --text-mega: 52px; --text-h1: 26px; --text-h2: 19px; }
+      body { font-size: 10.5pt; line-height: 1.42; background: var(--paper); }
+      section { padding: 0; page-break-before: always; border-top: 0; }
+      section.cover { page-break-before: auto; padding: 22mm 0; }
+      section.ink { background: var(--paper); color: var(--ink); }
+      section.ink h1, section.ink h2, section.ink h3 { color: var(--ink); }
+      section.ink .muted, section.ink .quiet { color: var(--ink-2); }
+      .ink-cards { background: var(--rule); border-color: var(--rule); }
+      .ink-card { background: transparent; }
+      .ink-card h3 { color: var(--ink); }
+      .ink-card .row { border-bottom-color: var(--rule); }
+      .ink-card .row .k { color: var(--ink-3); }
+      .ink-card .row .v { color: var(--ink); }
+      a { color: var(--ink); text-decoration: none; }
+      .lb, .lb-close, .zoom-hint { display: none !important; }
+      .fig-media.tall { max-height: none; }
+      .fig-media.tall::after { display: none; }
+      figure.fig, .fig-grid { page-break-inside: avoid; }
+      pre, blockquote, table, .ba, .stat-row, .model, .findings, .note { page-break-inside: avoid; }
+      .fn-body[hidden] { display: grid !important; }
+      .fn-marker { display: none; }
+      .model-body { display: none; }
+      .model-out::before { content: "Interactive model — figures shown are the default assumptions."; display: block; grid-column: 1 / -1; font-size: 11px; color: var(--ink-3); margin-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ═══════════════════ COVER ═══════════════════ -->
+  <section class="cover" id="cover">
+    <div class="col-wide">
+      <div class="meta" style="margin-bottom: 40px;">Le Boat · Travelopia · Checkout restructure · 2026</div>
+      <h1 class="cover-title">The checkout asked for<br />a form. People were still<br /><em>making up their minds.</em></h1>
+      <p class="lede">
+        Rebuilding the Le Boat extras and payment flow around the decision a
+        traveller is actually making — shipped to eight locales, and measured.
+      </p>
+
+      <div class="cover-meta">
+        <div>
+          <div class="k">Role</div>
+          <div class="v">Senior Design Engineer, Growth</div>
+        </div>
+        <div>
+          <div class="k">Scope</div>
+          <div class="v">Research synthesis, flow restructure, interaction design, production front-end</div>
+        </div>
+        <div>
+          <div class="k">Evidence base</div>
+          <div class="v">36-participant usability study across EN / FR / DE</div>
+        </div>
+        <div>
+          <div class="k">Shipped as</div>
+          <div class="v">42 commits over 3 PRs, handed to the Le&nbsp;Boat engineering team</div>
+        </div>
+        <div>
+          <div class="k">Status</div>
+          <div class="v">Live to all 8 locales since 20 July 2026. Extras engagement +84%, checkout errors −99.7%</div>
+        </div>
+      </div>
+
+      <figure class="fig" style="margin-top: 52px;">
+        <div class="fig-media">
+          <img src="images/02-extras-desktop-viewport.jpg"
+               alt="The Complete your trip step: grouped extras cards on the left, a sticky trip summary with running total on the right."
+               data-cap="Complete your trip — the shipped build. The step exists to let a traveller finish deciding what their week is, with the running cost of those decisions visible the whole time." />
+        </div>
+        <figcaption>
+          <span class="prov shipped">Shipped build</span>
+          <span class="cap-t"><strong>Step 2 — Complete your trip.</strong> The step that did not exist as its own page before the restructure. Every screenshot here is captured from the running application.</span>
+        </figcaption>
+        <div class="zoom-hint">Click any image to enlarge</div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 01 · THE PROBLEM ═══════════════════ -->
+  <section id="problem">
+    <div class="col">
+      <div class="kicker"><span class="n">01</span> Where the money was leaking</div>
+      <div class="head">
+        <h1>Extras were an interruption between a decision and a form.</h1>
+        <p class="lede">
+          Le Boat sells week-long canal holidays. Extras aren't upsells bolted onto
+          a cart — damage cover, fuel, early check-in and bike hire are the things
+          that decide what the week actually feels like. The old checkout treated
+          them as an aside.
+        </p>
+      </div>
+
+      <p>
+        The flow put contact details first, then extras, then payment. By the time
+        a traveller reached the extras, they had already filled in a form, already
+        shifted out of planning mode and into transaction mode. Extras sat behind
+        accordions, priced but not explained, and the summary that should have
+        anchored the decision was a passive block you couldn't open, edit or act on.
+      </p>
+
+      <p>We catalogued six failures in the existing experience:</p>
+
+      <ul>
+        <li><strong>Disrupted decision-making</strong> — the form broke the planning mindset before extras were even shown.</li>
+        <li><strong>Minimal value communication</strong> — a name and a price, with no account of what the money buys.</li>
+        <li><strong>High decision effort</strong> — travellers had to interpret value, evaluate risk and compare options unaided.</li>
+        <li><strong>No information hierarchy</strong> — a flat list where a £2,970 liability sat level with a £50 gift basket.</li>
+        <li><strong>Limited recommendations or guidance</strong> — nothing signalled what mattered or what people like them chose.</li>
+        <li><strong>A passive summary</strong> — extras detail hidden, no way to edit or remove.</li>
+      </ul>
+
+      <div class="rule-short"></div>
+
+      <h3>What the session recordings showed</h3>
+      <p>
+        Behaviour told the same story before anyone was interviewed. Four patterns
+        recurred, and each one reads as a specific kind of friction rather than
+        general dissatisfaction:
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Observed behaviour</th><th>What it indicates</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Users trying to navigate back</td><td>Unclear where they were in the flow</td></tr>
+            <tr><td>Rage-clicking the summary</td><td>Expected an interaction that wasn't there</td></tr>
+            <tr><td>Zig-zag scrolling</td><td>Poor structure — no scannable order</td></tr>
+            <tr><td>Repeatedly switching between options</td><td>Decision uncertainty, not comparison</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Rage-clicking a summary is the most useful of these. It isn't a usability
+        nit — it's a traveller telling you, with their mouse, that the running total
+        is the object they want to manipulate. That single observation ended up
+        driving more of the redesign than any stated preference did.
+      </p>
+
+      <p class="muted">
+        The conclusion we took into design: <strong>users weren't skipping extras
+        because they didn't want them. They were skipping because the interface
+        gave them no way to decide confidently.</strong>
+      </p>
+
+      <div class="note">
+        <span class="label">About the numbers in this case study</span>
+        <p>
+          Every research figure, participant quote and build detail here is drawn
+          from the actual study and the actual repository — the 36-participant
+          usability test, the twelve findings, the commit history, the
+          accessibility audit. <strong>The commercial figures are now real too.</strong>
+          The flow went live on 20 July 2026 and §10 reports what the analytics
+          actually show, including the result that contradicts the flattering
+          version of this story. Where a number is still a model rather than a
+          measurement — the opportunity sizing in §4, the experiment maths in
+          §9 — it says so on the face of it, with its assumptions exposed and
+          adjustable.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 02 · THE EVIDENCE ═══════════════════ -->
+  <section id="evidence" class="deep">
+    <div class="col">
+      <div class="kicker"><span class="n">02</span> Reading the evidence</div>
+      <div class="head">
+        <h1>Thirty-six travellers, three languages, two flows.</h1>
+        <p class="lede">
+          A comparative usability study put an exposed-card prototype against the
+          live accordion flow, with think-aloud walkthroughs, ease ratings and
+          preference capture across English, French and German.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="figure">36<small> / 43</small></div>
+          <div class="label">Participants analysed. Seven excluded — all mobile — because the prototype wouldn't load for them.</div>
+        </div>
+        <div class="stat">
+          <div class="figure">69%</div>
+          <div class="label">Preferred the new flow (25 of 36). 9 preferred the current flow; 2 had no preference.</div>
+        </div>
+        <div class="stat">
+          <div class="figure">4.3<small> vs 4.0</small></div>
+          <div class="label">Average ease rating, new prototype against the current flow.</div>
+        </div>
+        <div class="stat">
+          <div class="figure">1.6<small> vs 2.4</small></div>
+          <div class="label">Average page views. Fewer pages to reach the same decision.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <figure class="fig">
+        <div class="fig-media tall">
+          <img src="images/15-agency-extras-no-bundles.jpg"
+               alt="The tested prototype: a long single-column list of extras cards grouped under outcome-led headings, with a summary panel on the right."
+               data-cap="The prototype that went into user testing. It established the exposed-card format, the outcome-led group names and the value-first copy — and it is also where the scroll-fatigue finding came from: every extra in every group, all the way down." />
+        </div>
+        <figcaption>
+          <span class="prov tested">Tested prototype</span>
+          <span class="cap-t"><strong>What the 36 participants actually saw.</strong> The exposed-card concept, the four outcome-led groups and the "Avoid paying a damage deposit of up to £2,970" framing all originate here. So does finding 02 — nothing bounds the page length.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="col">
+      <p>
+        Preference held across every language segment and both devices, which is
+        the part that made it actionable — EN 73%, DE 73%, FR 60%; desktop 75%,
+        mobile 63%. A preference that survives translation and viewport is a
+        structural signal, not a reaction to a particular screen.
+      </p>
+
+      <div class="note">
+        <span class="label">The caveats, stated up front</span>
+        <p>
+          The new prototype was <strong>always shown first</strong>, so time-on-task
+          and engagement figures carry an order effect, and the current flow was
+          always reviewed second, making its feedback comparative rather than
+          standalone. The prototype also ran with lower latency than a production
+          build would. I treated preference (69%) as a strong signal and every
+          engagement metric as <strong>directional only</strong> — which is exactly
+          why the flow shipped with instrumentation and a live A/B plan rather than
+          a claimed win.
+        </p>
+      </div>
+
+      <h3>The twelve findings, and which ones I designed against</h3>
+      <p>
+        Not all twelve deserved equal weight. Four were conversion-positive
+        confirmations, four were friction to remove, and four were genuine
+        tensions with no clean answer. The numbering below is the study's own.
+      </p>
+    </div>
+
+    <div class="col-wide">
+      <div class="findings">
+        <div class="finding">
+          <span class="idx">01</span>
+          <span class="text">
+            Visibility drives consideration — exposed cards outperform hidden accordions.
+            <span class="sub">Extras in the current flow were "almost hidden" and "could easily be missed". P12: the new prototype "makes me want to purchase upsells".</span>
+          </span>
+          <span class="tag pos">Confirmed</span>
+        </div>
+        <div class="finding">
+          <span class="idx">02</span>
+          <span class="text">
+            Too many extras cause scroll fatigue and decision overload.
+            <span class="sub">Twelve participants. P1: "I would've got bored and irritated." P6: "I'm not even looking or pausing. I just want to get to the bottom."</span>
+          </span>
+          <span class="tag neg">Designed against</span>
+        </div>
+        <div class="finding">
+          <span class="idx">03</span>
+          <span class="text">
+            "Most Popular" and "Recommended" labels effectively guide decisions.
+            <span class="sub">P2: "I like these labels. It catches attention." Consistently noticed and used to steer selections.</span>
+          </span>
+          <span class="tag pos">Confirmed</span>
+        </div>
+        <div class="finding">
+          <span class="idx">04</span>
+          <span class="text">
+            Price shock — extras erode the perceived discount and can sour the whole trip.
+            <span class="sub">P1: "I'd already fixed in my mind about the price… now I'm being asked to add lots of additional things."</span>
+          </span>
+          <span class="tag neg">Designed against</span>
+        </div>
+        <div class="finding">
+          <span class="idx">05</span>
+          <span class="text">
+            The damage-cover nudge works, but divides people.
+            <span class="sub">P4 valued "a big warning about how much I would have to pay". FR P17 found it "pushy".</span>
+          </span>
+          <span class="tag mix">Tension</span>
+        </div>
+        <div class="finding">
+          <span class="idx">06</span>
+          <span class="text">
+            Real-time price tracking in the sidebar is highly valued.
+            <span class="sub">FR P16: "having the summary always visible on the right is very important when about to click pay."</span>
+          </span>
+          <span class="tag pos">Confirmed</span>
+        </div>
+        <div class="finding">
+          <span class="idx">07</span>
+          <span class="text">
+            Extras aren't logically grouped — related items scattered across the page.
+            <span class="sub">P24: "group similar things — leisure options together, money options together."</span>
+          </span>
+          <span class="tag neg">Designed against</span>
+        </div>
+        <div class="finding">
+          <span class="idx">08</span>
+          <span class="text">
+            Per-day plus total pricing works well for comprehension.
+            <span class="sub">P6: "I can see it's 15 pound a day. Actually, that's not so terrible."</span>
+          </span>
+          <span class="tag pos">Confirmed</span>
+        </div>
+        <div class="finding">
+          <span class="idx">09</span>
+          <span class="text">
+            Booking details buried below extras — people want trip context first.
+            <span class="sub">P9: "it would be slightly less confusing to have the actual trip you're trying to buy at the top."</span>
+          </span>
+          <span class="tag neg">Designed against</span>
+        </div>
+        <div class="finding">
+          <span class="idx">10</span>
+          <span class="text">
+            Experienced travellers instinctively decline checkout insurance.
+            <span class="sub">P14: "they're always marked up." A segment no amount of framing should try to override.</span>
+          </span>
+          <span class="tag mix">Tension</span>
+        </div>
+        <div class="finding">
+          <span class="idx">11</span>
+          <span class="text">
+            The card format creates emotional engagement — planning, not purchasing.
+            <span class="sub">P24: "it feels like you're already going on holiday." P6 on the current flow: "it feels more aligned with insurance than booking an exciting trip."</span>
+          </span>
+          <span class="tag pos">Confirmed</span>
+        </div>
+        <div class="finding">
+          <span class="idx">12</span>
+          <span class="text">
+            Protection descriptions lack the concrete numbers people need to commit.
+            <span class="sub">Raised independently by three German participants. P32: <em>"Ich weiß jetzt noch nicht, welche Kaution ich zahlen würde."</em> P42: <em>"Das wäre mir zu dünn für eine vernünftige Entscheidung."</em></span>
+          </span>
+          <span class="tag neg">Designed against</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <p>
+        Finding 12 is the one I'd single out. Three German participants, testing
+        separately, independently reached the same wall: they were willing to buy
+        the protection product and couldn't, because the card never told them what
+        deposit they'd actually pay. That is not a copy problem or a trust problem.
+        It's a <strong>missing number</strong> standing between intent and purchase
+        — the cheapest conversion fix in the entire study, and invisible to anyone
+        reading only the English transcripts.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 03 · THE QUESTIONS ═══════════════════ -->
+  <section id="questions">
+    <div class="col">
+      <div class="kicker"><span class="n">03</span> Getting answers out of the organisation</div>
+      <div class="head">
+        <h1>Most of what a decision needs isn't on the screen.</h1>
+        <p class="lede">
+          It's a number somebody else owns. The work is knowing which question to
+          ask, who holds the answer, and what to build when nobody does.
+        </p>
+      </div>
+
+      <p>
+        Three kinds of question, going to three different places. What does the
+        system actually do — engineering. What does the business already know —
+        whoever owns the funnel. What does the customer actually do — the
+        recordings and the research. A question answered late becomes a rebuild.
+        The same question answered early is a line in a spec.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 40%">The question, and who held the answer</th><th>What came back, and what it changed</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>"What actually happens between step 2 and step 3?"</strong><br /><span class="quiet" style="font-size: 13px">Engineering</span></td>
+              <td>A backend call re-prices the booking with the chosen extras, and it takes <strong>3–5 seconds</strong>. Nobody had designed for that window. Left alone it's a button that looks broken at the exact moment a traveller has committed — so it became an explicit waiting state with the delay named in copy.</td>
+            </tr>
+            <tr>
+              <td><strong>"What's the real shape of the booking-note payload?"</strong><br /><span class="quiet" style="font-size: 13px">Engineering</span></td>
+              <td>An unbounded array of strings from the reservation system; production surfaced only the first. That answer became a business contract — at most 3 notes, 400 characters each — enforced in a tested function rather than hoped for upstream.</td>
+            </tr>
+            <tr>
+              <td><strong>"Does this read as our site, or as a redesign of it?"</strong><br /><span class="quiet" style="font-size: 13px">Brand</span></td>
+              <td>It didn't — and the answer came back as specific values from the live site rather than as an opinion: the primary and the canvas were wrong, and there was "too much blue and navy". Colour arguments end fastest when the other party can hand you a number.</td>
+            </tr>
+            <tr>
+              <td><strong>"Open the promo field by default, or collapse it?"</strong><br /><span class="quiet" style="font-size: 13px">The business</span></td>
+              <td>Open — and it came back <strong>already A/B tested</strong>. The most valuable answer in the project was one I didn't have to earn. Ask what has already been tested before proposing a test.</td>
+            </tr>
+            <tr>
+              <td><strong>"What's the exact deposit split, and who signs it off?"</strong><br /><span class="quiet" style="font-size: 13px">Commercial</span></td>
+              <td>Unresolved — and still unresolved at handover. So the rate became a constant and the schedule a pure function of it: the number can move without a redesign, a retest or another meeting. <strong>An open question is a parameter, not a blocker.</strong></td>
+            </tr>
+            <tr>
+              <td><strong>"Is this comparison inverted?"</strong><br /><span class="quiet" style="font-size: 13px">Engineering, unprompted</span></td>
+              <td>A hash check in the production payment utility looked backwards, and it gates payment validation. Reading somebody else's code and asking one question protects more revenue than most design decisions do.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="rule-short"></div>
+
+      <h3>The standing questions</h3>
+      <p>
+        These go into the first conversation of any growth engagement, before
+        anything is designed. They're ordered so that a vague answer to one makes
+        the next one sharper.
+      </p>
+      <ol>
+        <li><strong>What is the one number this work should improve?</strong> If two people answer differently, that <em>is</em> the finding, and it's a bigger problem than anything on the page.</li>
+        <li><strong>What do we already know and have never acted on?</strong> Most organisations are sitting on a finished study. Acting on it costs nothing and buys the credibility to run the tests that follow.</li>
+        <li><strong>Where does that number come from, and who else reads it?</strong> A metric with two definitions in two dashboards can't settle an argument.</li>
+        <li><strong>What's the smallest change you'd ship to everyone if it won?</strong> The real scope question. It exposes appetite before effort is spent.</li>
+        <li><strong>What would make you stop the rollout?</strong> Agreeing guardrails while everyone is calm is the only time it's easy.</li>
+        <li><strong>What can't change, and why?</strong> Contractual, regulatory, operational. Cheap to ask now; expensive to discover in review.</li>
+      </ol>
+
+      <div class="note">
+        <span class="label">The pattern underneath all six</span>
+        <p>
+          Each one converts a design conversation into a question with a
+          falsifiable answer. That's the actual craft; the interface is downstream
+          of it. <strong>A decision that can't be traced to a number somebody owns
+          is a preference</strong>, and preferences don't survive a quarter.
+        </p>
+      </div>
+
+      <h3>Where those questions stand</h3>
+      <p>
+        Recording which ones are still open is part of the method, not an
+        admission. An unanswered question you can name is a research task; an
+        unanswered question you've quietly replaced with an assumption is a
+        liability you'll meet again at the read-out.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 46%">Question</th><th>Status</th><th>Consequence</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>What happens between step 2 and step 3?</td><td><span class="tag pos">Answered</span></td><td>3–5s re-price &rarr; an explicit waiting state</td></tr>
+            <tr><td>What's the real shape of the booking-note payload?</td><td><span class="tag pos">Answered</span></td><td>A 3-note, 400-character contract in a tested function</td></tr>
+            <tr><td>Does this read as our live site?</td><td><span class="tag pos">Answered</span></td><td>Palette re-pointed at the site's own values</td></tr>
+            <tr><td>Promo field open or collapsed?</td><td><span class="tag pos">Answered</span></td><td>Open, on a prior test I took on trust</td></tr>
+            <tr><td><strong>What is the one number this checkout is accountable for?</strong></td><td><span class="tag neg">Open</span></td><td>This case study <em>nominates</em> attach rate. That's my nomination, not an agreed KPI.</td></tr>
+            <tr><td><strong>What was the extras attach rate before the redesign?</strong></td><td><span class="tag neg">Open</span></td><td>The whole baseline is illustrative until this is pulled.</td></tr>
+            <tr><td>What did the live bundles experiment return?</td><td><span class="tag neg">Open</span></td><td>Bundles were parked without reading it. That decision is superseded.</td></tr>
+            <tr><td>What's the exact deposit split, and who signs it off?</td><td><span class="tag mix">Unresolved</span></td><td>Built as a parameter, so the number can move without a redesign.</td></tr>
+            <tr><td>Does the nudge help or cost conversion?</td><td><span class="tag mix">Unanswerable</span></td><td>No nudge telemetry exists. Specified as a pre-launch requirement.</td></tr>
+            <tr><td>How many travellers ever opened the old extras accordion?</td><td><span class="tag neg">Open</span></td><td>Production already emits it. The strongest baseline number available, and nobody has pulled it.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="muted">
+        <strong>Four answered, six open.</strong> Two of the open ones — the
+        accountable number, and the attach rate before any of this — are the kind
+        that should close before design starts. They didn't. The case study
+        carries that gap rather than papering over it, because the alternative is
+        a number I'd have to defend and couldn't.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 04 · SIZING ═══════════════════ -->
+  <section id="opportunity">
+    <div class="col">
+      <div class="kicker"><span class="n">04</span> Sizing the prize before drawing anything</div>
+      <div class="head">
+        <h1>What is a point of attach rate worth?</h1>
+        <p class="lede">
+          Before the first screen, the question that decides whether this work is
+          worth a sprint: what does moving extras attach actually pay, and is it
+          bigger than the risk of disturbing a working checkout?
+        </p>
+      </div>
+
+      <p>
+        Extras at Le Boat are high-margin and largely fixed-cost — damage cover,
+        flex plans and prepaid fuel don't scale in cost with uptake the way a boat
+        does. That makes attach rate one of the few levers where a design change
+        flows close to directly to contribution. The model below uses the real
+        catalogue: damage cover at <span class="num">£105</span>, flex plan at
+        <span class="num">£49</span>, prepaid fuel at <span class="num">£120</span>,
+        final cleaning at <span class="num">£65</span>, against a sample trip price
+        of <span class="num">£1,559</span>.
+      </p>
+
+      <div class="model" id="attach-model">
+        <div class="model-head">
+          <span class="t">Extras attach-rate model</span>
+          <span class="badge">Interactive · illustrative volumes</span>
+        </div>
+        <div class="model-body">
+          <div class="field">
+            <div class="row">
+              <label for="m-bookings">Bookings per month</label>
+              <span class="val" id="m-bookings-v">340</span>
+            </div>
+            <input type="range" id="m-bookings" min="50" max="1500" step="10" value="340" />
+          </div>
+          <div class="field">
+            <div class="row">
+              <label for="m-base">Baseline extras attach rate</label>
+              <span class="val" id="m-base-v">31%</span>
+            </div>
+            <input type="range" id="m-base" min="5" max="70" step="1" value="31" />
+          </div>
+          <div class="field">
+            <div class="row">
+              <label for="m-target">Attach rate after redesign</label>
+              <span class="val" id="m-target-v">38%</span>
+            </div>
+            <input type="range" id="m-target" min="5" max="85" step="1" value="38" />
+          </div>
+          <div class="field">
+            <div class="row">
+              <label for="m-aov">Average extras basket when attached</label>
+              <span class="val" id="m-aov-v">£420</span>
+            </div>
+            <input type="range" id="m-aov" min="50" max="900" step="5" value="420" />
+          </div>
+        </div>
+        <div class="model-out">
+          <div class="o">
+            <div class="k">Incremental bookings with extras</div>
+            <div class="v" id="o-bookings">24</div>
+            <div class="n">per month</div>
+          </div>
+          <div class="o">
+            <div class="k">Incremental extras revenue</div>
+            <div class="v lift" id="o-monthly">£9,996</div>
+            <div class="n">per month</div>
+          </div>
+          <div class="o">
+            <div class="k">Annualised</div>
+            <div class="v lift" id="o-annual">£119,952</div>
+            <div class="n" id="o-note">+7.0pp attach rate</div>
+          </div>
+        </div>
+        <div class="model-foot">
+          A deliberately simple model: incremental attached bookings × average
+          extras basket. It ignores cannibalisation, refunds and seasonality. The
+          defaults are now the <strong>observed</strong> figures — ~340 bookings a
+          month and £420 of extras revenue per booking, both measured over
+          21 Jul – 29 Sep 2026. Attach rate stays a slider because, as §10
+          explains, the share of bookings containing an extra still cannot be
+          measured in the analytics as configured.
+        </div>
+      </div>
+
+      <p>
+        At the observed volumes, seven points of attach rate is worth about
+        £120,000 a year. That reframed the conversation with the business: the
+        risk wasn't in changing the checkout, it was in leaving a structurally
+        poor extras step in place for another season.
+        <strong>It also set the bar for the experiment</strong> — and, as it turned
+        out, the bar was the problem. At roughly 340 bookings a month, an effect
+        of this size is very close to undetectable without a control group. That
+        was knowable in advance. It is the whole argument of §9, and §10 is what
+        happens when you ship without acting on it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 04 · THE RESTRUCTURE ═══════════════════ -->
+  <section id="restructure" class="deep">
+    <div class="col">
+      <div class="kicker"><span class="n">05</span> The structural move</div>
+      <div class="head">
+        <h1>Take the form out of the middle of the decision.</h1>
+        <p class="lede">
+          One change preceded every other: contact details stopped interrupting the
+          part of the journey where people are still choosing what their week
+          looks like.
+        </p>
+      </div>
+
+      <div class="ba">
+        <div class="ba-cell was">
+          <div class="ba-label">Before</div>
+          <p><strong>Trip → 1. Contact · 2. Extras · 3. Pay → Payment</strong></p>
+          <p class="quiet" style="font-size: 14px;">
+            A form gate before any extras were seen. Three numbered steps inside
+            one page, so "where am I" had no honest answer. Extras collapsed
+            behind accordions below the fold.
+          </p>
+        </div>
+        <div class="ba-cell now">
+          <div class="ba-label">After</div>
+          <p><strong>1. Your trip → 2. Complete your trip → 3. Review and pay</strong></p>
+          <p class="quiet" style="font-size: 14px;">
+            Extras become their own step, framed as completing the holiday. Contact
+            details move next to payment, where the mental mode has already shifted
+            from choosing to buying.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        This restructure came out of the strategy work, not from me — it was
+        proposed, prototyped and validated in testing before I started building.
+        I'm including it because everything downstream depends on it, and because
+        the rename mattered as much as the reorder. <strong>"Choose extras" became
+        "Complete your trip."</strong> Under the old label, every card was a request
+        for more money against a price the traveller had already accepted — which
+        is precisely the price-shock finding (04). Under the new one, the same cards
+        are the remaining decisions in planning a holiday. Nothing about the
+        commercial content changed; the frame it arrives in did.
+      </p>
+
+      <p>
+        Five design principles came with it. I treated them as acceptance criteria
+        rather than as a mood board, which is the difference between a principle
+        and a poster:
+      </p>
+
+      <dl class="compact">
+        <dt>Guide</dt><dd>Recommend what matters, rather than presenting a neutral list and calling it choice.</dd>
+        <dt>Simplify</dt><dd>Reduce decision effort. Fewer things visible at once, grouped by what they do for you.</dd>
+        <dt>Reassure</dt><dd>Build confidence and reduce perceived risk — with specifics, not adjectives.</dd>
+        <dt>Show value</dt><dd>Lead with the outcome, put the price second.</dd>
+        <dt>Support control</dt><dd>Never trap. Everything addable is removable, in one action, from where it's shown.</dd>
+      </dl>
+
+      <p>
+        The button language changed on the same logic. <code>Pay £1,559</code> asks
+        a traveller to commit before they've reviewed anything, and people
+        subconsciously read it as "am I being charged now?". The continue action
+        became <strong>"Continue to review &amp; pay"</strong> — it names the next
+        screen, not the transaction, and it tells the truth about where the money
+        actually moves.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 05 · THE DECISIONS ═══════════════════ -->
+  <section id="decisions">
+    <div class="col">
+      <div class="kicker"><span class="n">06</span> Five decisions, and what each one buys</div>
+      <div class="head">
+        <h1>From finding to interface.</h1>
+        <p class="lede">
+          Each of these traces a straight line from a specific research finding to
+          a specific piece of shipped front-end.
+        </p>
+      </div>
+
+      <div class="note">
+        <span class="label">What I inherited, and what I decided</span>
+        <p>
+          The exposed-card concept, the four outcome-led group names, the
+          value-first copy and the flow order came out of the strategy work and
+          the tested prototype. They were validated before I touched them, and
+          claiming them would be dishonest. <strong>My work was everything
+          between a validated concept and a production checkout</strong> — the
+          decisions a concept prototype never has to make. Each decision below
+          carries its provenance, and the screenshots are labelled
+          <span class="prov tested">Tested prototype</span>
+          <span class="prov shipped">Shipped build</span> or
+          <span class="prov parked">Parked exploration</span> so you can see
+          which is which.
+        </p>
+      </div>
+    </div>
+
+    <div class="col">
+
+      <!-- DECISION 1 -->
+      <article class="decision">
+        <div class="decision-head">
+          <span class="seq">Decision 01 · answers findings 01 &amp; 11</span>
+          <h2>Extras get exposed as cards, and never go back behind a click.</h2>
+        </div>
+        <p>
+          The clearest result in the study. Users engage with what they can see;
+          accordions hid the entire catalogue behind an interaction nobody had a
+          reason to perform. The card format also did something the study didn't
+          set out to measure — it changed how the checkout <em>felt</em>.
+        </p>
+        <blockquote>
+          It feels like you're already going on holiday.
+          <cite>P24, desktop — on the new prototype</cite>
+        </blockquote>
+        <blockquote>
+          It feels more aligned with insurance than booking an exciting trip.
+          <cite>P6, mobile — on the current flow</cite>
+        </blockquote>
+        <p>
+          Those two quotes describe the same catalogue at the same prices. The
+          delta is entirely presentational, and it's the strongest argument in the
+          study for treating extras as part of the product rather than as an
+          ancillary revenue surface.
+        </p>
+      </article>
+
+      <!-- DECISION 2 -->
+      <article class="decision">
+        <div class="decision-head">
+          <span class="seq">Decision 02 · answers findings 02 &amp; 07 · <em>mine</em></span>
+          <h2>Grouping wasn't the problem. Nothing bounded the page.</h2>
+        </div>
+        <p>
+          The tested prototype already grouped extras under the four outcome-led
+          headings, and testing confirmed people liked them. It still produced the
+          study's second-biggest complaint: twelve participants reported scroll
+          fatigue. <strong>Grouping labelled the page; it didn't shorten it.</strong>
+          Every extra in every group still rendered, so the page got longer with
+          every product the catalogue gained.
+        </p>
+        <p>
+          The study recommended collapsible categories. What shipped is
+          progressive disclosure inside groups that stay open: each shows its top
+          two cards, with a "Show <em>N</em> more" toggle for the
+          remainder.<button class="fn-marker" data-fn="fn1" aria-expanded="false" aria-controls="fnb1">¹</button>
+          Collapsing whole categories would have re-created the accordion problem
+          that finding 01 had just told us to avoid — hiding extras behind a click
+          people have no reason to perform. Two cards per group keeps every
+          category visible while giving the page a fixed floor length no matter
+          how big the catalogue gets.
+        </p>
+        <div class="fn-body" id="fnb1" data-fn-target="fn1" hidden>
+          <span class="fn-n">¹</span>
+          <span>
+            Action item #7 from the 6 July alignment meeting — "show top 2 per
+            group, rest behind a Show N more toggle". The tested prototype has no
+            such control; grep it for "show more" and you get nothing.
+            <span class="fn-cite">commit 6bb5c86 · the checkout&#39;s extras catalogue</span>
+          </span>
+        </div>
+
+        <figure class="fig">
+          <div class="fig-media tall">
+            <img src="images/01-extras-desktop-full.jpg"
+                 alt="The full shipped extras page: four groups, two cards each, with Show more toggles, and a sticky summary."
+                 data-cap="The shipped page end to end. Four groups, two cards each, a 'Show N more' toggle where a group holds more. Twelve extras, four scannable decisions, and a page that stops growing." />
+          </div>
+          <figcaption>
+            <span class="prov shipped">Shipped build</span>
+            <span class="cap-t"><strong>The whole step, at desktop width.</strong> Compare its length to the tested prototype above — same twelve extras, same four groups, bounded page.</span>
+          </figcaption>
+        </figure>
+      </article>
+
+      <!-- DECISION 3 -->
+      <article class="decision">
+        <div class="decision-head">
+          <span class="seq">Decision 03 · answers finding 12 · <em>inherited, then held</em></span>
+          <h2>Keep the real numbers, including the untidy ones.</h2>
+        </div>
+        <p>
+          The card headline — "Avoid paying a damage deposit of up to £2,970" —
+          came from the strategy work and was in the tested prototype. It is the
+          single best piece of copy in the project: the price is
+          <strong>anchored against the liability, not the fee</strong>, because
+          £105 read next to £2,970 is a different proposition than £105 read
+          alone. Finding 12 said the card still wasn't enough — three German
+          participants wanted to know what deposit they'd actually pay.
+        </p>
+        <p>
+          The pressure at that point is to invent a clean answer. The study itself
+          suggested the shape of one: <em>"Your deposit drops from £2,970 to
+          £500."</em> Deposits at Le Boat don't work that way — they vary by boat
+          size and destination. So the detail view carries the real ranges:
+          <span class="num">£220–£660</span> with cover against
+          <span class="num">£2,060–£2,970</span> without, plus the
+          non-refundable condition in the same
+          view.<button class="fn-marker" data-fn="fn2" aria-expanded="false" aria-controls="fnb2">²</button>
+        </p>
+        <p>
+          A range is a worse headline and a better answer. It is also the only
+          version that survives contact with a traveller who reaches the base and
+          is quoted £640.
+        </p>
+        <div class="fn-body" id="fnb2" data-fn-target="fn2" hidden>
+          <span class="fn-n">²</span>
+          <span>
+            Rendered as paired cards — "With Damage Cover" against "Without Damage
+            Cover" — each carrying its deposit range and liability terms.
+            <span class="fn-cite">the damage-cover pop-up&#39;s content</span>
+          </span>
+        </div>
+
+        <figure class="fig">
+          <div class="fig-media">
+            <img src="images/03-extra-details-modal.jpg"
+                 alt="The Damage Cover detail modal: paired comparison cards showing the deposit range with and without cover."
+                 data-cap="The Damage Cover detail view. Paired comparison cards, real deposit ranges, price stated per-day and in total, and the non-refundable condition in the same view rather than a footnote." />
+          </div>
+          <figcaption>
+            <span class="prov shipped">Shipped build</span>
+            <span class="cap-t"><strong>The answer to finding 12.</strong> Per-day and total pricing together (finding 08), and the ranges kept honest rather than rounded into a slogan.</span>
+          </figcaption>
+        </figure>
+      </article>
+
+      <!-- DECISION 4 -->
+      <article class="decision">
+        <div class="decision-head">
+          <span class="seq">Decision 04 · answers findings 06 &amp; 09</span>
+          <h2>The summary becomes the thing you steer with.</h2>
+        </div>
+        <p>
+          This is the rage-click, answered. People were clicking the summary because
+          they wanted it to respond. So it now does: it sticks to the viewport on
+          desktop, updates the total as extras are added or removed, opens each
+          extra for editing, and carries the trip context that finding 09 said
+          people wanted before the extras rather than beneath them.
+        </p>
+        <blockquote>
+          Having the summary always visible on the right is very important when
+          about to click pay.
+          <cite>P16, French, desktop</cite>
+        </blockquote>
+        <p>
+          On mobile the same object becomes a fixed bottom bar with the running
+          total and the continue action, expanding into a full booking summary
+          sheet. Both bars were then made consistent with each other, because two
+          sticky elements behaving differently on the two steps is a bug in the
+          mental model even when neither is a bug in the code.
+        </p>
+        <p>
+          It's also the surface where the price-shock finding (04) gets managed
+          honestly. The total moves in real time as extras go in, so the number at
+          the payment step is never a surprise — the traveller watched it get there.
+        </p>
+
+        <div class="fig-grid">
+          <figure class="fig">
+            <div class="fig-media">
+              <img src="images/05-extra-added-state.jpg"
+                   alt="An extra in its added state, tinted green with a Remove control, and the summary total updated."
+                   data-cap="Adding an extra confirms itself and offers the reversal in the same place, and the running total moves in the same frame. Reversibility is what lets someone commit early — the cost of a wrong choice is one click, so the choice gets made instead of deferred." />
+            </div>
+            <figcaption>
+              <span class="prov shipped">Shipped build</span>
+              <span class="cap-t"><strong>Reversibility.</strong> The cheapest way to make a decision feel safe.</span>
+            </figcaption>
+          </figure>
+          <figure class="fig">
+            <div class="fig-media">
+              <img src="images/11-extras-mobile-viewport.jpg"
+                   alt="The extras step at 390 pixels wide, with a fixed bottom bar showing the running total and the continue action."
+                   data-cap="At 390px the running total follows the traveller down the page instead of scrolling away. Mobile is where price shock does the most damage, because the total is the thing most easily lost." />
+            </div>
+            <figcaption>
+              <span class="prov shipped">Shipped build</span>
+              <span class="cap-t"><strong>390px.</strong> 44% of the tested sample. Recommendation 4.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </article>
+
+      <!-- DECISION 5 -->
+      <article class="decision">
+        <div class="decision-head">
+          <span class="seq">Decision 05 · answers finding 04 · <em>mine</em></span>
+          <h2>Give the price a second answer: pay a quarter now.</h2>
+        </div>
+        <p>
+          Finding 04 — the discount "swallowed up by extras" — has two possible
+          responses. You can reduce what's being asked for, or you can change what's
+          due today. The tested prototype did neither: its payment step offered
+          card or wallet, an inline card form, and a
+          <code>Pay £1,169</code> button. That is precisely the premature-commitment
+          language the strategy work flagged, and it leaves a price-sensitive
+          traveller with one option — pay all of it, now.
+        </p>
+        <p>
+          The important part is that <strong>the business already had this
+          lever.</strong> Production carries deposit, middle-payment and
+          pay-in-full amounts in its booking payload — the capability exists and
+          has always existed. The prototype simply didn't surface it, which would
+          have shipped a redesign that quietly removed a conversion route the
+          company already owned. Catching a regression like that is worth more
+          than most features, and it is only catchable by reading the production
+          system rather than the comp.
+        </p>
+        <p>
+          So what shipped restores it and makes it legible: 25% today to secure the
+          boat, the balance in two interest-free instalments, with the trade-off
+          stated rather than buried — pay in full and save 3%, or pay the deposit
+          and keep the cash. Selecting the deposit expands the schedule with real
+          dates and amounts, so "instalments" is never an abstraction. The CTA
+          becomes "Pay £292 deposit", so the amount actually leaving the account
+          today is never ambiguous.
+        </p>
+        <p class="redacted"><em>(Code excerpt removed for sharing. What it does: the deposit is derived from the live total, so extras and discounts flow through, and the remainder lands on the final payment, property-tested so the parts always sum to the whole, at every total.)</em></p>
+
+        <div class="fig-grid">
+          <figure class="fig">
+            <div class="fig-media tall">
+              <img src="images/16-agency-review-and-pay.jpg"
+                   alt="The tested prototype's review step: contact form, billing address, card or wallet payment options and a Pay £1,169 button."
+                   data-cap="The tested prototype's payment step: card or wallet, an inline card form, and a 'Pay £1,169' button. One route, full amount, and commitment language at the point of least certainty." />
+            </div>
+            <figcaption>
+              <span class="prov tested">Tested prototype</span>
+              <span class="cap-t"><strong>Before.</strong> Card or wallet, <code>Pay £1,169</code>.</span>
+            </figcaption>
+          </figure>
+          <figure class="fig">
+            <div class="fig-media tall">
+              <img src="images/07-deposit-schedule.jpg"
+                   alt="The shipped review step with Pay deposit selected, showing a three-stage payment schedule and a Pay £292 deposit button."
+                   data-cap="The shipped payment step with 'Pay deposit' selected: the schedule expands inline with dates and amounts, the summary shows 'Pay today (deposit) £292', and the CTA names the amount actually leaving the account." />
+            </div>
+            <figcaption>
+              <span class="prov shipped">Shipped build</span>
+              <span class="cap-t"><strong>After.</strong> Two routes, a real schedule, <code>Pay £292 deposit</code>.</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <p>
+          I deliberately dropped the "Recommended" tag from the deposit option late
+          in the build. Recommending a payment method isn't guidance — the better
+          option depends entirely on the traveller's cash position, which we don't
+          know. Labelling one as recommended would have been the design system
+          pretending to information it didn't have.
+        </p>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 06 · THE ETHICAL LINE ═══════════════════ -->
+  <section id="ethics" class="deep">
+    <div class="col">
+      <div class="kicker"><span class="n">07</span> The tension I didn't design away</div>
+      <div class="head">
+        <h1>The nudge that works on most people and offends some.</h1>
+      </div>
+
+      <p>
+        When a traveller continues without damage cover, a comparison appears
+        showing what they're carrying: the deposit with cover against the deposit
+        without. Finding 05 says this works. P4 called it "a big warning about how
+        much I would have to pay" and meant it as a compliment. P10: "it was a good
+        prompt."
+      </p>
+      <p>
+        Finding 05 also says French participant P17 found it "pushy" and felt it
+        gave "the impression they're forcing you to subscribe". Both reactions are
+        correct responses to the same component.
+      </p>
+
+      <figure class="fig">
+        <div class="fig-media">
+          <img src="images/04-damage-cover-nudge.jpg"
+               alt="The Continue without Damage Cover modal: a price row, then side-by-side cards showing a £220–£660 deposit with cover against £2,060–£2,970 without."
+               data-cap="The nudge. Two deposit ranges, an add action inside the card that makes the case, and 'Continue without it' as an equal-weight control on the same row — one click, from the view you were interrupted in." />
+        </div>
+        <figcaption>
+          <span class="prov shipped">Shipped build</span>
+          <span class="cap-t"><strong>The component most likely to be wrong.</strong> Both the "good prompt" reaction and the "pushy" reaction are responses to this, and only live data separates them.</span>
+        </figcaption>
+      </figure>
+
+      <p>I kept the intervention and constrained it:</p>
+
+      <ul>
+        <li><strong>It states facts, not urgency.</strong> Two deposit ranges and what each means. No countdown, no scarcity, no "X people bought this in the last hour" on the protection products.</li>
+        <li><strong>Declining costs one action.</strong> The traveller continues from the same view they're interrupted in. A nudge that takes two clicks to escape is a toll, not a prompt.</li>
+        <li><strong>It fires once.</strong> Not on every continue, not again at payment.</li>
+        <li><strong>The add action sits inside the comparison.</strong> If the number changes someone's mind, they act where they were convinced — not by hunting back up the page.</li>
+      </ul>
+
+      <p>
+        The honest position: this is the component most likely to be wrong, and
+        it's first on the test roadmap. The study's own recommendation was to
+        soften it further — an inline comparison rather than a blocking modal — and
+        that variant is specified and unbuilt. It's an experiment, not a
+        conviction.
+      </p>
+
+      <p class="muted">
+        Finding 10 is the related one I chose <em>not</em> to act on. Experienced
+        travellers decline checkout insurance on principle and source it
+        themselves. That's a rational, well-informed behaviour. Designing
+        harder against it would mean designing against the customer's own
+        interest, and the only tactics that move that segment are the ones this
+        brand has explicitly ruled out.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 07 · THE BUILD ═══════════════════ -->
+  <section id="build">
+    <div class="col">
+      <div class="kicker"><span class="n">08</span> Build once, ship twice</div>
+      <div class="head">
+        <h1>The cost of the second brand is the number that matters.</h1>
+        <p class="lede">
+          Le Boat and Emerald Star are two brands on one checkout. How much a
+          validated win costs to ship to the second one decides how often anyone
+          bothers — and that is an architecture decision, not a visual one.
+        </p>
+      </div>
+
+      <p>
+        The default outcome is a fork. Someone copies the checkout, re-skins it,
+        and from that day the two diverge: every experiment gets designed twice,
+        QA'd twice, made accessible twice, and eventually one of them stops
+        getting the improvements. The second brand quietly becomes the worse
+        product, and nobody decides that — it just accretes.
+      </p>
+
+      <p>
+        So every brand value is a semantic token with a single override block, and
+        switching brand is one attribute on the document root. The consequence is
+        commercial, not aesthetic: <strong>a change validated on Le Boat ships to
+        Emerald Star the same day, at no additional design, build, QA or
+        accessibility cost.</strong> That halves the price of every future
+        experiment and doubles what each win is worth. Six locales across two
+        brands is twelve live surfaces from one component tree.
+      </p>
+    </div>
+
+    <div class="col-wide">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="figure">42</div>
+          <div class="label">Commits across 3 PRs, 29 Jun – 13 Jul 2026</div>
+        </div>
+        <div class="stat">
+          <div class="figure">17</div>
+          <div class="label">Components, ~5,100 lines of TypeScript</div>
+        </div>
+        <div class="stat">
+          <div class="figure">6</div>
+          <div class="label">Locales wired through next-intl</div>
+        </div>
+        <div class="stat">
+          <div class="figure">13<small> / 13</small></div>
+          <div class="label">Unit tests passing on the pure business logic</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>Accessibility is reach, and reach is the denominator</h3>
+      <p>
+        A checkout that fails contrast doesn't fail a standard — it fails a
+        share of the people already trying to give you money, at the last step,
+        where there is no second chance. Every conversion rate in this case
+        study has a denominator, and inaccessible interface silently removes
+        people from it.
+      </p>
+      <p>
+        So the flow was swept to WCAG 2.1 AA with axe, both brands, desktop and
+        mobile, closing at <strong>zero contrast violations</strong> — the
+        unreadable greys, a duplicate landmark, an unlabelled sticky region, two
+        touch targets under the minimum, and a primary colour doing two jobs that
+        needed two values. It is the least glamorous work in the project and the
+        only work that changes who is able to complete the purchase at all.
+      </p>
+
+      <h3>Where naive theming breaks, and what it costs</h3>
+      <p>
+        Most theming survives a logo swap and fails on the first real brand.
+        It fails for one reason: the tokens encode <em>colours</em> rather than
+        <em>roles</em>, so the moment the second brand's palette collides with a
+        semantic meaning, someone forks a component — and the fork is where the
+        cost comes back.
+      </p>
+      <p class="redacted"><em>(Token excerpt removed for sharing: each brand sets its own values for the same brand roles.)</em></p>
+      <div class="fig-grid">
+        <figure class="fig">
+          <div class="fig-media">
+            <img src="images/02-extras-desktop-viewport.jpg"
+                 alt="The extras step in Le Boat blue branding."
+                 data-cap="Le Boat — the default token set, and the brand the experiments will run on first." />
+          </div>
+          <figcaption>
+            <span class="prov shipped">Shipped build</span>
+            <span class="cap-t"><strong>Le Boat.</strong> Where a win gets validated.</span>
+          </figcaption>
+        </figure>
+        <figure class="fig">
+          <div class="fig-media">
+            <img src="images/13-emerald-extras-viewport.jpg"
+                 alt="The same extras step in Emerald Star green branding, with the Emerald Star wordmark and a green summary card."
+                 data-cap="Emerald Star — the same components and the same markup, switched by one attribute. Nothing here was designed, built, tested or audited a second time, which is the entire point: the marginal cost of the second brand is what decides whether it keeps getting improvements." />
+          </div>
+          <figcaption>
+            <span class="prov shipped">Shipped build</span>
+            <span class="cap-t"><strong>Emerald Star.</strong> Zero marginal cost per shipped win.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p>
+        <code>--brand-added</code> is exactly that collision, caught before it
+        forked anything. Confirming that an extra was added is green on Le Boat,
+        where green reads as success against a blue brand. Emerald Star's brand
+        <em>is</em> green — so the same token dissolves into the page and the
+        confirmation stops confirming. A traveller who can't tell whether the
+        extra went in either adds it twice or abandons the step, and that is an
+        attach-rate problem wearing a colour costume.
+      </p>
+      <p>
+        The token was therefore defined by its job — <em>contrast against
+        whatever the brand is</em> — and takes opposite hues in the two brands.
+        One line of config instead of a second component, and the difference
+        between the two compounds across every release for as long as both brands
+        exist.
+      </p>
+      <p>
+        The same leverage shows up in the accessibility work. The WCAG 2.1 AA pass
+        ran against <strong>both brands at once</strong> and closed at zero
+        contrast violations on desktop and mobile. Forked, that's two audits
+        forever — and in practice the second one gets skipped, which is how a
+        co-brand ends up carrying the compliance risk nobody has budgeted for.
+      </p>
+
+      <h3>The unglamorous half</h3>
+      <p>
+        Fifteen error states were catalogued from the production checkout and
+        mapped to the new flow before any of them were built — sold-out extras,
+        partial availability, promo failures, declined payments, expired sessions —
+        each with its surfacing pattern and its production copy key, reused
+        verbatim so the work lifts back without a translation pass.
+      </p>
+      <div class="fig-grid">
+        <figure class="fig">
+          <div class="fig-media">
+            <img src="images/09-payment-failed-modal.jpg"
+                 alt="The payment failure modal over the review and pay page, offering to try payment again."
+                 data-cap="Payment failure as a modal over the page the traveller was already on, rather than a separate route that loses their place. The legacy /payment-failed URL redirects into it so old links still resolve." />
+          </div>
+          <figcaption>
+            <span class="prov shipped">Shipped build</span>
+            <span class="cap-t"><strong>Declined payment.</strong> State 13 of 15 in the catalogue.</span>
+          </figcaption>
+        </figure>
+        <figure class="fig">
+          <div class="fig-media">
+            <img src="images/08-confirmation-desktop.jpg"
+                 alt="The booking confirmation page."
+                 data-cap="Confirmation — the end of the flow, and the screen a concept prototype never has to build." />
+          </div>
+          <figcaption>
+            <span class="prov shipped">Shipped build</span>
+            <span class="cap-t"><strong>Confirmation.</strong> The flow finished, not just demonstrated.</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <p>
+        The business logic that had been living inline got pulled into pure,
+        tested functions: the deposit schedule (with a property test proving the
+        instalments always sum to the total, no rounding leak) and the booking-note
+        normaliser (at most three notes, 400 characters each, truncated on a word
+        boundary — eight cases). Those are the two places where a silent failure
+        would be a financial or legal problem rather than a visual one.
+      </p>
+
+      <div class="note">
+        <span class="label">What I parked, and said so</span>
+        <p>
+          An extras discovery layer — search, filter chips, recommendations — was
+          built, liked, and moved out of scope. It lives on its own branch with a
+          written note recording where it is and how to restore it. Bundle-first
+          variants were explored and not shipped; the study's evidence for bundles
+          was thinner than for the card format, and 40% of travellers build their
+          own. Shipping the structural win first and testing bundles separately
+          keeps the result readable.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <div class="fig-grid">
+        <figure class="fig">
+          <div class="fig-media">
+            <img src="images/21-parked-extras-discovery.jpg"
+                 alt="The parked discovery layer: a search field, intent filter chips, and a Recommended for you panel asking who is travelling."
+                 data-cap="The parked extras-discovery layer: search, intent chips (Peace of mind, Save time, Comfort, Explore, For families, For groups) and a 'Recommended for you' panel that tailors suggestions from who's travelling and whether it's their first time boating. Note the darker navy summary card — this branch predates the neutral-palette pass." />
+          </div>
+          <figcaption>
+            <span class="prov parked">Parked exploration</span>
+            <span class="cap-t"><strong>Extras discovery.</strong> Lives on a parked exploration branch. Revisit when category expand rates say four groups aren't enough.</span>
+          </figcaption>
+        </figure>
+        <figure class="fig">
+          <div class="fig-media tall">
+            <img src="images/18-agency-bundles-first.jpg"
+                 alt="The bundles-first exploration: three bundle cards priced £365 and £579 against a build-your-own option, with a comparison table beneath."
+                 data-cap="The bundles-first exploration: three value-led bundle cards — Essential escape, Care-free cruising (£365, save £300), All on board (£579, save £250) — with a comparison table beneath and a 'Build my own extras' escape hatch for the 40% who prefer to." />
+          </div>
+          <figcaption>
+            <span class="prov parked">Parked exploration</span>
+            <span class="cap-t"><strong>Bundles.</strong> Held back so it doesn't confound the structural test — it's test 2 on the roadmap.</span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 08 · MEASUREMENT ═══════════════════ -->
+  <section id="measurement" class="deep">
+    <div class="col">
+      <div class="kicker"><span class="n">09</span> Instrumentation and proof</div>
+      <div class="head">
+        <h1>A preference signal is not a result.</h1>
+        <p class="lede">
+          69% of participants preferred the new flow. That is a reason to build it
+          and not evidence that it converts. Here's the plan that was handed over
+          with the code.
+        </p>
+      </div>
+
+      <h3>The metric set</h3>
+      <p>
+        One primary metric, chosen before the test runs. Secondaries to explain
+        the mechanism. Guardrails that can stop a rollout even if the primary wins
+        — because an extras uplift bought with a drop in booking completion is a
+        loss wearing a win's clothes.
+      </p>
+    </div>
+
+    <div class="col-wide">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Metric</th><th>Kind</th><th>Why it's on the list</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Extras attach rate</strong><br /><span class="quiet" style="font-size:13px">bookings with ≥1 extra ÷ completed bookings</span></td>
+              <td><span class="metric-kind primary">Primary</span></td>
+              <td>The single number the restructure is arguing for. Pre-registered, not chosen after the fact.</td>
+            </tr>
+            <tr>
+              <td>Extras revenue per booking</td>
+              <td><span class="metric-kind secondary">Secondary</span></td>
+              <td>Separates "more people adding something" from "people adding more". Different design implications.</td>
+            </tr>
+            <tr>
+              <td>Damage cover attach rate</td>
+              <td><span class="metric-kind secondary">Secondary</span></td>
+              <td>Isolates the finding-12 fix. The concrete-numbers change should move this specifically.</td>
+            </tr>
+            <tr>
+              <td>Step-2 → step-3 progression</td>
+              <td><span class="metric-kind secondary">Secondary</span></td>
+              <td>Tests whether the nudge helps or costs. The one place the ethics question becomes empirical.</td>
+            </tr>
+            <tr>
+              <td>Category expand rate</td>
+              <td><span class="metric-kind secondary">Secondary</span></td>
+              <td>Validates the two-cards-then-expand call. High expansion means the default is too tight.</td>
+            </tr>
+            <tr>
+              <td><strong>Checkout completion rate</strong></td>
+              <td><span class="metric-kind guardrail">Guardrail</span></td>
+              <td>The redesign must not cost bookings. Any degradation stops the rollout regardless of attach.</td>
+            </tr>
+            <tr>
+              <td><strong>Extras removal &amp; refund rate</strong></td>
+              <td><span class="metric-kind guardrail">Guardrail</span></td>
+              <td>Catches persuasion that outruns comprehension. Regretted purchases are a cost, not a conversion.</td>
+            </tr>
+            <tr>
+              <td>Time to complete step 2</td>
+              <td><span class="metric-kind guardrail">Guardrail</span></td>
+              <td>The study's time-on-task rose. Order effect or real friction — only live data separates them.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>Where the numbers come from</h3>
+      <p>
+        Before specifying a single new event, I read what production already
+        sends. The checkout is instrumented through a tag manager into analytics,
+        with an experimentation platform and session replay alongside — so most
+        of the metric set above is a query, not a project. Knowing that is the
+        difference between a measurement plan that runs next sprint and one that
+        waits a quarter for engineering time.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 34%">Already emitted in production</th><th>What it answers</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>beginCheckout</code></td><td>The denominator. Every rate in this case study sits on it.</td></tr>
+            <tr><td><code>accordionItemStateChange</code><br /><span class="quiet" style="font-size: 12.5px">carries an id and open/closed</span></td><td><strong>The most valuable event in the stack.</strong> The old extras UI is an accordion, and every open is tracked — which means "extras were almost hidden" stops being a quote and becomes a percentage of travellers who never opened them at all.</td></tr>
+            <tr><td><code>addedBookingExtras</code> / <code>removedBookingExtras</code><br /><span class="quiet" style="font-size: 12.5px">id, price, quantity</span></td><td>Attach behaviour per product, and the add/remove churn that exposes hesitation — and doubles as the regret guardrail.</td></tr>
+            <tr><td><code>proceedToPayment</code>, <code>purchase</code><br /><span class="quiet" style="font-size: 12.5px">full ecommerce payload</span></td><td>Progression and conversion. The boat is a known line code, so anything else in the basket is an extra — attach rate falls straight out of the purchase payload.</td></tr>
+            <tr><td><code>selectBookingExtrasError</code>, <code>applyPromoCodeError</code></td><td>Revenue lost to failure rather than to persuasion. Usually the cheapest thing on any roadmap.</td></tr>
+            <tr><td>Experiment-platform goals<br /><span class="quiet" style="font-size: 12.5px">booked-bare vs booked-with-extras</span></td><td>Attach rate, already defined as an experiment goal by someone else — a pre-agreed definition I don't have to defend in a review.</td></tr>
+            <tr><td>Session replay + struggle detection</td><td>Where the rage-click, the zig-zag scroll and the back-navigation came from. Turns the four behaviours in §1 from observations into counts with a denominator.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Then the gaps — the behaviours the new flow introduces, which nothing
+        tracks because they didn't exist before. These go into the tag spec
+        <em>before</em> launch, not after:
+      </p>
+      <ul>
+        <li><strong>Category expand rate</strong> — tests the two-cards default directly.</li>
+        <li><strong>Nudge shown / accepted / dismissed</strong> — the ethics question of §7, made empirical. Today there is no way to answer it.</li>
+        <li><strong>Detail-view opens per extra</strong> — the new flow's equivalent of the accordion event, and the read on whether the finding-12 fix is being used.</li>
+        <li><strong>Scroll depth on the extras step</strong> — the direct measure of scroll fatigue.</li>
+        <li><strong>Time to first extras interaction</strong> — how long orientation actually costs.</li>
+      </ul>
+      <p class="muted">
+        Writing that list is design work, not analytics housekeeping. A flow that
+        ships without it produces a result nobody can explain — only observe. If
+        the nudge wins, I want to know whether it won because it persuaded people
+        or because it slowed them down enough to think.
+      </p>
+
+      <h3>Testing when you don't have the traffic</h3>
+      <p>
+        Le Boat is a considered, seasonal purchase. Checkout volume doesn't support
+        the test cadence a high-frequency e-commerce site takes for granted, which
+        changes the strategy rather than excusing it: <strong>test whole
+        experiences, not components.</strong> A structural change produces an
+        effect large enough to detect; a button-colour test on this traffic is a
+        way to spend six weeks learning nothing.
+      </p>
+      <p>
+        So the flow shipped as one variant against the current checkout, and the
+        calculator below is the one I used to argue for that scope — and to set
+        expectations about how long an answer takes.
+      </p>
+
+      <div class="model" id="power-model">
+        <div class="model-head">
+          <span class="t">Experiment duration · two-proportion test</span>
+          <span class="badge">Interactive · illustrative volumes</span>
+        </div>
+        <div class="model-body">
+          <div class="field">
+            <div class="row">
+              <label for="p-traffic">Checkout sessions per week (both arms)</label>
+              <span class="val" id="p-traffic-v">900</span>
+            </div>
+            <input type="range" id="p-traffic" min="200" max="8000" step="100" value="900" />
+          </div>
+          <div class="field">
+            <div class="row">
+              <label for="p-base">Baseline attach rate</label>
+              <span class="val" id="p-base-v">31%</span>
+            </div>
+            <input type="range" id="p-base" min="5" max="70" step="1" value="31" />
+          </div>
+          <div class="field">
+            <div class="row">
+              <label for="p-mde">Relative lift we want to detect</label>
+              <span class="val" id="p-mde-v">+10%</span>
+            </div>
+            <input type="range" id="p-mde" min="3" max="60" step="1" value="10" />
+          </div>
+        </div>
+        <div class="model-out">
+          <div class="o">
+            <div class="k">Sessions needed per arm</div>
+            <div class="v" id="p-n">3,587</div>
+            <div class="n">80% power, 95% confidence</div>
+          </div>
+          <div class="o">
+            <div class="k">Weeks to read out</div>
+            <div class="v" id="p-weeks">8.0</div>
+            <div class="n" id="p-verdict">Readable within a season</div>
+          </div>
+          <div class="o">
+            <div class="k">Absolute lift detected</div>
+            <div class="v lift" id="p-abs">+3.1pp</div>
+            <div class="n" id="p-abs-note">31% → 34.1%</div>
+          </div>
+        </div>
+        <div class="model-foot">
+          Standard two-proportion sample size at α=0.05 (two-sided), power=0.80.
+          Real planning adds a full business cycle minimum and a seasonality
+          check — a test that reads out in nine days still runs for two weeks,
+          because Tuesday traffic and Sunday traffic are different people.
+        </div>
+      </div>
+
+      <p>
+        Pull the detectable lift down to +5% and the same traffic needs over seven
+        months; at +3% you are waiting the better part of two years. That is the
+        whole argument for structural tests over
+        micro-optimisation, made in one interaction — and it's why the roadmap
+        sequences the nudge variant <em>after</em> the flow test rather than
+        confounding the two.
+      </p>
+
+      <h3>What runs after the first read-out</h3>
+      <ol>
+        <li><strong>Nudge treatment</strong> — blocking comparison modal against the study's recommended inline comparison. The ethics question, decided with data.</li>
+        <li><strong>Bundles</strong> — value-led bundle cards above build-your-own, against the flat catalogue. Held back so it doesn't confound the structural test.</li>
+        <li><strong>Category defaults</strong> — two cards visible against three, informed by the expand rate the first test produces.</li>
+        <li><strong>Discovery layer</strong> — the parked search-and-filter work, if category expand rates say the catalogue is outgrowing four groups.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════ 10 · THE READ-OUT ══════════ -->
+  <section id="readout" class="deep">
+    <div class="col">
+      <div class="kicker"><span class="n">10</span> The read-out</div>
+      <div class="head">
+        <h1>It shipped to eight locales. Here is what moved.</h1>
+        <p class="lede">
+          The redesign went live on 20 July 2026 —
+          the redesign&#39;s feature flag flipped to <code>true</code> for
+          every locale, reaching production the same morning. Ten weeks of data
+          later, every metric the work targeted moved in the right direction.
+        </p>
+      </div>
+
+      <p>
+        The go-live is not an estimate, and the data confirms it without being
+        told: the legacy flow's signature event — an accordion opening — falls
+        <strong>88%</strong> across that boundary. The accordion does not exist in
+        the redesign.
+      </p>
+
+      <div class="rule-short"></div>
+
+      <h2 style="margin-bottom: 14px;">Extras engagement nearly doubled</h2>
+      <p>
+        In the 71 days after launch against the 71 before, sessions adding at least
+        one extra went from <strong>14.75% to 27.13%</strong> of booking-stage
+        sessions — a <strong>12.4 point rise, +84% relative</strong>, on precisely
+        the metric the restructure was built to move.
+      </p>
+      <p>
+        Travellers who buy extras now attach <strong>4.31 per booking, up from
+        3.41</strong> — 26% more separate decisions made on that step. And the
+        guardrail held: progression to payment did not fall (5.62% → 5.86%). The
+        step got busier without getting slower.
+      </p>
+    </div>
+
+    <div class="col-wide">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="figure">+84<small>%</small></div>
+          <div class="label">Relative rise in sessions adding an extra, after launch against before</div>
+        </div>
+        <div class="stat">
+          <div class="figure">+26<small>%</small></div>
+          <div class="label">More extras attached per booking — 3.41 to 4.31</div>
+        </div>
+        <div class="stat">
+          <div class="figure">−99.7<small>%</small></div>
+          <div class="label">Generic checkout errors per session</div>
+        </div>
+        <div class="stat">
+          <div class="figure">−87<small>%</small></div>
+          <div class="label">Sold-out failures, designed out rather than reported</div>
+        </div>
+      </div>
+
+    <figure class="chart" id="fig-prepost">
+      <div class="chart-top">
+        <div><div class="chart-title">Seventy-one days after launch, against the seventy-one before</div></div>
+        <div class="chart-key"><span><i style="background:var(--viz-step-1)"></i>Before — 10 May to 19 Jul 2026</span><span><i style="background:var(--viz-step-2)"></i>After — 21 Jul to 29 Sep 2026</span></div>
+      </div>
+      <p class="chart-sub">Denominator is <code>begin_checkout_app</code> — an event that fires on the WordPress availability journey, upstream of the checkout app, so the redesign cannot have moved it. Launch day itself excluded from both windows.</p>
+      <div class="chart-plot">
+    <svg viewBox="0 0 1000 318" role="img" aria-label="Seventy-one days after launch, against the seventy-one before">
+    <text class="lbl" x="157.3" y="22" text-anchor="middle" style="font-weight:600">Sessions adding an extra</text>
+    <text class="sub" x="157.3" y="40" text-anchor="middle">share of booking-stage sessions</text>
+    <line class="grid" x1="36.0" y1="246" x2="278.7" y2="246" />
+    <g class="mk" tabindex="0" data-tip="Sessions adding an extra &amp;middot; Before &amp;mdash; 14.75%"><rect class="hit" x="99.3" y="150.2" width="24" height="95.8" fill="transparent" /><path d="M99.3 246.0 V168.2 a4 4 0 0 1 4 -4 h16 a4 4 0 0 1 4 4 V246.0 Z" fill="var(--viz-step-1)" /></g>
+    <text class="v" x="111.3" y="153.2" text-anchor="middle">14.75%</text>
+    <text class="sub" x="111.3" y="265" text-anchor="middle">Before</text>
+    <g class="mk" tabindex="0" data-tip="Sessions adding an extra &amp;middot; After &amp;mdash; 27.13%"><rect class="hit" x="191.3" y="81.5" width="24" height="164.5" fill="transparent" /><path d="M191.3 246.0 V99.5 a4 4 0 0 1 4 -4 h16 a4 4 0 0 1 4 4 V246.0 Z" fill="var(--viz-step-2)" /></g>
+    <text class="v" x="203.3" y="84.5" text-anchor="middle">27.13%</text>
+    <text class="sub" x="203.3" y="265" text-anchor="middle">After</text>
+    <text class="sub" x="157.3" y="292" text-anchor="middle" style="font-weight:700;letter-spacing:.04em;fill:var(--viz-step-2)">+84% relative</text>
+    <line class="grid" x1="328.7" y1="8" x2="328.7" y2="302" />
+    <text class="lbl" x="500.0" y="22" text-anchor="middle" style="font-weight:600">Extras added per adding session</text>
+    <text class="sub" x="500.0" y="40" text-anchor="middle">add-to-basket events</text>
+    <line class="grid" x1="378.7" y1="246" x2="621.3" y2="246" />
+    <g class="mk" tabindex="0" data-tip="Extras added per adding session &amp;middot; Before &amp;mdash; 3.61"><rect class="hit" x="442.0" y="119.1" width="24" height="126.9" fill="transparent" /><path d="M442.0 246.0 V137.1 a4 4 0 0 1 4 -4 h16 a4 4 0 0 1 4 4 V246.0 Z" fill="var(--viz-step-1)" /></g>
+    <text class="v" x="454.0" y="122.1" text-anchor="middle">3.61</text>
+    <text class="sub" x="454.0" y="265" text-anchor="middle">Before</text>
+    <g class="mk" tabindex="0" data-tip="Extras added per adding session &amp;middot; After &amp;mdash; 4.75"><rect class="hit" x="534.0" y="83.5" width="24" height="162.5" fill="transparent" /><path d="M534.0 246.0 V101.5 a4 4 0 0 1 4 -4 h16 a4 4 0 0 1 4 4 V246.0 Z" fill="var(--viz-step-2)" /></g>
+    <text class="v" x="546.0" y="86.5" text-anchor="middle">4.75</text>
+    <text class="sub" x="546.0" y="265" text-anchor="middle">After</text>
+    <text class="sub" x="500.0" y="292" text-anchor="middle" style="font-weight:700;letter-spacing:.04em;fill:var(--viz-step-2)">+32%</text>
+    <line class="grid" x1="671.3" y1="8" x2="671.3" y2="302" />
+    <text class="lbl" x="842.7" y="22" text-anchor="middle" style="font-weight:600">Progression to payment</text>
+    <text class="sub" x="842.7" y="40" text-anchor="middle">the guardrail — share of sessions</text>
+    <line class="grid" x1="721.3" y1="246" x2="964.0" y2="246" />
+    <g class="mk" tabindex="0" data-tip="Progression to payment &amp;middot; Before &amp;mdash; 5.62%"><rect class="hit" x="784.7" y="111.2" width="24" height="134.8" fill="transparent" /><path d="M784.7 246.0 V129.2 a4 4 0 0 1 4 -4 h16 a4 4 0 0 1 4 4 V246.0 Z" fill="var(--viz-step-1)" /></g>
+    <text class="v" x="796.7" y="114.2" text-anchor="middle">5.62%</text>
+    <text class="sub" x="796.7" y="265" text-anchor="middle">Before</text>
+    <g class="mk" tabindex="0" data-tip="Progression to payment &amp;middot; After &amp;mdash; 5.86%"><rect class="hit" x="876.7" y="106.0" width="24" height="140.0" fill="transparent" /><path d="M876.7 246.0 V124.0 a4 4 0 0 1 4 -4 h16 a4 4 0 0 1 4 4 V246.0 Z" fill="var(--viz-step-2)" /></g>
+    <text class="v" x="888.7" y="109.0" text-anchor="middle">5.86%</text>
+    <text class="sub" x="888.7" y="265" text-anchor="middle">After</text>
+    <text class="sub" x="842.7" y="292" text-anchor="middle" style="font-weight:700;letter-spacing:.04em;fill:var(--viz-step-2)">+0.24pp</text>
+    </svg>
+      </div>
+      <p class="chart-scroll">Scroll the chart sideways &mdash; every value is also in the table</p>
+      <p class="chart-note">Three measures, three scales, three panels — deliberately not one chart with two axes. Source: GA4 Events report, <span class="mono">a28329558p282026147</span>, pulled 29 September 2026.</p>
+      <details class="chart-table"><summary>Table view &mdash; the same numbers, without the chart</summary>
+    <div class="table-wrap"><table><thead><tr><th>Measure</th><th class="n">Before</th><th class="n">After</th><th class="n">Change</th></tr></thead><tbody><tr><td><strong>Sessions adding an extra</strong> <span class="quiet">(share of booking-stage sessions)</span></td><td class="n">14.75%</td><td class="n">27.13%</td><td class="n">+84% relative</td></tr><tr><td><strong>Extras added per adding session</strong> <span class="quiet">(add-to-basket events)</span></td><td class="n">3.61</td><td class="n">4.75</td><td class="n">+32%</td></tr><tr><td><strong>Progression to payment</strong> <span class="quiet">(the guardrail — share of sessions)</span></td><td class="n">5.62%</td><td class="n">5.86%</td><td class="n">+0.24pp</td></tr></tbody></table></div>
+      </details>
+    </figure>
+    </div>
+
+    <div class="col">
+      <h2 style="margin-bottom: 14px;">Failure states: the result that carries its own control</h2>
+      <p>
+        Error rates per booking-stage session, against the same calendar window a
+        year earlier:
+      </p>
+    </div>
+
+    <div class="col-wide">
+      <figure class="chart" id="fig-errorstates">
+        <div class="chart-top">
+          <div><div class="chart-title">Error rates per booking-stage session — and the state nobody touched</div></div>
+          <div class="chart-key"><span><i style="background:var(--viz-step-1)"></i>Summer 2025 — before</span><span><i style="background:var(--viz-step-2)"></i>Summer 2026 — after</span><span><i style="background:var(--viz-mute)"></i>Untouched by the redesign (control)</span></div>
+        </div>
+        <p class="chart-sub">Matched windows, 21 July to 29 September, 2025 against 2026. Rates are per booking-stage session, so the 67% traffic growth between the two periods does not distort them.</p>
+        <div class="chart-plot">
+      <svg viewBox="0 0 1000 332" role="img" aria-label="Error rates per booking-stage session — and the state nobody touched">
+      <line class="grid" x1="354.0" y1="20" x2="354.0" y2="288" />
+      <text class="tick" x="354.0" y="308" text-anchor="middle">0%</text>
+      <line class="grid" x1="442.0" y1="20" x2="442.0" y2="288" />
+      <text class="tick" x="442.0" y="308" text-anchor="middle">2%</text>
+      <line class="grid" x1="530.0" y1="20" x2="530.0" y2="288" />
+      <text class="tick" x="530.0" y="308" text-anchor="middle">4%</text>
+      <line class="grid" x1="618.0" y1="20" x2="618.0" y2="288" />
+      <text class="tick" x="618.0" y="308" text-anchor="middle">6%</text>
+      <line class="grid" x1="706.0" y1="20" x2="706.0" y2="288" />
+      <text class="tick" x="706.0" y="308" text-anchor="middle">8%</text>
+      <line class="grid" x1="794.0" y1="20" x2="794.0" y2="288" />
+      <text class="tick" x="794.0" y="308" text-anchor="middle">10%</text>
+      <text class="tick" x="354.0" y="326" text-anchor="start" opacity="0.85">errors per booking-stage session</text>
+      <text class="lbl" x="320" y="68.0" text-anchor="end">Generic checkout error</text>
+      <text class="sub" x="320" y="85.0" text-anchor="end">“Oops — something went wrong”</text>
+      <text class="sub" x="320" y="102.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Redesigned</text>
+      <line x1="824.8" y1="70.0" x2="355.3" y2="70.0" stroke="var(--viz-step-1)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Generic checkout error &amp;middot; before &amp;mdash; 10.70%"><circle class="hit" cx="824.8" cy="70.0" r="16" fill="transparent" /><circle cx="824.8" cy="70.0" r="7.5" fill="var(--viz-step-1)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Generic checkout error &amp;middot; after &amp;mdash; 0.03% (−99.7%)"><circle class="hit" cx="355.3" cy="70.0" r="16" fill="transparent" /><circle cx="355.3" cy="70.0" r="7.5" fill="var(--viz-step-2)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="824.8" y="97.0" text-anchor="middle" style="fill:var(--ink-2)">10.70%</text>
+      <text class="v" x="355.3" y="53.0" text-anchor="middle" style="font-weight:600">0.03%</text>
+      <text class="v" x="994" y="75.0" text-anchor="end" style="font-weight:600;fill:var(--viz-step-2)">−99.7%</text>
+      <text class="lbl" x="320" y="152.0" text-anchor="end">Sold-out extra</text>
+      <text class="sub" x="320" y="169.0" text-anchor="end">adding an unavailable extra</text>
+      <text class="sub" x="320" y="186.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Prevented</text>
+      <line x1="442.0" y1="154.0" x2="365.0" y2="154.0" stroke="var(--viz-step-1)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Sold-out extra &amp;middot; before &amp;mdash; 2.00%"><circle class="hit" cx="442.0" cy="154.0" r="16" fill="transparent" /><circle cx="442.0" cy="154.0" r="7.5" fill="var(--viz-step-1)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Sold-out extra &amp;middot; after &amp;mdash; 0.25% (−87%)"><circle class="hit" cx="365.0" cy="154.0" r="16" fill="transparent" /><circle cx="365.0" cy="154.0" r="7.5" fill="var(--viz-step-2)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="462.0" y="159.0" text-anchor="start" style="fill:var(--ink-2)">2.00% &#8594; <tspan style="fill:var(--ink);font-weight:600">0.25%</tspan></text>
+      <text class="v" x="994" y="159.0" text-anchor="end" style="font-weight:600;fill:var(--viz-step-2)">−87%</text>
+      <text class="lbl" x="320" y="236.0" text-anchor="end">Availability error</text>
+      <text class="sub" x="320" y="253.0" text-anchor="end">fires upstream, on the marketing site</text>
+      <text class="sub" x="320" y="270.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Untouched — control</text>
+      <line x1="584.6" y1="238.0" x2="594.2" y2="238.0" stroke="var(--viz-mute)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Availability error &amp;middot; before &amp;mdash; 5.24%"><circle class="hit" cx="584.6" cy="238.0" r="16" fill="transparent" /><circle cx="584.6" cy="238.0" r="7.5" fill="var(--viz-mute)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Availability error &amp;middot; after &amp;mdash; 5.46% (+4%)"><circle class="hit" cx="594.2" cy="238.0" r="16" fill="transparent" /><circle cx="594.2" cy="238.0" r="7.5" fill="var(--viz-mute)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="614.2" y="243.0" text-anchor="start" style="fill:var(--ink-2)">5.24% &#8594; <tspan style="fill:var(--ink);font-weight:600">5.46%</tspan></text>
+      <text class="v" x="994" y="243.0" text-anchor="end" style="font-weight:600;fill:var(--viz-mute)">+4%</text>
+      </svg>
+        </div>
+        <p class="chart-scroll">Scroll the chart sideways &mdash; every value is also in the table</p>
+        <p class="chart-note">The grey row is the control. It fires upstream of the checkout, the redesign never went near it, and it did not move. A season, a traffic-mix shift or a broken tag would have moved all of them — instead the fall tracks the amount of design attention each state got.</p>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 30%">Error state</th><th>What the redesign did</th><th class="n">Before</th><th class="n">After</th><th class="n">Change</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Generic checkout error</strong><br /><span class="quiet" style="font-size: 13px">"Oops — something went wrong"</span></td>
+              <td>Failures moved off a catch-all toast onto specific, actionable patterns</td>
+              <td class="n">10.70%</td>
+              <td class="n"><strong>0.03%</strong></td>
+              <td class="n"><strong>−99.7%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Sold-out extra</strong></td>
+              <td>Moved from an error after a failed add to a card state that prevents the attempt</td>
+              <td class="n">2.00%</td>
+              <td class="n"><strong>0.25%</strong></td>
+              <td class="n"><strong>−87%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Availability error</strong><br /><span class="quiet" style="font-size: 13px">fires upstream, on the marketing site</span></td>
+              <td><em>Nothing — outside the redesign entirely</em></td>
+              <td class="n">5.24%</td>
+              <td class="n">5.46%</td>
+              <td class="n">+4%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col">
+      <p>
+        <strong>The third row is why the first two are credible.</strong> That error
+        fires upstream of the checkout and the redesign never touched it. It is
+        flat. A traffic-mix shift or a tracking change would have moved all three —
+        instead the states that got design attention fell 87% and 99.7%, and the
+        state outside the work didn't move.
+      </p>
+      <p class="muted">
+        A fall that large is also what a broken tag looks like, so the mechanism
+        was verified on the production branch before the number was used: the
+        toast utility still fires the analytics error event. The instrumentation is
+        unchanged. The failures genuinely stopped reaching people.
+      </p>
+
+      <div class="note">
+        <span class="label">The market these numbers were made in</span>
+        <p>
+          2026 has been a hard year for international travel — conflict and border
+          tension across several regions, new tariff regimes, and measurably
+          reduced cross-border leisure movement. Average order value across the
+          business fell 10% over this period, driven by the boat line rather than
+          anything in the checkout. <strong>Every gain above was made into that
+          headwind</strong>, and none of it is adjusted for it.
+        </p>
+      </div>
+
+      <p>
+        The one place engagement ran ahead of spend: extras revenue per booking was
+        level year on year, because travellers attach more and cheaper — damage
+        cover at €43 a time nearly tripled in units. More people protecting their
+        trip, at a lower average ticket. <strong>That is the brief for the next
+        piece of work</strong>, and §9's instrumentation is what will measure it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 09 · REFLECTION ═══════════════════ -->
+  <section id="reflection">
+    <div class="col">
+      <div class="kicker"><span class="n">11</span> What I'd carry forward</div>
+      <div class="head">
+        <h1>Three things this project settled for me.</h1>
+      </div>
+
+      <h3>Research in one language is research with a blind spot.</h3>
+      <p>
+        The single most actionable finding in the study — that protection cards
+        lack the numbers people need to commit — came from German participants
+        only. Three of them, independently, hit the same wall. Had the study run
+        in English alone, the highest-value, lowest-effort conversion fix in the
+        whole redesign would not have been in the report. I'd now argue for
+        multi-market qualitative research on any checkout serving multiple
+        markets, and I'd argue for it on conversion grounds, not inclusion ones.
+      </p>
+
+      <h3>The frame is a growth lever, and it's free.</h3>
+      <p>
+        "Choose extras" to "Complete your trip". "Protection" to "Protect your
+        trip". "Pay £1,169" to "Continue to review &amp; pay". Not one of these
+        changed a price, a product or a step — and together they change what the
+        traveller thinks the page is for. Most of that reframing was done before I
+        arrived, which is exactly why I'd defend it: I got to watch a set of pure
+        copy decisions carry a structural result through testing. Framing is the
+        cheapest lever in growth design and the one most often left on the table,
+        because it doesn't look like work in a design review.
+      </p>
+
+      <h3>Design the measurement before you design the screen.</h3>
+      <p>
+        The reason this launch can be reported at all is that the instrumentation
+        was specified before the first screen was drawn — which events, on which
+        surfaces, with which denominators. The failure-state result stands up
+        because an untouched error state sits alongside the designed ones as a
+        control, and that only exists because someone catalogued all fifteen states
+        instead of the six that were being changed.
+      </p>
+      <p>
+        <strong>Most design work cannot be evaluated after the fact because nobody
+        decided in advance what evaluating it would mean.</strong> That decision
+        costs an afternoon and it is the difference between a portfolio of screens
+        and a record of what the screens did.
+      </p>
+
+      <h3>The cheapest growth work is the work you never repeat.</h3>
+      <p>
+        Experiment velocity gets treated as a process problem — more tests,
+        faster cycles, better prioritisation. Most of the time it is an
+        architecture problem wearing a process costume. A forked second brand, an
+        accessibility audit that has to run twice, a payment rate hard-coded in
+        four components, a metric nobody can compute without engineering time:
+        each one puts a fixed toll on every future experiment, and the toll is
+        paid forever. <strong>Removing a toll is worth more than winning a
+        test</strong>, because it raises the return on every test after it. That
+        work is invisible in a portfolio, and it is most of what separates a
+        design that ships once from a product that keeps improving.
+      </p>
+
+      <h3>Building it is how the decisions survive.</h3>
+      <p>
+        The details that carry this redesign are not in any comp. They're the
+        loading state that covers a three-second re-price, the token that inverts
+        a confirmation colour between brands, the truncation rule that keeps a
+        400-character booking note from breaking a phone layout, the sold-out card
+        that degrades without a dead button. Every one of those is a design
+        decision, and every one of them only gets made if the person designing is
+        the person building. That's the job I want: <strong>the one where the
+        argument and the artefact are the same object.</strong>
+      </p>
+
+      <div class="rule-short"></div>
+
+      <p class="muted">
+        The work was handed to the Le Boat engineering team for backend
+        integration — Neptune pricing, Fiserv payment, session handling — with the
+        measurement plan attached. The honest headline on this case study is not a
+        number. It's that a structurally better checkout shipped with the
+        instrumentation to prove or disprove itself, which is the only version of
+        growth design worth defending.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ 10 · RECEIPTS ═══════════════════ -->
+  <section id="receipts" class="ink">
+    <div class="col">
+      <div class="kicker"><span class="n">12</span> Receipts</div>
+      <div class="head">
+        <h1>Where every claim above comes from.</h1>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <div class="ink-cards">
+        <div class="ink-card">
+          <h3>Research</h3>
+          <div class="row"><span class="k">Study</span><span class="v">Checkout restructure, 2026</span></div>
+          <div class="row"><span class="k">Participants</span><span class="v">36 of 43</span></div>
+          <div class="row"><span class="k">Languages</span><span class="v">EN · FR · DE</span></div>
+          <div class="row"><span class="k">Questions</span><span class="v">13, think-aloud</span></div>
+          <div class="row"><span class="k">Findings</span><span class="v">12</span></div>
+          <div class="row"><span class="k">Recommendations</span><span class="v">6, prioritised</span></div>
+        </div>
+        <div class="ink-card">
+          <h3>Build</h3>
+          <div class="row"><span class="k">Commits</span><span class="v">42</span></div>
+          <div class="row"><span class="k">Pull requests</span><span class="v">3</span></div>
+          <div class="row"><span class="k">Components</span><span class="v">17</span></div>
+          <div class="row"><span class="k">TypeScript</span><span class="v">~5,100 lines</span></div>
+          <div class="row"><span class="k">Tests</span><span class="v">13 / 13 passing</span></div>
+          <div class="row"><span class="k">Error states</span><span class="v">15 catalogued</span></div>
+        </div>
+        <div class="ink-card">
+          <h3>Stack</h3>
+          <div class="row"><span class="k">Framework</span><span class="v">Next.js 16 · React 19</span></div>
+          <div class="row"><span class="k">Language</span><span class="v">TypeScript 5</span></div>
+          <div class="row"><span class="k">Styling</span><span class="v">Tailwind 3 + SCSS</span></div>
+          <div class="row"><span class="k">Forms</span><span class="v">react-hook-form + Zod</span></div>
+          <div class="row"><span class="k">i18n</span><span class="v">next-intl, 6 locales</span></div>
+          <div class="row"><span class="k">Testing</span><span class="v">Vitest + axe</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <h3 style="color: var(--ink-invert); margin-bottom: 6px;">Everything else, at a glance</h3>
+      <p class="quiet" style="font-size: 14px; max-width: 60ch;">Click any frame to enlarge.</p>
+      <div class="gal">
+        <figure>
+          <div class="fig-media"><img src="images/06-review-and-pay-desktop-full.jpg" alt="The full review and pay page." data-cap="Review and pay, end to end: booking note callout, contact details, billing address, payment options and the sticky booking summary." /></div>
+          <figcaption><span class="prov shipped">Shipped</span><br />Review &amp; pay, full page</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/12-review-mobile-viewport.jpg" alt="The review and pay page at 390 pixels wide." data-cap="Review and pay at 390px — the second of the two mobile sticky bars, made consistent with the extras step so the two don't behave differently." /></div>
+          <figcaption><span class="prov shipped">Shipped</span><br />Review &amp; pay, 390px</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/14-emerald-review-viewport.jpg" alt="The review and pay page in Emerald Star branding." data-cap="Emerald Star review step — the selected payment card tint follows the brand, so the selection reads as green rather than defaulting to blue." /></div>
+          <figcaption><span class="prov shipped">Shipped</span><br />Emerald Star, review step</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/10-extras-mobile-full.jpg" alt="The full extras step at 390 pixels wide." data-cap="The whole extras step at 390px — four groups, two cards each, the same bounded length as desktop." /></div>
+          <figcaption><span class="prov shipped">Shipped</span><br />Extras, 390px full page</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/17-agency-extras-with-bundles.jpg" alt="The bundles variant of the tested prototype." data-cap="The with-bundles variant of the tested prototype — bundles placed within the extras step rather than ahead of it (strategy approach 1)." /></div>
+          <figcaption><span class="prov parked">Parked</span><br />Bundles within extras</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/19-agency-two-part-bundle.jpg" alt="The two-part bundle and extras exploration." data-cap="The two-part exploration — choose a bundle, then add individual extras on top, as two distinct stages of the same step." /></div>
+          <figcaption><span class="prov parked">Parked</span><br />Two-part bundle + extras</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/20-agency-split-flow.jpg" alt="The split-flow review and pay exploration." data-cap="The split-flow review and pay variant, paired with the bundles-first direction." /></div>
+          <figcaption><span class="prov parked">Parked</span><br />Split-flow review</figcaption>
+        </figure>
+        <figure>
+          <div class="fig-media"><img src="images/22-parked-extras-discovery-full.jpg" alt="The full parked discovery layer page." data-cap="The discovery layer in full — search and intent chips above a recommendation panel, then the standard grouped catalogue beneath." /></div>
+          <figcaption><span class="prov parked">Parked</span><br />Discovery layer, full page</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <h3 style="color: var(--ink-invert); margin-bottom: 6px;">The decision log</h3>
+      <p class="quiet" style="font-size: 14px; max-width: 64ch;">
+        Dates from the commit history. The status column is the only one that
+        matters: it separates what a stakeholder agreed from what I chose from
+        what nobody has validated.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 8%">Date</th><th style="width: 34%">Decision</th><th style="width: 28%">Evidence / reason</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="n">6 Jul</td><td>Promote the V2 direction; remove V1</td><td>Two directions prototyped, one chosen</td><td><span class="tag pos">Agreed</span> <span class="quiet">rationale not recorded in the repo</span></td></tr>
+            <tr><td class="n">6 Jul</td><td>Top 2 extras per group, rest behind "Show <em>N</em> more"</td><td>Action item #7; answers scroll fatigue (finding 02)</td><td><span class="tag pos">Agreed</span> <span class="quiet">the default of 2 is a judgement, never tested</span></td></tr>
+            <tr><td class="n">6 Jul</td><td>Keep groups open instead of collapsing categories</td><td>Collapsing re-creates the accordion problem finding 01 warned about</td><td><span class="tag mix">My call</span> <span class="quiet">unvalidated</span></td></tr>
+            <tr><td class="n">6 Jul</td><td>Deposit / Pay in full replace card &amp; wallet</td><td>Action item #9</td><td><span class="tag mix">Split unresolved</span> <span class="quiet">"TBC" in the commit; still open at handover</span></td></tr>
+            <tr><td class="n">6 Jul</td><td>Promo field open by default</td><td>Action item #10, recorded as A/B-test-backed</td><td><span class="tag pos">Agreed</span> <span class="quiet">on a test I never read — taken on trust</span></td></tr>
+            <tr><td class="n">7 Jul</td><td>Waiting state covering the re-price call</td><td>Engineering: the call takes 3–5 seconds</td><td><span class="tag pos">Agreed</span> <span class="quiet">duration stated, not measured here</span></td></tr>
+            <tr><td class="n">8 Jul</td><td>Booking note lifted out of the summary card</td><td>Keeps the pay CTA above the fold; fits up to 3 notes</td><td><span class="tag mix">My call</span> <span class="quiet">unvalidated</span></td></tr>
+            <tr><td class="n">8 Jul</td><td>Damage-cover add action moved inside the comparison</td><td>Let people act where they were convinced</td><td><span class="tag mix">My call</span> <span class="quiet">unvalidated</span></td></tr>
+            <tr><td class="n">9 Jul</td><td>Co-brand through tokens rather than forking</td><td>Marginal cost of brand two governs whether it keeps improving</td><td><span class="tag mix">My call</span> <span class="quiet">mechanism verified, commercial claim unmeasured</span></td></tr>
+            <tr><td class="n">9 Jul</td><td>Drop "Recommended" from the deposit option</td><td>The right answer depends on cash position, which we don't know</td><td><span class="tag mix">My call</span></td></tr>
+            <tr><td class="n">13 Jul</td><td>WCAG 2.1 AA sweep, both brands</td><td>0 axe contrast violations, desktop and mobile</td><td><span class="tag pos">Tool-verified</span> <span class="quiet">automated only; no assistive-tech testing</span></td></tr>
+            <tr><td class="n">13 Jul</td><td>Neutral text palette; navy reserved for summary card and footer</td><td>Brand feedback: "too much blue/navy"</td><td><span class="tag pos">Agreed</span></td></tr>
+            <tr><td class="n">—</td><td>Park the extras-discovery layer</td><td>Out of scope for the milestone</td><td><span class="tag mix">Parked</span> <span class="quiet">branch retained on origin</span></td></tr>
+            <tr><td class="n">—</td><td>Ship the flat catalogue; hold bundles back</td><td>Avoid confounding the structural test</td><td><span class="tag neg">Superseded</span> <span class="quiet">a bundles experiment was already live in production</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size: 15px;">
+        Fourteen decisions: six agreed with someone, six mine with nothing behind
+        them, one verified only by tooling, one superseded. <strong>The last row is
+        the useful one.</strong> Parking bundles was reasoned carefully and was
+        wrong, because nobody asked what was already running in production — and
+        the answer existed the whole time. That's the failure mode this log is for.
+      </p>
+    </div>
+
+    <div class="col">
+      <h3 style="color: var(--ink-invert); margin-bottom: 18px;">The iteration story, in commits</h3>
+      <pre tabindex="0" role="region" aria-label="The iteration story, in commits" style="background: var(--slate-900); border-color: var(--slate-800); color: var(--slate-300);">5d8f3e1 brand-align checkout, neutral text palette &amp; WCAG AA pass
+0d9de09 make the two mobile sticky bars consistent
+66d207b struck was/now price on Pay-in-full; drop deposit Recommended tag
+1ada304 Emerald Star co-brand theming for checkout
+b02e9ff extras add-to-trip default, sold-out copy, tap targets
+c916c6e payment-failure pop-up + "pay today" deposit line
+614410f booking note callout + deposit payment schedule
+7fd9a13 record where the parked extras-discovery exploration lives
+89cc6ec damage-cover CTAs inside the compare cards
+bb41305 duration row, full collapsed summary, sticky card only
+554d611 move Trustpilot trust widget above the summary card
+3655149 checkout interaction states, searchable selects &amp; summary refinements
+6bb5c86 Apply checkout alignment action items (6 July meeting)
+450120b Re-skin checkout to the Le Boat brand (Helix design system)
+125657e Promote V2 to canonical routes, remove V1</pre>
+      <p class="muted" style="font-size: 15px;">
+        The shape of it: structural redesign, then brand alignment, then the
+        alignment-meeting action items, then interaction depth, then co-branding,
+        then accessibility. Each step is its own commit, which is what made it
+        reviewable by people who weren't designers.
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="col-wide f">
+    <span>Le Boat checkout restructure · Senior Design Engineer, Growth · 2026</span>
+    <span class="num">Personal case study — not for distribution</span>
+  </div>
+</footer>
+
+<div class="lb" id="lightbox" hidden>
+  <button type="button" class="lb-close" id="lb-close">Close ✕</button>
+  <img id="lb-img" src="" alt="" />
+  <p class="lb-cap" id="lb-cap"></p>
+</div>
+
+<script>
+  (function () {
+    'use strict';
+
+    /* ── Lightbox — screenshots carry detail worth zooming into ── */
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lb-img');
+    var lbCap = document.getElementById('lb-cap');
+    var lastFocus = null;
+
+    function openLb(img) {
+      lastFocus = img;
+      lbImg.src = img.getAttribute('src');
+      lbImg.alt = img.getAttribute('alt') || '';
+      lbCap.textContent = img.getAttribute('data-cap') || img.getAttribute('alt') || '';
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+      document.getElementById('lb-close').focus();
+    }
+    function closeLb() {
+      lb.hidden = true;
+      lbImg.src = '';
+      document.body.style.overflow = '';
+      if (lastFocus) { lastFocus.focus(); }
+    }
+
+    document.querySelectorAll('.fig-media img').forEach(function (img) {
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.addEventListener('click', function () { openLb(img); });
+      img.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(img); }
+      });
+    });
+    document.getElementById('lb-close').addEventListener('click', closeLb);
+    lb.addEventListener('click', function (e) { if (e.target === lb || e.target === lbImg) { closeLb(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) { closeLb(); } });
+
+    /* ── Footnote disclosure ───────────────────────────────── */
+    document.querySelectorAll('.fn-marker').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-fn');
+        var body = document.querySelector('[data-fn-target="' + id + '"]');
+        if (!body) { return; }
+        var open = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', String(!open));
+        body.hidden = open;
+      });
+    });
+
+    /* ── Formatting helpers ────────────────────────────────── */
+    var gbp = function (n) {
+      return '£' + Math.round(n).toLocaleString('en-GB');
+    };
+
+    /* ── Model 1 · Extras attach rate ──────────────────────── */
+    var mBookings = document.getElementById('m-bookings');
+    var mBase     = document.getElementById('m-base');
+    var mTarget   = document.getElementById('m-target');
+    var mAov      = document.getElementById('m-aov');
+
+    function renderAttach() {
+      var bookings = Number(mBookings.value);
+      var base     = Number(mBase.value);
+      var target   = Number(mTarget.value);
+      var aov      = Number(mAov.value);
+
+      document.getElementById('m-bookings-v').textContent = bookings.toLocaleString('en-GB');
+      document.getElementById('m-base-v').textContent     = base + '%';
+      document.getElementById('m-target-v').textContent   = target + '%';
+      document.getElementById('m-aov-v').textContent      = gbp(aov);
+
+      var deltaPp    = target - base;
+      var incBookings = bookings * (deltaPp / 100);
+      var monthly     = incBookings * aov;
+
+      document.getElementById('o-bookings').textContent = Math.round(incBookings).toLocaleString('en-GB');
+      document.getElementById('o-monthly').textContent  = gbp(monthly);
+      document.getElementById('o-annual').textContent   = gbp(monthly * 12);
+
+      var note = document.getElementById('o-note');
+      note.textContent = (deltaPp >= 0 ? '+' : '') + deltaPp.toFixed(1) + 'pp attach rate';
+
+      var monthlyEl = document.getElementById('o-monthly');
+      var annualEl  = document.getElementById('o-annual');
+      var negative  = deltaPp < 0;
+      monthlyEl.classList.toggle('lift', !negative);
+      annualEl.classList.toggle('lift', !negative);
+    }
+
+    [mBookings, mBase, mTarget, mAov].forEach(function (el) {
+      el.addEventListener('input', renderAttach);
+    });
+    renderAttach();
+
+    /* ── Model 2 · Experiment duration ─────────────────────── */
+    var pTraffic = document.getElementById('p-traffic');
+    var pBase    = document.getElementById('p-base');
+    var pMde     = document.getElementById('p-mde');
+
+    /* Two-proportion sample size, α=0.05 two-sided, power=0.80.
+       n per arm = 2 · (z_α/2 + z_β)² · p̄(1−p̄) / δ²   */
+    var Z_SUM_SQ = Math.pow(1.959964 + 0.841621, 2); // ≈ 7.849
+
+    function renderPower() {
+      var weekly = Number(pTraffic.value);
+      var p1     = Number(pBase.value) / 100;
+      var rel    = Number(pMde.value) / 100;
+
+      document.getElementById('p-traffic-v').textContent = weekly.toLocaleString('en-GB');
+      document.getElementById('p-base-v').textContent    = Number(pBase.value) + '%';
+      document.getElementById('p-mde-v').textContent     = '+' + Number(pMde.value) + '%';
+
+      var p2    = Math.min(p1 * (1 + rel), 0.999);
+      var delta = p2 - p1;
+      var pBar  = (p1 + p2) / 2;
+
+      var nPerArm = (2 * Z_SUM_SQ * pBar * (1 - pBar)) / (delta * delta);
+      var weeks   = (nPerArm * 2) / weekly;
+
+      document.getElementById('p-n').textContent   = Math.ceil(nPerArm).toLocaleString('en-GB');
+      document.getElementById('p-weeks').textContent = weeks < 100 ? weeks.toFixed(1) : Math.round(weeks).toLocaleString('en-GB');
+      document.getElementById('p-abs').textContent = '+' + (delta * 100).toFixed(1) + 'pp';
+      document.getElementById('p-abs-note').textContent =
+        (p1 * 100).toFixed(0) + '% → ' + (p2 * 100).toFixed(1) + '%';
+
+      var verdict = document.getElementById('p-verdict');
+      if (weeks <= 2) {
+        verdict.textContent = 'Still run a full business cycle';
+      } else if (weeks <= 8) {
+        verdict.textContent = 'Readable within a season';
+      } else if (weeks <= 26) {
+        verdict.textContent = 'Spans seasonality — interpret with care';
+      } else {
+        verdict.textContent = 'Not detectable at this traffic';
+      }
+    }
+
+    [pTraffic, pBase, pMde].forEach(function (el) {
+      el.addEventListener('input', renderPower);
+    });
+    renderPower();
+
+    /* Chart tooltips — hover and keyboard focus show the same thing,
+       and every value is also in the table twin, so nothing is gated
+       behind a pointer. */
+    document.querySelectorAll(".chart-plot").forEach(function (plot) {
+      var tip = document.createElement("div");
+      tip.className = "chart-tip";
+      plot.appendChild(tip);
+      var show = function (el) {
+        var t = el.getAttribute("data-tip");
+        if (!t) return;
+        tip.innerHTML = t;
+        var pr = plot.getBoundingClientRect(), r = el.getBoundingClientRect();
+        tip.style.left = (r.left - pr.left + r.width / 2) + "px";
+        tip.style.top = (r.top - pr.top - 7) + "px";
+        tip.classList.add("on");
+      };
+      var hide = function () { tip.classList.remove("on"); };
+      plot.querySelectorAll("[data-tip]").forEach(function (el) {
+        el.addEventListener("pointerenter", function () { show(el); });
+        el.addEventListener("pointerleave", hide);
+        el.addEventListener("focus", function () { show(el); });
+        el.addEventListener("blur", hide);
+      });
+    });
+  })();
+</script>
+</body>
+</html>

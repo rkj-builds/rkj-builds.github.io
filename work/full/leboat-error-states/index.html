@@ -1,0 +1,1173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fifteen Ways A Booking Breaks — designing the checkout's failure states for self-service recovery.</title>
+  <meta name="description" content="A case study on cataloguing and designing every failure state in a live travel checkout, so customers resolve booking problems themselves instead of contacting support." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" />
+  <style>
+    /* ════════════════════════════════════════════════════════════
+       Le Boat checkout — failure states.
+
+       Identity: a clinical calm. Stone-neutral paper at hue 100
+       (a faintly green-grey, the colour of a well-run control room
+       rather than an alarm), one indigo accent for structure, and
+       three semantic signals — block, warn, resolved — that appear
+       ONLY inside the state taxonomy. The accent is never a
+       severity, and a severity is never decoration.
+       ──────────────────────────────────────────────────────────── */
+    :root {
+      color-scheme: light;
+
+      /* Tier 1 — primitives. Components never reference these. */
+      --stone-50:  oklch(0.988 0.003 100);
+      --stone-100: oklch(0.970 0.005 100);
+      --stone-200: oklch(0.928 0.008 100);
+      --stone-300: oklch(0.868 0.010 100);
+      --stone-400: oklch(0.706 0.012 100);
+      --stone-500: oklch(0.535 0.013 100);
+      --stone-600: oklch(0.444 0.013 100);
+      --stone-700: oklch(0.342 0.012 100);
+      --stone-800: oklch(0.252 0.010 100);
+      --stone-900: oklch(0.190 0.008 100);
+      --stone-950: oklch(0.142 0.006 100);
+
+      /* Indigo — structural accent. Never a severity. */
+      --indigo-50:  oklch(0.958 0.018 285);
+      --indigo-100: oklch(0.912 0.038 285);
+      --indigo-400: oklch(0.590 0.130 285);
+      --indigo-600: oklch(0.452 0.135 285);
+      --indigo-800: oklch(0.330 0.100 285);
+
+      /* Severity signals — taxonomy only. */
+      --sig-block:      oklch(0.510 0.145 25);
+      --sig-block-soft: oklch(0.958 0.026 25);
+      --sig-warn:       oklch(0.520 0.105 70);
+      --sig-warn-soft:  oklch(0.960 0.035 80);
+      --sig-ok:         oklch(0.470 0.080 150);
+      --sig-ok-soft:    oklch(0.955 0.024 150);
+
+      /* Tier 2 — semantic */
+      --paper:       var(--stone-50);
+      --paper-deep:  var(--stone-100);
+      --ink:         var(--stone-950);
+      --ink-2:       var(--stone-700);
+      --ink-3:       var(--stone-500);
+      --rule:        var(--stone-200);
+      --rule-strong: var(--stone-400);
+      --accent:      var(--indigo-600);
+      --accent-deep: var(--indigo-800);
+      --accent-soft: var(--indigo-50);
+      --code-bg:     var(--stone-100);
+
+      /* ── Chart palette ───────────────────────────────────────
+         Computed, not chosen. An ordinal ramp (before → after) on
+         the indigo hue, and a de-emphasis grey reserved — always
+         and only — for the control row. Checked against the
+         lightness band, the chroma floor, protan/deutan separation
+         and surface contrast before anything was drawn. The
+         severity signals are NOT used here: a measured rate is not
+         a severity. */
+      --viz-step-1:  oklch(0.660 0.115 285);
+      --viz-step-2:  oklch(0.440 0.135 285);
+      --viz-ochre:   oklch(0.600 0.130 80);
+      --viz-blue:    oklch(0.520 0.120 250);
+      --viz-mute:    oklch(0.706 0.012 100);
+      --viz-surface: var(--paper-deep);
+
+      --display: "Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+      --body:    "Public Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+      --mono:    "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+      --text-mega: clamp(42px, 8vw, 96px);
+      --text-h1:   clamp(29px, 4.1vw, 48px);
+      --text-h2:   clamp(22px, 2.4vw, 29px);
+      --text-h3:   17.5px;
+      --text-body: 17px;
+      --text-meta: 13px;
+      --text-mn:   13.5px;
+
+      --col:      660px;
+      --col-wide: 1120px;
+      --gutter:   clamp(20px, 4.5vw, 56px);
+      --section-y: clamp(72px, 10vw, 132px);
+      --ease: cubic-bezier(0.2, 0.65, 0.3, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: var(--body); font-size: var(--text-body); line-height: 1.62;
+      overflow-x: hidden;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+
+    main { display: block; }
+    section { padding-block: var(--section-y); position: relative; }
+    section + section { border-top: 1px solid var(--rule); }
+    section.deep { background: var(--paper-deep); }
+    .col      { max-width: var(--col);      margin-inline: auto; padding-inline: var(--gutter); }
+    .col-wide { max-width: var(--col-wide); margin-inline: auto; padding-inline: var(--gutter); }
+
+    h1, h2, h3, h4 {
+      margin: 0; font-family: var(--display); font-weight: 600;
+      letter-spacing: -0.021em; color: inherit; text-wrap: balance;
+    }
+    h1 { font-size: var(--text-h1); line-height: 1.07; }
+    h2 { font-size: var(--text-h2); line-height: 1.18; }
+    h3 { font-size: var(--text-h3); line-height: 1.34; font-weight: 600; font-family: var(--body); letter-spacing: -0.002em; }
+    p, li { text-wrap: pretty; }
+    p { margin: 0 0 1.1em; max-width: 64ch; }
+    ul, ol { margin: 0 0 1.2em; padding-left: 1.15em; }
+    li { margin-bottom: .5em; }
+    li::marker { color: var(--ink-3); }
+
+    a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; transition: color 180ms var(--ease); }
+    a:hover { color: var(--accent-deep); }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+    strong { font-weight: 600; }
+
+    .lede { font-size: 20px; line-height: 1.5; color: var(--ink-2); max-width: 54ch; }
+    .meta  { font-size: var(--text-meta); color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
+    .muted { color: var(--ink-2); }
+    .quiet { color: var(--ink-3); }
+    .num   { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+    /* Section labels — this content is a taxonomy, not a sequence,
+       so sections are named rather than numbered. */
+    .label-line {
+      font-family: var(--mono); font-size: 12px; font-weight: 500;
+      color: var(--accent); letter-spacing: .1em; text-transform: uppercase;
+      margin-bottom: 18px; display: flex; align-items: center; gap: 12px;
+    }
+    .label-line::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+
+    .head { margin-bottom: 40px; }
+    .head .lede { margin-top: 16px; }
+    .rule-short { width: 52px; height: 1px; background: var(--ink); opacity: .4; margin: 30px 0; }
+
+    /* Cover */
+    .cover { padding-block: clamp(52px, 11vw, 124px) clamp(60px, 9vw, 108px); border-top: 0; }
+    .cover-title { font-size: var(--text-mega); line-height: .98; font-weight: 700; letter-spacing: -.035em; margin-bottom: 28px; }
+    .cover-title em { font-style: normal; color: var(--accent); }
+    .cover-meta {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 24px 32px; margin-top: 48px; padding-top: 26px; border-top: 1px solid var(--rule);
+    }
+    .cover-meta .k { font-size: 11px; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 7px; }
+    .cover-meta .v { font-size: 15px; color: var(--ink-2); line-height: 1.45; }
+
+    /* Note */
+    .note {
+      border-left: 2px solid var(--indigo-100); background: var(--accent-soft);
+      padding: 18px 22px; margin: 30px 0; font-size: 15px; line-height: 1.55; color: var(--ink-2);
+      border-radius: 0 3px 3px 0;
+    }
+    .note strong { color: var(--ink); }
+    .note p:last-child { margin-bottom: 0; }
+    .note .l { display: block; font-size: 11px; letter-spacing: .13em; text-transform: uppercase; color: var(--accent-deep); font-weight: 600; margin-bottom: 8px; }
+
+    /* Tables */
+    .table-wrap { overflow-x: auto; margin: 30px 0; }
+    table { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 560px; }
+    th, td { text-align: left; padding: 11px 16px 11px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+    th { font-size: 11px; letter-spacing: .11em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; border-bottom: 1px solid var(--rule-strong); padding-bottom: 9px; }
+    td.n, th.n { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+    tbody tr:last-child td { border-bottom: 0; }
+
+    /* Severity + status pills */
+    .pill {
+      font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+      font-weight: 500; padding: 3px 8px; border-radius: 2px; white-space: nowrap; display: inline-block;
+    }
+    .pill.block { background: var(--sig-block-soft); color: var(--sig-block); }
+    .pill.warn  { background: var(--sig-warn-soft);  color: var(--sig-warn); }
+    .pill.ok    { background: var(--sig-ok-soft);    color: var(--sig-ok); }
+    .pill.idle  { background: var(--stone-200);      color: var(--ink-2); }
+
+    /* Pattern cards */
+    .patterns { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 32px 0; }
+    .pattern { background: var(--paper); padding: 20px; }
+    section.deep .pattern { background: var(--paper-deep); }
+    .pattern h3 { margin-bottom: 8px; font-family: var(--mono); font-size: 13px; font-weight: 500; letter-spacing: .04em; color: var(--accent); text-transform: uppercase; }
+    .pattern .w { font-family: var(--display); font-size: 17px; font-weight: 600; margin-bottom: 9px; letter-spacing: -.015em; }
+    .pattern p { font-size: 14px; margin: 0; color: var(--ink-2); }
+
+    /* Code */
+    pre {
+      font-family: var(--mono); font-size: var(--text-mn); line-height: 1.62;
+      background: var(--code-bg); border: 1px solid var(--rule); border-radius: 3px;
+      padding: 17px 19px; overflow-x: auto; margin: 22px 0; color: var(--ink-2);
+    }
+    section.deep pre { background: var(--paper); }
+    pre .c { color: var(--ink-3); }
+    pre .k { color: var(--accent); }
+    code { font-family: var(--mono); font-size: .89em; background: var(--code-bg); padding: 2px 5px; border-radius: 2px; color: var(--ink-2); }
+
+    /* Copy specimens — real production strings */
+    .specimen { border: 1px solid var(--rule); border-radius: 3px; margin: 22px 0; overflow: hidden; }
+    .specimen .sp-key {
+      font-family: var(--mono); font-size: 12px; color: var(--ink-3);
+      padding: 9px 16px; background: var(--paper-deep); border-bottom: 1px solid var(--rule);
+    }
+    section.deep .specimen .sp-key { background: var(--paper); }
+    .specimen .sp-body { padding: 15px 16px; font-size: 15.5px; line-height: 1.5; }
+    .specimen .sp-note { padding: 0 16px 15px; font-size: 13.5px; color: var(--ink-3); line-height: 1.5; }
+    .specimen .sp-note b { color: var(--sig-block); font-weight: 600; }
+
+    /* Figures */
+    figure.fig { margin: 32px 0; }
+    .fig-media { border: 1px solid var(--rule-strong); border-radius: 3px; overflow: hidden; background: var(--paper); line-height: 0; }
+    .fig-media img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+    figcaption { margin-top: 12px; font-size: 13.5px; line-height: 1.55; color: var(--ink-3); display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+    figcaption .cap-t { flex: 1 1 260px; min-width: 0; }
+    figcaption strong { color: var(--ink-2); font-weight: 600; }
+    .fig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0; }
+    .fig-grid figure.fig { margin: 0; }
+    @media (max-width: 760px) { .fig-grid { grid-template-columns: 1fr; } }
+    .zoom-hint { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); margin-top: 6px; }
+
+    /* Lightbox */
+    .lb { position: fixed; inset: 0; z-index: 9999; background: rgba(16,17,14,.94); overflow: auto; padding: 56px 16px 40px; text-align: center; }
+    .lb[hidden] { display: none !important; }
+    .lb img { width: auto; max-width: min(100%, 1400px); border-radius: 3px; }
+    .lb-cap { color: var(--stone-300); font-size: 13px; margin: 14px auto 0; max-width: 70ch; line-height: 1.5; }
+    .lb-close {
+      position: fixed; top: 14px; right: 16px; z-index: 1;
+      background: var(--stone-800); color: var(--stone-100); border: 1px solid var(--stone-700);
+      border-radius: 3px; font-family: var(--body); font-size: 13px; font-weight: 600; padding: 9px 14px; cursor: pointer;
+    }
+    .lb-close:hover { background: var(--stone-700); }
+
+    /* Stat row */
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin: 34px 0; }
+    .stat { background: var(--paper); padding: 21px 20px; }
+    section.deep .stat { background: var(--paper-deep); }
+    .stat .figure { font-family: var(--display); font-size: 33px; line-height: 1; font-weight: 700; letter-spacing: -.028em; font-variant-numeric: tabular-nums; margin-bottom: 9px; }
+    .stat .figure small { font-size: 16px; color: var(--ink-3); font-weight: 500; }
+    .stat .label { font-size: 12.5px; color: var(--ink-3); line-height: 1.4; }
+
+    footer { padding-block: 52px; border-top: 1px solid var(--rule); }
+    footer .f { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--ink-3); }
+    section { scroll-margin-top: 24px; }
+
+    /* ── Charts ─────────────────────────────────────────────────
+       The results needed a picture, not another table. Palette is
+       computed, not chosen: an ordinal ramp (before → after) on one
+       hue, a categorical pair for the two years, and a de-emphasis
+       grey reserved — always and only — for the control. Checked
+       against the lightness band, the chroma floor, protan/deutan
+       separation and surface contrast before anything was drawn. */
+    figure.chart { margin: 40px 0; }
+    .chart-top { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; flex-wrap: wrap; }
+    .chart-title { font-size: 15.5px; font-weight: 600; color: var(--ink); line-height: 1.4; max-width: 46ch; }
+    .chart-key { display: flex; gap: 15px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-3); }
+    .chart-key span { display: inline-flex; align-items: center; gap: 6px; }
+    .chart-key i { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+    .chart-sub { font-size: 12.5px; line-height: 1.55; color: var(--ink-3); margin: 10px 0 20px; max-width: 76ch; }
+    .chart-sub code { font-size: 11.5px; }
+    .chart-plot { position: relative; }
+    .chart-plot svg { width: 100%; height: auto; display: block; }
+    .chart svg text { font-family: var(--body); fill: var(--ink-3); }
+    .chart svg text.lbl  { font-size: 13.5px; fill: var(--ink); }
+    .chart svg text.sub  { font-size: 11px; }
+    .chart svg text.v    { font-family: var(--mono); font-size: 13px; fill: var(--ink); font-variant-numeric: tabular-nums; }
+    .chart svg text.tick { font-family: var(--mono); font-size: 11px; font-variant-numeric: tabular-nums; }
+    .chart svg .grid { stroke: var(--rule); stroke-width: 1; }
+    .chart .mk { outline: none; }
+    .chart .mk:hover .hit, .chart .mk:focus-visible .hit { fill: var(--accent); fill-opacity: 0.12; }
+    .chart-tip {
+      position: absolute; z-index: 6; pointer-events: none; opacity: 0;
+      transform: translate(-50%, -100%); transition: opacity 0.12s var(--ease);
+      background: var(--ink); color: var(--paper); font-size: 12px; line-height: 1.45;
+      padding: 7px 11px; border-radius: 3px; white-space: nowrap; max-width: 90vw;
+    }
+    .chart-tip.on { opacity: 1; }
+    .chart-scroll { display: none; }
+    .chart-note { font-size: 12.5px; line-height: 1.6; color: var(--ink-3); margin: 16px 0 0; max-width: 76ch; }
+    .chart-table { margin-top: 14px; }
+    .chart-table > summary {
+      font-size: 11px; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 600;
+      color: var(--ink-3); cursor: pointer; list-style: none; padding: 7px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .chart-table > summary::-webkit-details-marker { display: none; }
+    .chart-table > summary::before { content: "+ "; font-family: var(--mono); }
+    .chart-table[open] > summary::before { content: "– "; }
+    .chart-table .table-wrap { margin: 4px 0 0; }
+    @media (max-width: 820px) {
+      .chart-plot { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .chart-scroll {
+        display: block; margin: 9px 0 0; font-size: 10.5px; letter-spacing: 0.09em;
+        text-transform: uppercase; font-weight: 600; color: var(--ink-3);
+      }
+      .chart-plot svg { min-width: 680px; }
+      .chart-title { max-width: none; }
+    }
+
+    @media print {
+      figure.chart { page-break-inside: avoid; }
+      .chart-tip { display: none !important; }
+      .chart-table > summary { display: none; }
+      .chart-table .table-wrap { display: block; }
+
+      :root { --section-y: 0; --text-mega: 50px; --text-h1: 25px; --text-h2: 19px; }
+      body { font-size: 10.5pt; line-height: 1.42; background: var(--paper); }
+      section { padding: 0; page-break-before: always; border-top: 0; }
+      section.cover { page-break-before: auto; padding: 22mm 0; }
+      a { color: var(--ink); text-decoration: none; }
+      .lb, .lb-close, .zoom-hint { display: none !important; }
+      pre, table, .patterns, .specimen, .note, .stat-row, figure.fig, .fig-grid { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ══════════ COVER ══════════ -->
+  <section class="cover" id="cover">
+    <div class="col-wide">
+      <div class="meta" style="margin-bottom: 38px;">Le Boat · Travelopia · Checkout failure states · 2026</div>
+      <h1 class="cover-title">Fifteen ways<br />a booking breaks —<br /><em>and who picks up the phone.</em></h1>
+      <p class="lede">
+        Cataloguing every failure state in a live travel checkout, then designing
+        each one so the customer resolves it themselves instead of contacting
+        support.
+      </p>
+
+      <div class="cover-meta">
+        <div><div class="k">Role</div><div class="v">Senior Design Engineer</div></div>
+        <div><div class="k">Scope</div><div class="v">Failure-state audit of the production system, taxonomy, redesign, front-end build</div></div>
+        <div><div class="k">Surface</div><div class="v">Three-step booking checkout, 6 locales, 2 brands</div></div>
+        <div><div class="k">Output</div><div class="v">15 states catalogued and mapped; 6 built; the rest specified for the engineering team</div></div>
+        <div><div class="k">Measured</div><div class="v">Live since 20 July 2026. Generic checkout errors down 99.7%, sold-out failures down 87%, extras engagement up 84%</div></div>
+      </div>
+
+      <figure class="fig" style="margin-top: 48px;">
+        <div class="fig-media">
+          <img src="images/E3-inline-field-errors.jpg"
+               alt="The review and pay form showing a count banner reading 'Please fix 9 fields below to continue' above per-field inline errors."
+               data-cap="A blocked submit. The banner counts the problems, each field states its own, and focus moves to the first one. The customer is told how much work remains before they start." />
+        </div>
+        <figcaption>
+          <span class="cap-t"><strong>The most common failure in any checkout</strong> isn't an outage. It's a form that won't submit and won't say why.</span>
+        </figcaption>
+        <div class="zoom-hint">Click any image to enlarge</div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════ PREMISE ══════════ -->
+  <section id="premise">
+    <div class="col">
+      <div class="label-line">The premise</div>
+      <div class="head">
+        <h1>Every failure state resolves two ways. Only one of them is free.</h1>
+        <p class="lede">
+          Either the customer fixes it and carries on, or they contact support.
+          The interface decides which — and that decision is made in advance, by
+          whoever designed the state.
+        </p>
+      </div>
+
+      <p>
+        A booking checkout fails constantly and undramatically. An extra sells out
+        between the page loading and the click. A promo code doesn't apply. A card
+        is declined. A session expires while someone digs out their passport. None
+        of these are outages; the system is working exactly as designed. They're
+        just the ordinary friction of selling something complicated to someone who
+        is about to hand over a thousand pounds.
+      </p>
+      <p>
+        What separates a good failure state from a bad one has almost nothing to do
+        with how it looks. It's whether the person on the other side can work out
+        <strong>what happened, whether it was their fault, and what to do next</strong>
+        — without leaving the page and without asking anyone.
+      </p>
+      <p>
+        When they can't, they contact support. That's a cost with three parts: the
+        contact itself, the booking that stalls while they wait, and the ones that
+        never resume. Error states are the cheapest self-service surface a travel
+        business owns, and usually the least designed — because they're invisible
+        in a happy-path demo and the first thing cut from a portfolio.
+      </p>
+
+      <div class="note">
+        <span class="l">What this case study is and isn't</span>
+        <p>
+          This is the failure-state work from a checkout redesign, written up
+          separately because it stands on its own. <strong>The production error
+          system — toasts, notices, the copy dictionary — is Le Boat
+          engineering's, and predates me.</strong> What's mine is the audit of it,
+          the taxonomy, the mapping of every state into the redesigned flow, and
+          the six states built. Where that line falls is marked throughout.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ AUDIT ══════════ -->
+  <section id="audit" class="deep">
+    <div class="col">
+      <div class="label-line">Where the catalogue came from</div>
+      <div class="head">
+        <h1>I didn't imagine the failure states. I read them.</h1>
+        <p class="lede">
+          Every state in the catalogue was found in the production codebase — in
+          the error handlers, the copy dictionary and the payment utility — not
+          brainstormed in a workshop.
+        </p>
+      </div>
+
+      <p>
+        The difference matters. A workshop produces the states a designer can think
+        of, which is roughly the states that have happened to that designer. Reading
+        the system produces the states the business actually has, including the ones
+        nobody has looked at since they were written.
+      </p>
+      <p>Three passes:</p>
+      <ol>
+        <li><strong>The copy dictionary.</strong> Every <code>ERROR_*</code> and <code>SUCCESS_*</code> key in the translation files, across all six locales. A copy key is an admission that a state exists — you don't translate a message for something that can't happen.</li>
+        <li><strong>The handlers.</strong> Where each key is thrown, what triggers it, and how it's surfaced. This is where the real taxonomy came from, because the same class of problem was being surfaced three different ways depending on which part of the app threw it.</li>
+        <li><strong>The payment path.</strong> The highest-stakes failure in the flow, and the least forgiving, because it's the one where the customer has already decided to buy.</li>
+      </ol>
+
+      <p>
+        The third pass turned up something that wasn't a design problem at all: a
+        hash comparison in the payment utility that looked inverted, sitting on the
+        line that gates payment validation. I flagged it to the engineering team
+        rather than designing around it.
+        <strong>Reading the system you're designing for is how you find the
+        failures nobody has reported yet</strong> — and that one, if real, fails in
+        the direction that costs money.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════ PATTERNS ══════════ -->
+  <section id="patterns">
+    <div class="col">
+      <div class="label-line">The taxonomy</div>
+      <div class="head">
+        <h1>Five ways to surface a failure, and one rule for choosing.</h1>
+        <p class="lede">
+          The production app had all five patterns in use. What it didn't have was
+          a rule for which to use when — so the same class of problem surfaced
+          differently depending on which component threw it.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <div class="patterns">
+        <div class="pattern">
+          <h3>Card state</h3>
+          <div class="w">Prevent</div>
+          <p>The item itself shows it's unavailable. No action offered, so no failure to report. The only pattern that stops the error happening.</p>
+        </div>
+        <div class="pattern">
+          <h3>Inline</h3>
+          <div class="w">Attach</div>
+          <p>The message sits on the field that caused it. For anything the customer can fix by editing what they typed.</p>
+        </div>
+        <div class="pattern">
+          <h3>Banner</h3>
+          <div class="w">Summarise</div>
+          <p>Page-level and persistent. For a condition that affects the whole page, or a summary of many inline errors at once.</p>
+        </div>
+        <div class="pattern">
+          <h3>Toast</h3>
+          <div class="w">Report</div>
+          <p>Something happened asynchronously and the customer needs to know. Never for anything requiring a decision.</p>
+        </div>
+        <div class="pattern">
+          <h3>Modal</h3>
+          <div class="w">Decide</div>
+          <p>Reserved for failures with a genuine choice attached — where continuing without an answer would be wrong.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <p>The rule I wrote for choosing between them, in priority order:</p>
+      <ol>
+        <li><strong>If the failure can be prevented, prevent it.</strong> A sold-out extra should never be addable. A card state beats the world's best error message.</li>
+        <li><strong>If the customer caused it and can fix it, attach it to what they'd edit.</strong> Inline, next to the field, not at the top of the page.</li>
+        <li><strong>If it needs a decision, block for it.</strong> Modal — but only if proceeding without an answer would produce a wrong outcome.</li>
+        <li><strong>If it's page-wide or persistent, banner it.</strong> Survives scrolling; doesn't disappear.</li>
+        <li><strong>Everything else is a toast</strong> — and a toast is the weakest pattern available, so reaching for it should feel like a concession.</li>
+      </ol>
+
+      <div class="note">
+        <span class="l">The rule earns its keep on rule 1</span>
+        <p>
+          The production behaviour for a sold-out extra is a toast: you tap add, a
+          request goes out, it fails, and a message tells you it's gone. That is a
+          well-built version of the wrong pattern — <strong>the interface offered
+          an action it already knew would fail.</strong> Moving it to a card state
+          removes the error rather than reporting it, and removes the support
+          contact with it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CATALOGUE ══════════ -->
+  <section id="catalogue" class="deep">
+    <div class="col">
+      <div class="label-line">The catalogue</div>
+      <div class="head">
+        <h1>Fifteen states, each with an owner and a pattern.</h1>
+        <p class="lede">
+          Catalogued from production, mapped to the redesigned two-step flow, and
+          handed over with the copy key each one reuses — so nothing needed
+          re-translating across six locales.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-wide">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 4%">#</th><th style="width: 24%">State</th><th style="width: 20%">Trigger</th><th style="width: 16%">Pattern</th><th style="width: 22%">Copy key</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="n">01</td><td>Extra sold out</td><td>Item unavailable</td><td>Card state</td><td class="n">ERROR_EXTRA_SOLD_OUT</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">02</td><td>Partial availability</td><td>0 &lt; available &lt; requested</td><td>Modal</td><td class="quiet">—</td><td><span class="pill idle">Specified</span></td></tr>
+            <tr><td class="n">03</td><td>Add / update failed</td><td>Backend post error</td><td>Toast</td><td class="n">ERROR_GENERIC</td><td><span class="pill idle">Specified</span></td></tr>
+            <tr><td class="n">04</td><td>No availability / session lost</td><td>Invalid entry</td><td>Redirect</td><td class="quiet">—</td><td><span class="pill warn">Backend</span></td></tr>
+            <tr><td class="n">05</td><td>Field required</td><td>Empty or whitespace</td><td>Inline</td><td class="n">ERROR_INPUT_FIELD_REQUIRED</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">06</td><td>Select required</td><td>Title, country</td><td>Inline</td><td class="n">ERROR_SELECT_FIELD_REQUIRED</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">07</td><td>Email invalid</td><td>Format / length</td><td>Inline</td><td class="n">ERROR_EMAIL_INVALID</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">08</td><td>Phone invalid</td><td>Number / country mismatch</td><td>Inline</td><td class="n">ERROR_PHONE_INVALID</td><td><span class="pill idle">Specified</span></td></tr>
+            <tr><td class="n">09</td><td>Form incomplete on submit</td><td>Any field invalid</td><td>Banner + focus</td><td class="n">ERROR_FORM_REQUIRED</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">10</td><td>Terms not accepted</td><td>Checkbox unticked</td><td>Inline</td><td class="n">ERROR_TERMS_CONDITIONS</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">11</td><td>Promo code invalid</td><td>Rejected, or max discount</td><td>Inline + toast</td><td class="n">ERROR_PROMO_CODE_INVALID</td><td><span class="pill idle">Specified</span></td></tr>
+            <tr><td class="n">12</td><td>Promo applied</td><td>Success</td><td>Toast</td><td class="n">SUCCESS_PROMO_CODE_APPLIED</td><td><span class="pill idle">Specified</span></td></tr>
+            <tr><td class="n">13</td><td>Payment declined</td><td>Gateway non-approval</td><td>Modal, in place</td><td class="n">ERROR_PAYMENT_FAILED</td><td><span class="pill ok">Built</span></td></tr>
+            <tr><td class="n">14</td><td>Session expired</td><td>Token expiry / missing</td><td>Banner + restart</td><td class="quiet">generic</td><td><span class="pill warn">Backend</span></td></tr>
+            <tr><td class="n">15</td><td>Unsupported currency / config</td><td>Gateway environment</td><td>Generic error</td><td class="n">ERROR_GENERIC</td><td><span class="pill warn">Backend</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="stat-row">
+        <div class="stat"><div class="figure">15</div><div class="label">States catalogued from the production system</div></div>
+        <div class="stat"><div class="figure">6</div><div class="label">Designed and built in the redesigned flow</div></div>
+        <div class="stat"><div class="figure">5</div><div class="label">Specified, with pattern and copy key, for engineering</div></div>
+        <div class="stat"><div class="figure">6</div><div class="label">Locales the reused copy keys already cover</div></div>
+      </div>
+
+      <p class="muted">
+        The column that made this useful to the engineering team wasn't the
+        pattern — it was the copy key. Every state points at a string that already
+        exists and is already translated into six languages.
+        <strong>A new error message is a six-language translation ticket;
+        a reused key is a merge.</strong> That single decision is why the
+        specification could be handed over and acted on rather than negotiated.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════ THREE IN DEPTH ══════════ -->
+  <section id="depth">
+    <div class="col">
+      <div class="label-line">Three in depth</div>
+      <div class="head">
+        <h1>Prevent, attach, keep them where they are.</h1>
+      </div>
+
+      <h2 style="margin-bottom: 14px;">Sold out — the error that shouldn't exist</h2>
+      <p>
+        The card carries the unavailability itself: no add control, no quantity
+        stepper, no action to take and therefore nothing to fail. The extra stays
+        visible — removing it would leave a customer wondering whether they
+        imagined it, and visible-but-unavailable is also honest merchandising for
+        a date-sensitive product.
+      </p>
+      <figure class="fig">
+        <div class="fig-media">
+          <img src="images/E1-sold-out-extra.jpg"
+               alt="An extras card marked Sold out, dimmed, with no add control or quantity stepper."
+               data-cap="Sold out as a card state. The production behaviour is a toast after a failed add — a well-built version of the wrong pattern, because the interface offered an action it already knew would fail." />
+        </div>
+        <figcaption><span class="cap-t"><strong>State 01.</strong> Prevention, not notification.</span></figcaption>
+      </figure>
+
+      <div class="rule-short"></div>
+
+      <h2 style="margin-bottom: 14px;">A blocked submit — tell them the size of the problem</h2>
+      <p>
+        The production copy for a failed submit reads
+        <em>"Please complete all fields marked in red."</em> It's clear, it's
+        translated, and it makes the customer scroll the page to find out how much
+        work they're in for. The redesigned banner counts them —
+        <strong>"Please fix 9 fields below to continue"</strong> — and focus moves
+        to the first one.
+      </p>
+      <p>
+        That's a small change with a specific purpose. The decision a customer
+        makes at a blocked submit isn't <em>how do I fix this</em>, it's
+        <em>is this worth continuing</em>. A number answers that question
+        immediately. An unquantified instruction makes them estimate, and people
+        estimate pessimistically when they're already annoyed.
+      </p>
+      <figure class="fig">
+        <div class="fig-media">
+          <img src="images/E2-form-validation.jpg"
+               alt="The review and pay page after a blocked submit, showing the error banner in the context of the full page."
+               data-cap="Blocked submit in page context. Nothing navigates, nothing is lost, and the summary and payment total stay visible throughout — the customer can still see what they were buying while they fix it." />
+        </div>
+        <figcaption><span class="cap-t"><strong>States 05–10.</strong> Inline for the cause, banner for the scale.</span></figcaption>
+      </figure>
+
+      <div class="rule-short"></div>
+
+      <h2 style="margin-bottom: 14px;">A declined payment — don't move them</h2>
+      <p>
+        A failed payment was a separate route. The customer is returned from the
+        gateway to a page that isn't the one they left, their place in the form is
+        gone, and the booking summary they were checking against has disappeared.
+      </p>
+      <p>
+        In the redesign it's a modal over the page they were already on. The form
+        is behind it, still filled in. "Try payment again" closes it in place. The
+        old URL still resolves, redirecting into the same state so existing links
+        and any bookmarked route keep working.
+      </p>
+      <p class="muted">
+        This is the one that matters most commercially. A declined card is often
+        just the wrong card — a limit, a foreign-transaction block, a typo. The
+        customer already wants to buy. <strong>Every step between the decline and
+        the retry is a chance to lose a sale that was already made</strong>, and
+        navigation is the most expensive step you can add.
+      </p>
+      <figure class="fig">
+        <div class="fig-media">
+          <img src="images/09-payment-failed-modal.jpg"
+               alt="The payment failure modal displayed over the review and pay page, offering to try payment again."
+               data-cap="Payment failure over the page rather than instead of it. The form behind is untouched, the summary is still visible, and retrying is one action from where they already are." />
+        </div>
+        <figcaption><span class="cap-t"><strong>State 13.</strong> The highest-stakes failure in the flow.</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ══════════ COPY ══════════ -->
+  <section id="copy" class="deep">
+    <div class="col">
+      <div class="label-line">The copy problem</div>
+      <div class="head">
+        <h1>Half the dictionary ends by telling you to call someone.</h1>
+        <p class="lede">
+          The most revealing part of the audit wasn't a missing state. It was
+          reading the existing messages and counting how many of them terminate in
+          a support contact.
+        </p>
+      </div>
+
+      <p>These are the real production strings. They're fine English, correctly translated, and they surrender.</p>
+
+      <div class="specimen">
+        <div class="sp-key">ERROR_GENERIC</div>
+        <div class="sp-body">"Oops — something went wrong. Please try again or contact our sales team."</div>
+        <div class="sp-note">Says nothing happened for a reason, offers no diagnosis, and routes to a human. Acceptable as a last-resort fallback; a problem when it's the catch-all for an entire class of failures, which <b>it is</b>.</div>
+      </div>
+
+      <div class="specimen">
+        <div class="sp-key">ERROR_PROMO_CODE_INVALID</div>
+        <div class="sp-body">"Sorry, either promotion code "@code" is invalid or the maximum discount allowed has been exceeded."</div>
+        <div class="sp-note"><b>The ambiguous "either/or" is the whole problem.</b> One branch means the code is wrong — retype it. The other means the code is right and already maxed out — stop trying. The system knows which; the message refuses to say, so the customer can't act and calls to ask.</div>
+      </div>
+
+      <div class="specimen">
+        <div class="sp-key">page.Home.BOOKING_UNAVAILABLE</div>
+        <div class="sp-body">"For availability please call +44 (0)23 9222 2177"</div>
+        <div class="sp-note">A phone number as the entire interface. Sometimes correct for a complex charter. But it's the <b>default</b> for unavailability, which turns a routine "these dates are gone" into a support call.</div>
+      </div>
+
+      <p>
+        The pattern across the dictionary: messages describe what the system
+        experienced rather than what the customer should do, and route to a human
+        when they run out. Each is defensible on its own. Together they establish
+        the checkout's answer to any difficulty, which is <em>ask us</em>.
+      </p>
+
+      <h3>The rewrite rule</h3>
+      <p>
+        Every message answers three questions in order, and a support contact is
+        only allowed once the first two genuinely have no answer:
+      </p>
+      <ol>
+        <li><strong>What happened</strong> — specifically, not "something went wrong".</li>
+        <li><strong>Whose problem is it</strong> — mine to fix, or theirs to wait out. People handle "we're having trouble, try in a minute" far better than ambiguity.</li>
+        <li><strong>What to do now</strong> — one concrete action, in the interface, not a phone number.</li>
+      </ol>
+      <p class="muted">
+        For the ambiguous promo message that means splitting one key into two,
+        because the system already knows which branch it took. That's not a copy
+        change, it's an error-model change — and it's the kind of fix that only
+        surfaces when a designer reads the handler instead of the string.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════ CONTINUITY ══════════ -->
+  <section id="continuity">
+    <div class="col">
+      <div class="label-line">Continuity</div>
+      <div class="head">
+        <h1>The two best things in the system were already there.</h1>
+        <p class="lede">
+          Auditing an existing implementation means finding what's good and
+          keeping it. Two decisions in the production error layer are better than
+          what most checkouts do, and both survived into the redesign untouched.
+        </p>
+      </div>
+
+      <h3>Errors that survive navigation</h3>
+      <p>
+        When a failure happens server-side — during a redirect back from the
+        payment gateway, say — the message is written to a cookie and replayed
+        once the new page loads. Without it, an error raised during a navigation
+        is an error the customer never sees: the request fails, the redirect
+        happens, and the page arrives looking normal with the booking silently in
+        a different state. Getting this right is unglamorous and rare.
+      </p>
+
+      <h3>Errors that don't vanish</h3>
+      <p class="redacted"><em>(Code excerpt removed for sharing. What it does: every error toast in the production layer never auto-dismisses, and the same error can&#39;t stack.)</em></p>
+      <p>
+        An error that fades after four seconds is one a customer can miss entirely,
+        or read half of, and then be unable to retrieve. Pinning it until dismissed
+        treats the message as something they might need to <em>act</em> on rather
+        than something they were merely notified of. Keying by message means a
+        retried failure replaces its predecessor instead of stacking three copies.
+      </p>
+      <p>
+        There's a third property worth naming: <strong>every error toast fires an
+        analytics event carrying the translated message.</strong> Failure states in
+        this checkout are already measured. That is the difference between
+        error design being an opinion and being a number — and it's the foundation
+        the measurement below stands on.
+      </p>
+
+      <div class="note">
+        <span class="l">Provenance</span>
+        <p>
+          All three of these are the engineering team's work, not mine. They're
+          here because <strong>an audit that only lists faults is a bad audit</strong>
+          — the point of reading a system closely is to know what to protect as
+          much as what to change.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ MEASUREMENT ══════════ -->
+  <section id="measure" class="deep">
+    <div class="col">
+      <div class="label-line">How I'd know it worked</div>
+      <div class="head">
+        <h1>Error design has an unusually honest metric.</h1>
+        <p class="lede">
+          Most design work argues about attribution. This doesn't: if failure
+          states get better, fewer people fire the error event, and the error
+          event is already counted. The read-out is in the previous section.
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th style="width: 30%">Metric</th><th>What it tells you</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Error rate per state</strong></td><td>How often each of the fifteen actually fires. Already collected — every error toast emits an event. The first read-out will almost certainly reorder the priority list.</td></tr>
+            <tr><td><strong>Recovery rate</strong></td><td>Of the sessions that hit a given error, how many go on to complete. <em>The primary metric.</em> A state with a high error rate and high recovery is working; high error and low recovery is where the money is.</td></tr>
+            <tr><td><strong>Support contacts per state</strong></td><td>The outside measure. Requires joining support tickets to the state that preceded them, which is the integration worth building.</td></tr>
+            <tr><td><strong>Repeat-error rate</strong></td><td>Hitting the same error twice in a session means the message didn't explain it. A direct read on copy quality.</td></tr>
+            <tr><td><strong>Abandonment after error</strong></td><td>The guardrail. Prevention that quietly pushes people out isn't prevention.</td></tr>
+            <tr><td><strong>Sold-out add attempts</strong></td><td>Should fall to zero once the card state ships. A rare design change with a falsifiable prediction attached.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        The last one is the one I put my name on. Moving sold-out from a toast to
+        a card state makes a specific, testable claim: <strong>the number of
+        attempts to add an unavailable extra goes to zero</strong>, because the
+        control is gone. If it doesn't, the card state isn't reading as unavailable
+        and the design is wrong. Few design decisions can be checked that cleanly —
+        and this one now has been. It fell <strong>87%</strong>: the prediction was
+        directionally right and literally wrong, which is more informative than
+        either being right or having made no prediction at all.
+      </p>
+      <p class="muted">
+        Recovery rate is the one I'd argue to make a standing metric. It reframes
+        errors from things to minimise into things to <em>survive</em> — and a
+        checkout that recovers well can afford to be honest about failure, which
+        is the opposite of how most of them behave.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════ GAPS ══════════ -->
+  <!-- ══════════ THE NUMBERS ══════════ -->
+  <section id="numbers" class="deep">
+    <div class="col">
+      <div class="label-line">What the numbers said</div>
+      <div class="head">
+        <h1>The states I designed against fell. The one I didn't, didn't.</h1>
+        <p class="lede">
+          The flow went live on 20 July 2026. Comparing the ten weeks after launch
+          with the same calendar window a year earlier — when the old flow was
+          live throughout — the error rates moved, and they moved differentially.
+        </p>
+      </div>
+
+      <p>
+        Rates are per booking-stage session, so the 67% traffic growth between the
+        two periods doesn't distort them. Matched windows, 21 July – 29 September,
+        2025 against 2026.
+      </p>
+      <p>
+        For context on what the same release did either side of the failure states:
+        <strong>sessions adding at least one extra rose from 14.75% to 27.13%</strong>
+        in the 71 days after launch against the 71 before — a 12.4 point rise,
+        <strong>+84% relative</strong> — while progression to payment held steady
+        (5.62% → 5.86%). More travellers got further and bought more, and they did
+        it while hitting dramatically fewer dead ends. <strong>Those two facts
+        belong together:</strong> a checkout that fails less is a checkout more
+        people can finish, and the failure-state work is the half of that story
+        nobody usually shows.
+      </p>
+    </div>
+
+    <div class="col-wide">
+      <div class="stat-row">
+        <div class="stat">
+          <div class="figure">−99.7<small>%</small></div>
+          <div class="label">Generic checkout errors per session</div>
+        </div>
+        <div class="stat">
+          <div class="figure">−87<small>%</small></div>
+          <div class="label">Sold-out failures — designed out, not reported</div>
+        </div>
+        <div class="stat">
+          <div class="figure">+84<small>%</small></div>
+          <div class="label">Sessions adding an extra, after launch against before</div>
+        </div>
+        <div class="stat">
+          <div class="figure">flat</div>
+          <div class="label">The error state the redesign never touched</div>
+        </div>
+      </div>
+
+      <figure class="chart" id="fig-errorstates">
+        <div class="chart-top">
+          <div><div class="chart-title">Error rates per booking-stage session — and the state nobody touched</div></div>
+          <div class="chart-key"><span><i style="background:var(--viz-step-1)"></i>Summer 2025 — before</span><span><i style="background:var(--viz-step-2)"></i>Summer 2026 — after</span><span><i style="background:var(--viz-mute)"></i>Untouched by the redesign (control)</span></div>
+        </div>
+        <p class="chart-sub">Matched windows, 21 July to 29 September, 2025 against 2026. Rates are per booking-stage session, so the 67% traffic growth between the two periods does not distort them.</p>
+        <div class="chart-plot">
+      <svg viewBox="0 0 1000 416" role="img" aria-label="Error rates per booking-stage session — and the state nobody touched">
+      <line class="grid" x1="354.0" y1="20" x2="354.0" y2="372" />
+      <text class="tick" x="354.0" y="392" text-anchor="middle">0%</text>
+      <line class="grid" x1="442.0" y1="20" x2="442.0" y2="372" />
+      <text class="tick" x="442.0" y="392" text-anchor="middle">2%</text>
+      <line class="grid" x1="530.0" y1="20" x2="530.0" y2="372" />
+      <text class="tick" x="530.0" y="392" text-anchor="middle">4%</text>
+      <line class="grid" x1="618.0" y1="20" x2="618.0" y2="372" />
+      <text class="tick" x="618.0" y="392" text-anchor="middle">6%</text>
+      <line class="grid" x1="706.0" y1="20" x2="706.0" y2="372" />
+      <text class="tick" x="706.0" y="392" text-anchor="middle">8%</text>
+      <line class="grid" x1="794.0" y1="20" x2="794.0" y2="372" />
+      <text class="tick" x="794.0" y="392" text-anchor="middle">10%</text>
+      <text class="tick" x="354.0" y="410" text-anchor="start" opacity="0.85">errors per booking-stage session</text>
+      <text class="lbl" x="320" y="68.0" text-anchor="end">Generic app error</text>
+      <text class="sub" x="320" y="85.0" text-anchor="end">“Oops — something went wrong”</text>
+      <text class="sub" x="320" y="102.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Redesigned</text>
+      <line x1="824.8" y1="70.0" x2="355.3" y2="70.0" stroke="var(--viz-step-1)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Generic app error &amp;middot; before &amp;mdash; 10.70%"><circle class="hit" cx="824.8" cy="70.0" r="16" fill="transparent" /><circle cx="824.8" cy="70.0" r="7.5" fill="var(--viz-step-1)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Generic app error &amp;middot; after &amp;mdash; 0.03% (−99.7%)"><circle class="hit" cx="355.3" cy="70.0" r="16" fill="transparent" /><circle cx="355.3" cy="70.0" r="7.5" fill="var(--viz-step-2)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="824.8" y="97.0" text-anchor="middle" style="fill:var(--ink-2)">10.70%</text>
+      <text class="v" x="355.3" y="53.0" text-anchor="middle" style="font-weight:600">0.03%</text>
+      <text class="v" x="994" y="75.0" text-anchor="end" style="font-weight:600;fill:var(--viz-step-2)">−99.7%</text>
+      <text class="lbl" x="320" y="152.0" text-anchor="end">Extra add / sold out</text>
+      <text class="sub" x="320" y="169.0" text-anchor="end">adding an unavailable extra</text>
+      <text class="sub" x="320" y="186.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Prevented</text>
+      <line x1="442.0" y1="154.0" x2="365.0" y2="154.0" stroke="var(--viz-step-1)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Extra add / sold out &amp;middot; before &amp;mdash; 2.00%"><circle class="hit" cx="442.0" cy="154.0" r="16" fill="transparent" /><circle cx="442.0" cy="154.0" r="7.5" fill="var(--viz-step-1)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Extra add / sold out &amp;middot; after &amp;mdash; 0.25% (−87%)"><circle class="hit" cx="365.0" cy="154.0" r="16" fill="transparent" /><circle cx="365.0" cy="154.0" r="7.5" fill="var(--viz-step-2)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="462.0" y="159.0" text-anchor="start" style="fill:var(--ink-2)">2.00% &#8594; <tspan style="fill:var(--ink);font-weight:600">0.25%</tspan></text>
+      <text class="v" x="994" y="159.0" text-anchor="end" style="font-weight:600;fill:var(--viz-step-2)">−87%</text>
+      <text class="lbl" x="320" y="236.0" text-anchor="end">Promo code error</text>
+      <text class="sub" x="320" y="253.0" text-anchor="end">the ambiguous either/or message</text>
+      <text class="sub" x="320" y="270.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Specified, not shipped</text>
+      <line x1="435.0" y1="238.0" x2="418.2" y2="238.0" stroke="var(--viz-step-1)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Promo code error &amp;middot; before &amp;mdash; 1.84%"><circle class="hit" cx="435.0" cy="238.0" r="16" fill="transparent" /><circle cx="435.0" cy="238.0" r="7.5" fill="var(--viz-step-1)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Promo code error &amp;middot; after &amp;mdash; 1.46% (−21%)"><circle class="hit" cx="418.2" cy="238.0" r="16" fill="transparent" /><circle cx="418.2" cy="238.0" r="7.5" fill="var(--viz-step-2)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="455.0" y="243.0" text-anchor="start" style="fill:var(--ink-2)">1.84% &#8594; <tspan style="fill:var(--ink);font-weight:600">1.46%</tspan></text>
+      <text class="v" x="994" y="243.0" text-anchor="end" style="font-weight:600;fill:var(--viz-step-2)">−21%</text>
+      <text class="lbl" x="320" y="320.0" text-anchor="end">Availability error</text>
+      <text class="sub" x="320" y="337.0" text-anchor="end">fires on the marketing site, upstream</text>
+      <text class="sub" x="320" y="354.0" text-anchor="end" style="letter-spacing:.07em;text-transform:uppercase;font-size:10px;font-weight:600">Untouched — control</text>
+      <line x1="584.6" y1="322.0" x2="594.2" y2="322.0" stroke="var(--viz-mute)" stroke-width="2" stroke-linecap="round" />
+      <g class="mk" tabindex="0" data-tip="Availability error &amp;middot; before &amp;mdash; 5.24%"><circle class="hit" cx="584.6" cy="322.0" r="16" fill="transparent" /><circle cx="584.6" cy="322.0" r="7.5" fill="var(--viz-mute)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <g class="mk" tabindex="0" data-tip="Availability error &amp;middot; after &amp;mdash; 5.46% (+4%)"><circle class="hit" cx="594.2" cy="322.0" r="16" fill="transparent" /><circle cx="594.2" cy="322.0" r="7.5" fill="var(--viz-mute)" stroke="var(--viz-surface)" stroke-width="2" /></g>
+      <text class="v" x="614.2" y="327.0" text-anchor="start" style="fill:var(--ink-2)">5.24% &#8594; <tspan style="fill:var(--ink);font-weight:600">5.46%</tspan></text>
+      <text class="v" x="994" y="327.0" text-anchor="end" style="font-weight:600;fill:var(--viz-mute)">+4%</text>
+      </svg>
+        </div>
+        <p class="chart-scroll">Scroll the chart sideways &mdash; every value is also in the table</p>
+        <p class="chart-note">The grey row is the control. It fires upstream of the checkout, the redesign never went near it, and it did not move. A season, a traffic-mix shift or a broken tag would have moved all of them — instead the fall tracks the amount of design attention each state got.</p>
+      </figure>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th style="width: 30%">Error state</th><th>Design treatment</th><th class="n">2025 rate</th><th class="n">2026 rate</th><th class="n">Change</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Generic app error</strong><br /><span class="quiet" style="font-size: 13px">"Oops — something went wrong"</span></td>
+              <td><span class="pill ok">Redesigned</span> Failures moved off the catch-all toast onto specific patterns</td>
+              <td class="n">10.70%</td>
+              <td class="n"><strong>0.03%</strong></td>
+              <td class="n"><strong>−99.7%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Extra add / sold out</strong></td>
+              <td><span class="pill ok">Prevented</span> Moved from a toast after a failed add to a card state</td>
+              <td class="n">2.00%</td>
+              <td class="n"><strong>0.25%</strong></td>
+              <td class="n"><strong>−87%</strong></td>
+            </tr>
+            <tr>
+              <td><strong>Promo code error</strong></td>
+              <td><span class="pill idle">Specified, not shipped</span> The ambiguous either/or message is unchanged</td>
+              <td class="n">1.84%</td>
+              <td class="n">1.46%</td>
+              <td class="n">−21%</td>
+            </tr>
+            <tr>
+              <td><strong>Availability error</strong><br /><span class="quiet" style="font-size: 13px">fires on the marketing site, not the checkout</span></td>
+              <td><span class="pill warn">Untouched</span> Outside the redesign entirely</td>
+              <td class="n">5.24%</td>
+              <td class="n">5.46%</td>
+              <td class="n">+4%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="col">
+      <h3>The untouched state is the control</h3>
+      <p>
+        The availability error fires on the marketing site, upstream of the
+        checkout. The redesign never touched it. <strong>Its rate is flat across
+        the boundary — 5.24% to 5.46%.</strong>
+      </p>
+      <p>
+        That matters more than any single number in the table. A season, a traffic
+        mix shift or a tracking change would move everything. What actually
+        happened is that the states with design attention fell by 87% and 99.7%,
+        the state that was specified but never shipped moved least, and the state
+        outside the work didn't move at all. <strong>That differential is much
+        harder to explain away than a single metric going the right way</strong> —
+        and it is the closest thing to a controlled comparison this release
+        allows, because it shipped without a holdout.
+      </p>
+
+      <div class="rule-short"></div>
+
+      <h3>The prediction, tested</h3>
+      <p>
+        This case study committed to a falsifiable claim before any of this data
+        existed: moving sold-out from a toast to a card state should drive
+        attempts to add an unavailable extra <em>toward zero</em>, because the
+        control is gone.
+      </p>
+      <p>
+        <strong>It fell 87%.</strong> The remainder is the irreducible part:
+        extras can sell out between the page rendering and the click, so a card
+        state prevents every avoidable attempt and none of the unavoidable ones.
+        Roughly one in eight survived — which turns out to be a usable estimate of
+        how often availability changes mid-session, and a more interesting number
+        than the prediction itself.
+      </p>
+
+      <div class="note">
+        <span class="l">The check that had to happen first</span>
+        <p>
+          A 99.7% fall in an error is exactly what a <em>dead tag</em> looks like,
+          so the mechanism was verified before the number was believed: on the
+          current production branch, the toast utility still calls the analytics
+          error event, and that event still fires <code>error</code>. The
+          instrumentation is unchanged. <strong>The toasts genuinely stopped
+          appearing.</strong>
+        </p>
+        <p>
+          Where failures do still occur, they now surface as inline messages,
+          card states and modals — the patterns the taxonomy assigns them — rather
+          than as a catch-all toast telling people to phone someone.
+        </p>
+      </div>
+
+      <div class="rule-short"></div>
+
+      <h3>The one that got worse is the one I didn't ship</h3>
+      <p>
+        Promo-code errors fell least as a rate — and the people who hit them now
+        retry <strong>more</strong>: 2.40 failed attempts per affected session in
+        2025, 2.89 in 2026, up 20%. Roughly three attempts each.
+      </p>
+      <p>
+        That is exactly the behaviour an ambiguous message produces. The copy still
+        says the code is <em>either</em> invalid <em>or</em> has exceeded its
+        maximum discount. One branch means retype it; the other means stop. The
+        system knows which and doesn't say, so people retype — three times — and
+        then contact someone.
+      </p>
+      <p class="muted">
+        It is the largest remaining app-side error in the checkout, it was
+        identified in the audit, the fix was specified, and it didn't ship because
+        splitting the message needs an error-model change in the backend rather
+        than a new string. <strong>The clearest evidence in this case study for the
+        value of the work is the state that didn't get it.</strong>
+      </p>
+    </div>
+  </section>
+
+  <section id="next">
+    <div class="col">
+      <div class="label-line">Where it goes next</div>
+      <div class="head">
+        <h1>Six states built. The rest are specified and waiting.</h1>
+      </div>
+      <p>
+        Six of the fifteen shipped in this release and carry the numbers above.
+        Five more are fully specified — pattern, copy key and behaviour written
+        down — and ready to build. Three sit behind backend work and were handed
+        over as requirements. Each one is a known, sized piece of self-service
+        recovery that nobody has to rediscover.
+      </p>
+      <p>
+        The largest single opportunity left is the one the numbers point straight
+        at: <strong>promo-code errors, where people retry roughly three times
+        each.</strong> The message tells them the code is <em>either</em> invalid
+        <em>or</em> maxed out, and the system knows which. Splitting it needs an
+        error-model change in the backend rather than new copy, which is why it
+        was specified rather than shipped — and it is now the biggest remaining
+        app-side failure in the checkout.
+      </p>
+      <p>
+        The next measurement worth building is the join between a support contact
+        and the state that preceded it. Error rates show the failures stopping;
+        that join is what turns it into a support-cost number, and the
+        instrumentation for it already exists.
+      </p>
+
+      <div class="note">
+        <span class="l">What this work established</span>
+        <p>
+          A catalogue of every way the checkout can fail, a taxonomy that decides
+          which pattern each one gets, six built states, and a read-out showing
+          <strong>generic errors down 99.7% and sold-out failures down 87%</strong>
+          while the error state outside the work stayed flat. Failure states are
+          the cheapest self-service surface a travel business owns, and this is
+          what happens when someone designs them on purpose.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="col-wide f">
+    <span>Le Boat checkout · failure states · 2026</span>
+    <span class="num">Personal case study — not for distribution</span>
+  </div>
+</footer>
+
+<div class="lb" id="lightbox" hidden>
+  <button type="button" class="lb-close" id="lb-close">Close ✕</button>
+  <img id="lb-img" src="" alt="" />
+  <p class="lb-cap" id="lb-cap"></p>
+</div>
+
+<script>
+  (function () {
+    'use strict';
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lb-img');
+    var lbCap = document.getElementById('lb-cap');
+    var lastFocus = null;
+
+    function openLb(img) {
+      lastFocus = img;
+      lbImg.src = img.getAttribute('src');
+      lbImg.alt = img.getAttribute('alt') || '';
+      lbCap.textContent = img.getAttribute('data-cap') || img.getAttribute('alt') || '';
+      lb.hidden = false;
+      document.body.style.overflow = 'hidden';
+      document.getElementById('lb-close').focus();
+    }
+    function closeLb() {
+      lb.hidden = true;
+      lbImg.src = '';
+      document.body.style.overflow = '';
+      if (lastFocus) { lastFocus.focus(); }
+    }
+
+    document.querySelectorAll('.fig-media img').forEach(function (img) {
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.addEventListener('click', function () { openLb(img); });
+      img.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openLb(img); }
+      });
+    });
+    document.getElementById('lb-close').addEventListener('click', closeLb);
+    lb.addEventListener('click', function (e) { if (e.target === lb || e.target === lbImg) { closeLb(); } });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !lb.hidden) { closeLb(); } });
+
+    /* Chart tooltips — hover and keyboard focus show the same thing,
+       and every value is also in the table twin, so nothing is gated
+       behind a pointer. */
+    document.querySelectorAll(".chart-plot").forEach(function (plot) {
+      var tip = document.createElement("div");
+      tip.className = "chart-tip";
+      plot.appendChild(tip);
+      var show = function (el) {
+        var t = el.getAttribute("data-tip");
+        if (!t) return;
+        tip.innerHTML = t;
+        var pr = plot.getBoundingClientRect(), r = el.getBoundingClientRect();
+        tip.style.left = (r.left - pr.left + r.width / 2) + "px";
+        tip.style.top = (r.top - pr.top - 7) + "px";
+        tip.classList.add("on");
+      };
+      var hide = function () { tip.classList.remove("on"); };
+      plot.querySelectorAll("[data-tip]").forEach(function (el) {
+        el.addEventListener("pointerenter", function () { show(el); });
+        el.addEventListener("pointerleave", hide);
+        el.addEventListener("focus", function () { show(el); });
+        el.addEventListener("blur", hide);
+      });
+    });
+  })();
+</script>
+</body>
+</html>

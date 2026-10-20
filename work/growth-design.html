@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The growth-design skill — Rahul Jha</title>
+<meta name="description" content="How I work a growth ticket, written down as one Claude Code skill: eleven steps, six stops for me, a library it reads and a log it writes, so the next ticket starts where the last one ended.">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* Page-only pieces. Every colour comes from the site tokens. */
+  :root { --tint: color-mix(in srgb, var(--accent) 9%, var(--bg)); --tint-2: color-mix(in srgb, var(--accent) 22%, var(--bg)); }
+
+  .eyebrow { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+
+  /* number strip */
+  .tiles { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 1px; background: var(--line);
+    border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 720px) { .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 1040px) { .tiles { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .tiles li { background: var(--bg); padding: 18px 18px 16px; display: grid; gap: 4px; align-content: start; }
+  .tiles b { font-size: clamp(1.9rem, 3.4vw, 2.5rem); font-weight: 560; letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .tiles span { color: var(--ink-2); font-size: 0.88rem; line-height: 1.35; }
+
+  /* the loop */
+  .loop { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 10px;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); counter-reset: s; }
+  @media (max-width: 420px) { .loop { grid-template-columns: 1fr; } }
+  @media (min-width: 680px) { .loop { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 960px) { .loop { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .loop li { counter-increment: s; position: relative; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--surface); padding: 14px 14px 13px; display: grid; gap: 6px; align-content: start; min-height: 112px; }
+  .loop li::before { content: counter(s, decimal-leading-zero); font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+  .loop li b { font-weight: 560; font-size: 1rem; line-height: 1.2; }
+  .loop li span { color: var(--ink-2); font-size: 0.86rem; line-height: 1.35; }
+  .loop .tag { position: absolute; top: 12px; right: 12px; font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.08em;
+    padding: 2px 7px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink-3); }
+  .loop li.ask { border-color: var(--accent); background: var(--tint); }
+  .loop li.ask .tag { border-color: var(--accent); color: var(--accent); }
+  .loop li.helix { border-style: dashed; border-color: var(--ink-3); }
+  .loop li.helix .tag { color: var(--ink-2); }
+  .loop li.back { counter-increment: none; display: flex; flex-direction: column; justify-content: center; gap: 10px;
+    border: 1px dashed var(--accent); background: var(--bg); color: var(--ink-2); font-size: 0.88rem; }
+  .loop li.back::before { content: none; }
+  .back svg { flex-shrink: 0; color: var(--accent); }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 14px; font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--line-2); background: var(--surface); }
+  .legend i.a { border-color: var(--accent); background: var(--tint); }
+  .legend i.h { border-style: dashed; border-color: var(--ink-3); }
+
+  /* timeline */
+  .tl { list-style: none; margin: 28px 0 0; padding: 0; display: grid; gap: 0; position: relative; }
+  .tl li { position: relative; padding: 0 0 22px 30px; }
+  .tl li::before { content: ""; position: absolute; left: 5px; top: 6px; width: 11px; height: 11px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent); }
+  .tl li.big::before { background: var(--accent); }
+  .tl li:not(:last-child)::after { content: ""; position: absolute; left: 10px; top: 20px; bottom: 0; width: 1px; background: var(--line-2); }
+  .tl time { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); display: block; }
+  .tl b { display: block; font-weight: 560; margin-top: 2px; }
+  .tl span { display: block; color: var(--ink-2); font-size: 0.9rem; margin-top: 2px; }
+  @media (min-width: 980px) {
+    .tl { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+    .tl li { padding: 30px 14px 0 0; }
+    .tl li::before { left: 0; top: 0; }
+    .tl li:not(:last-child)::after { left: 15px; right: 0; top: 6px; bottom: auto; width: auto; height: 1px; }
+  }
+
+  /* where the words live: bars drawn to one scale */
+  .bars { margin: 24px 0 0; display: grid; gap: 22px; }
+  .bars h3 { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); font-weight: 400; margin-bottom: 8px; }
+  .bars dl { margin: 0; display: grid; gap: 6px; }
+  .bars .row { display: grid; grid-template-columns: minmax(0, 11rem) minmax(0, 1fr); gap: 12px; align-items: center; }
+  .bars dt { font-size: 0.86rem; color: var(--ink); overflow-wrap: anywhere; }
+  .bars dt small { display: block; color: var(--ink-3); font-size: 0.78rem; }
+  .bars dd { margin: 0; display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .bars dd i { display: block; height: 14px; border-radius: 3px; background: var(--accent); min-width: 2px; flex-shrink: 0; }
+  .bars dd em { font-style: normal; font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .bars .g-run i { background: var(--accent); }
+  .bars .g-lib i { background: color-mix(in srgb, var(--accent) 62%, var(--bg)); }
+  .bars .g-kit i { background: color-mix(in srgb, var(--accent) 38%, var(--bg)); }
+  .bars .g-repo i { background: var(--ink-3); }
+  @media (max-width: 520px) { .bars .row { grid-template-columns: 1fr; gap: 3px; } }
+
+  /* context map */
+  .map { margin-top: 28px; display: grid; gap: 14px; grid-template-columns: 1fr; align-items: stretch; }
+  @media (min-width: 900px) { .map { grid-template-columns: minmax(0, 1fr) 15rem minmax(0, 1fr); } }
+  .map .side { display: grid; gap: 10px; align-content: start; }
+  .map .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 13px 15px; }
+  .map .card .eyebrow { display: block; margin-bottom: 7px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .chips li { font-size: 0.8rem; padding: 3px 9px; border: 1px solid var(--line-2); border-radius: 999px; color: var(--ink-2); background: var(--bg); }
+  .chips li b { font-family: var(--mono); font-weight: 500; color: var(--accent); margin-right: 5px; }
+  .map .core { border: 2px solid var(--accent); border-radius: 14px; background: var(--tint); padding: 20px 18px; display: grid; align-content: center; gap: 10px; text-align: center; }
+  .map .core b { font-family: var(--mono); font-size: 1.05rem; font-weight: 500; }
+  .map .core span { color: var(--ink-2); font-size: 0.86rem; }
+  .map .core .rule { display: grid; gap: 4px; margin-top: 4px; }
+  .map .core .rule span { font-size: 0.8rem; padding: 5px 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); }
+  .arrow { display: none; }
+  @media (min-width: 900px) { .map .side.in .card { position: relative; } }
+
+  /* four principles */
+  .four { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+  .four li { border-top: 2px solid var(--ink); padding-top: 12px; display: grid; gap: 6px; align-content: start; }
+  .four .n { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+  .four b { font-size: 1.15rem; font-weight: 560; letter-spacing: -0.015em; }
+  .four span { color: var(--ink-2); font-size: 0.9rem; }
+
+  /* hypothesis card */
+  .hyp { margin-top: 26px; max-width: 46rem; border: 1px solid var(--line-2); border-radius: 12px; background: var(--surface); overflow: hidden; }
+  .hyp header { padding: 16px 18px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; align-items: baseline; }
+  .hyp header b { font-family: var(--mono); font-weight: 500; color: var(--accent); }
+  .hyp header p { font-weight: 560; }
+  .hyp dl { margin: 0; display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); }
+  .hyp dt, .hyp dd { margin: 0; padding: 10px 18px; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+  .hyp dt { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); padding-top: 12px; }
+  .hyp dd { color: var(--ink-2); padding-left: 0; }
+  .hyp dd code { font-family: var(--mono); font-size: 0.8rem; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 5px; }
+  .hyp dt:nth-last-child(2), .hyp dd:last-child { border-bottom: 0; }
+  .meter { display: inline-flex; gap: 3px; vertical-align: -1px; margin-right: 8px; }
+  .meter i { width: 16px; height: 8px; border-radius: 2px; background: var(--line-2); }
+  .meter i.on { background: var(--accent); }
+  @media (max-width: 520px) { .hyp dl { grid-template-columns: 1fr; } .hyp dt { padding-bottom: 0; border-bottom: 0; } .hyp dd { padding-left: 18px; } }
+
+  /* challenge matrix */
+  .vs { margin-top: 26px; display: grid; gap: 10px; }
+  .vs .r { display: grid; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
+    grid-template-columns: 1fr; }
+  @media (min-width: 760px) { .vs .r { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .vs .r > div { background: var(--surface); padding: 12px 14px; font-size: 0.9rem; color: var(--ink-2); display: grid; gap: 4px; align-content: start; }
+  .vs .r > div .eyebrow { font-size: 0.64rem; }
+  .vs .r > div:first-child { color: var(--ink-3); }
+  .vs s { text-decoration-color: color-mix(in srgb, var(--ink-3) 60%, transparent); }
+  .vs .r > div:last-child { background: var(--tint); color: var(--ink); }
+  .vs .head { display: none; }
+  @media (min-width: 760px) { .vs .r > div .eyebrow { display: none; } .vs .head { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); padding: 0 15px; } }
+
+  /* phones row */
+  .phones3 { display: grid; gap: 14px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 26px; max-width: 760px; }
+  .phones3 figure { display: grid; gap: 8px; }
+  .phones3 .fig { margin-top: 0; }
+  .phones3 .fig button { aspect-ratio: 750 / 1300; }
+  .phones3 .fig img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .phones3 figcaption { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+  .phones3 figcaption b { display: block; color: var(--accent); font-weight: 500; font-size: 0.78rem; }
+
+  /* sizing matrix */
+  .size { margin-top: 24px; overflow-x: auto; max-width: 46rem; position: relative; }
+  .size table { border-collapse: collapse; width: 100%; min-width: 420px; font-size: 0.88rem; }
+  .size th, .size td { padding: 8px 10px; border-top: 1px solid var(--line); text-align: center; }
+  .size thead th { border-top: 0; font-family: var(--mono); font-weight: 500; font-size: 0.8rem; }
+  .size thead th small { display: block; font-size: 0.66rem; color: var(--ink-3); font-weight: 400; }
+  .size tbody th { text-align: left; font-weight: 400; color: var(--ink-2); white-space: nowrap; }
+  .size tbody th span { font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); margin-right: 8px; }
+  .dot { display: inline-block; width: 14px; height: 14px; border-radius: 50%; vertical-align: middle; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .dot.y { background: var(--accent); }
+  .dot.h { background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); border: 1px solid var(--accent); }
+  .dot.n { border: 1px solid var(--ink-3); }
+  .legend.sz i.dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 6px; vertical-align: -2px; }
+  .legend.sz i.dot.y { border: 0; background: var(--accent); }
+  .legend.sz i.dot.h { border: 1px solid var(--accent); background: linear-gradient(90deg, var(--accent) 50%, transparent 50%); }
+  .legend.sz i.dot.n { border: 1px solid var(--ink-3); background: transparent; }
+
+  /* learning log */
+  .log { margin-top: 26px; display: grid; gap: 18px; }
+  .log .grp { display: grid; gap: 8px; }
+  .log .grp > div:first-child { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .log .grp b { font-weight: 560; font-size: 0.95rem; }
+  .log .grp span.mono { font-size: 0.7rem; }
+  .cells { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .cells li { width: 76px; height: 64px; border-radius: 6px; padding: 7px 8px; display: grid; align-content: space-between;
+    background: var(--accent); color: var(--bg); font-size: 0.66rem; line-height: 1.2; }
+  .cells li b { font-family: var(--mono); font-weight: 500; font-size: 0.7rem; }
+  .cells.seed li { background: var(--tint-2); color: var(--ink); }
+  .cells.study li { background: color-mix(in srgb, var(--accent) 62%, var(--bg)); color: var(--ink); }
+  .cells li.fix { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  /* diff */
+  .diff { margin-top: 22px; max-width: 46rem; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
+  .diff .top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 9px 14px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 0.7rem; color: var(--ink-3); }
+  .diff p { font-family: var(--mono); font-size: 0.76rem; line-height: 1.6; padding: 10px 14px; color: var(--ink-2); }
+  .diff p.add { background: color-mix(in srgb, #1f9d55 12%, var(--surface)); color: var(--ink); border-left: 3px solid #1f9d55; }
+  .diff p.why { border-bottom: 1px solid var(--line); }
+
+  /* psychology */
+  .psy { margin-top: 26px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+  .psy > div { display: grid; gap: 8px; align-content: start; }
+  .psy b { font-weight: 560; }
+  .psy .n { font-family: var(--mono); font-size: 0.72rem; color: var(--ink-3); margin-left: 6px; font-weight: 400; }
+  .waffle { display: grid; grid-template-columns: repeat(8, 14px); gap: 4px; }
+  .waffle i { width: 14px; height: 14px; border-radius: 3px; background: var(--accent); }
+  .refuse { list-style: none; margin: 18px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .refuse li { font-size: 0.82rem; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink-3);
+    text-decoration: line-through; text-decoration-color: color-mix(in srgb, #c0392b 70%, transparent); }
+  .ethics { margin-top: 26px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); max-width: 46rem; }
+  .ethics div { border-left: 2px solid var(--accent); padding: 4px 0 4px 16px; font-size: 1.05rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.35; }
+  .ethics small { display: block; font-family: var(--mono); font-size: 0.68rem; color: var(--ink-3); font-weight: 400; margin-bottom: 4px; letter-spacing: 0.04em; }
+
+  /* folder */
+  .tree { margin-top: 24px; max-width: 46rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); padding: 14px 16px; font-family: var(--mono); font-size: 0.76rem; line-height: 1.9; color: var(--ink-2); overflow-x: auto; }
+  .tree div { white-space: nowrap; }
+  .tree b { color: var(--ink); font-weight: 500; }
+  .tree em { font-style: normal; color: var(--ink-3); margin-left: 10px; }
+  .tree .i1 { padding-left: 2ch; } .tree .i2 { padding-left: 4ch; }
+
+  /* out */
+  .out { margin-top: 26px; display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+  .out a { display: grid; gap: 10px; text-decoration: none; border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; background: var(--surface); }
+  .out a:hover { border-color: var(--accent); }
+  .out img { border-radius: 5px; border: 1px solid var(--line); aspect-ratio: 16 / 10; width: 100%; object-fit: cover; object-position: top left; }
+  .out b { font-weight: 560; }
+  .out span { color: var(--ink-2); font-size: 0.88rem; }
+  .out .mono { display: block; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="paid-hero.html">&larr; Paid landing page</a><a href="p831.html">Project 831 &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>A ticket is a request to move a number</h1>
+  <p class="what">Tickets arrived as design asks with a wireframe attached. I wrote down how I actually work them as one Claude Code skill, so every ticket runs the same loop and the next one starts where the last one ended.</p>
+  <p class="mono">
+    <span>Sep&ndash;Oct 2026</span><span>Mine</span><span>Claude Code skill over the Helix skills</span><span>3 tickets run so far</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <ul class="tiles" aria-label="The skill in numbers">
+    <li><b>11</b><span>steps, intake to readout</span></li>
+    <li><b>6</b><span>stops where I decide</span></li>
+    <li><b>57</b><span>behaviour principles mapped to our pages</span></li>
+    <li><b>47</b><span>public case studies read and indexed</span></li>
+    <li><b>22</b><span>review rules, each from a real review</span></li>
+    <li><b>25</b><span>learning-log entries so far</span></li>
+  </ul>
+
+  <!-- The loop -->
+  <section class="block">
+    <p class="eyebrow">The loop</p>
+    <h2>Eleven steps. I hold the six that need judgement.</h2>
+    <ol class="loop">
+      <li><span class="tag">RUN · ASK</span><b>Intake</b><span>Ticket, links, comments and attachments copied word for word</span></li>
+      <li class="ask"><span class="tag">ASK</span><b>Size</b><span>S, M or L, with one line of reasoning</span></li>
+      <li class="ask"><span class="tag">ASK</span><b>Metric</b><span>One primary metric, up to three secondary, up to five guardrails</span></li>
+      <li><span class="tag">RUN</span><b>Evidence</b><span>Raw data first, then the evidence index</span></li>
+      <li class="ask"><span class="tag">ASK</span><b>Hypotheses</b><span>Each one with its cites, plus the Challenge block</span></li>
+      <li class="helix"><span class="tag">HELIX</span><b>Design</b><span>One hypothesis per variant, then the review and states passes</span></li>
+      <li><span class="tag">RUN</span><b>Instrumentation</b><span>Events, parameters and hidden attribution fields</span></li>
+      <li class="ask"><span class="tag">ASK</span><b>Measurement plan</b><span>A/B or pre/post, sample size, read date, stop rules</span></li>
+      <li class="ask"><span class="tag">ASK ×2</span><b>Ship</b><span>The ticket comment, then the push. Never the merge.</span></li>
+      <li><span class="tag">RUN</span><b>Case study</b><span>Designed to be skimmed and served on the preview</span></li>
+      <li><span class="tag">RUN · ASK</span><b>Readout and log</b><span>The result with denominators, and what carries forward</span></li>
+      <li class="back">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v4h4"/></svg>
+        <span>Back to 01. The log entry from step 11 is the first thing intake reads on the next ticket.</span>
+      </li>
+    </ol>
+    <div class="legend"><span><i class="a"></i>stops and asks me</span><span><i></i>runs on its own</span><span><i class="h"></i>hands off to the Helix skills; this skill never draws</span></div>
+  </section>
+
+  <!-- Four principles -->
+  <section class="block">
+    <p class="eyebrow">What never changes</p>
+    <h2>Four principles, on every ticket</h2>
+    <ol class="four">
+      <li><span class="n">01</span><b>Metric first</b><span>Primary, secondary and guardrail metrics are named before any design.</span></li>
+      <li><span class="n">02</span><b>Evidence over intuition</b><span>An existing page uses its own data. A new page uses the closest analogue, past tests, competitors and benchmarks.</span></li>
+      <li><span class="n">03</span><b>Challenge the brief</b><span>Every ticket gets a Challenge block, even when it ends up agreeing with the brief.</span></li>
+      <li><span class="n">04</span><b>A case study every time</b><span>Sized to the ticket, plus a log entry.</span></li>
+    </ol>
+  </section>
+
+  <!-- Context map -->
+  <section class="block">
+    <p class="eyebrow">The context</p>
+    <h2>What it reads, and what it leaves behind</h2>
+    <div class="map">
+      <div class="side in">
+        <div class="card"><span class="eyebrow">My working rules</span>
+          <ul class="chips"><li>raw data before synthesis</li><li>short, plain comments</li><li>"exploration", not "done"</li><li>approved before posting</li><li>never merge a PR</li></ul></div>
+        <div class="card"><span class="eyebrow">Repo knowledge, read every ticket</span>
+          <ul class="chips"><li>sources.md</li><li>metrics.md · the metric tree</li><li>learning-log.md · across every branch</li></ul></div>
+        <div class="card"><span class="eyebrow">Data, each pull tagged by its source</span>
+          <ul class="chips"><li><b>J</b>Jira</li><li><b>C</b>Clarity</li><li><b>L</b>Looker / GA4</li><li><b>H</b>HubSpot</li><li><b>T</b>team and AB Tasty</li><li><b>K</b>competitors</li><li><b>B</b>benchmarks</li></ul></div>
+        <div class="card"><span class="eyebrow">The library</span>
+          <ul class="chips"><li>measurement</li><li>evidence</li><li>16 concepts</li><li>57 principles</li><li>22 review rules</li><li>47 case studies</li></ul></div>
+      </div>
+      <div class="core">
+        <b>/growth-design</b>
+        <span>&lt;ticket&gt; [S|M|L]</span>
+        <div class="rule"><span>routes design to /helix-explore</span><span>promotion to /helix-exploration-promote</span><span>fixes itself before the ticket closes</span></div>
+      </div>
+      <div class="side">
+        <div class="card"><span class="eyebrow">Per ticket, in one folder</span>
+          <ul class="chips"><li>data/*-raw.md</li><li>evidence/ + index</li><li>hypotheses + Challenge</li><li>instrumentation.md</li><li>measurement-plan.md</li></ul></div>
+        <div class="card"><span class="eyebrow">In Helix</span>
+          <ul class="chips"><li>variants, one hypothesis each</li><li>meta.ts notes: claim, cites, prediction</li><li>a states table</li></ul></div>
+        <div class="card"><span class="eyebrow">For the team</span>
+          <ul class="chips"><li>ticket comment</li><li>PR, open, never merged</li><li>case study on the preview, no login</li></ul></div>
+        <div class="card"><span class="eyebrow">For the next ticket</span>
+          <ul class="chips"><li>a learning-log entry</li><li>dated baselines</li><li>a fix to the skill</li></ul></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <section class="block">
+    <p class="eyebrow">How it came about</p>
+    <h2>One ticket done by hand, then a skill</h2>
+    <ol class="tl">
+      <li><time>16 Sep</time><b>Build My Quote, by hand</b><span>YWEB-1830 set the shape. Every new session started with re-explaining the role.</span></li>
+      <li class="big"><time>30 Sep</time><b>The skill, and its first run</b><span>Plan, skill and repo seeds. YWEB-1708 ran through it the same day.</span></li>
+      <li><time>30 Sep</time><b>First fix</b><span>A form reached review without validation, so the skill gained a states pass.</span></li>
+      <li class="big"><time>5 Oct</time><b>The library</b><span>57 principles, 47 case studies, the review checklist and a scaffold script.</span></li>
+      <li><time>14 Oct</time><b>Version 1 shipped</b><span>The paid page went live as the control, with tests to follow one at a time.</span></li>
+      <li><time>19 Oct</time><b>Third ticket</b><span>YWEB-1399, reasons to believe. Two copy variants, LL-025.</span></li>
+      <li><time>Now</time><b>The captain runs it</b><span>The Moorings and Sunsail desks run every YWEB ticket through it.</span></li>
+    </ol>
+  </section>
+
+  <!-- Hypothesis + Challenge -->
+  <section class="block">
+    <p class="eyebrow">Step 5, as it ran on YWEB-1708</p>
+    <h2>A hypothesis has a fixed shape</h2>
+    <article class="hyp" aria-label="Hypothesis H1 from YWEB-1708">
+      <header><b>H1</b><p>Trip questions first, contact details last, in two steps.</p></header>
+      <dl>
+        <dt>Evidence</dt><dd><code>F10</code> comparable forms ask trip first · <code>F9</code></dd>
+        <dt>Lever</dt><dd>Step 1: charter type, month, cabins, destination prefilled. Step 2: contact details in a pop-up.</dd>
+        <dt>Metric</dt><dd>Submissions per session ↑ · step-1 start rate as the early signal</dd>
+        <dt>Constraint</dt><dd>All nine HubSpot fields are still posted with their values</dd>
+        <dt>Principle</dt><dd>Commitment and consistency: easy trip questions before contact details</dd>
+        <dt>Confidence</dt><dd><span class="meter" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i></span>High on direction, untested on this site</dd>
+      </dl>
+    </article>
+
+    <h3 style="margin-top:48px;font-size:1.1rem">The Challenge block: the wireframe against the evidence</h3>
+    <div class="vs">
+      <div class="head eyebrow"><span>Wireframe said</span><span>Evidence said</span><span>We did</span></div>
+      <div class="r"><div><span class="eyebrow">Wireframe said</span><s>Name, email and phone first</s></div><div><span class="eyebrow">Evidence said</span>Quark, Dream Yacht and Boatbookings all ask about the trip first (F10)</div><div><span class="eyebrow">We did</span>Trip questions first; contact details in a pop-up</div></div>
+      <div class="r"><div><span class="eyebrow">Wireframe said</span><s>A form that halves the photo</s></div><div><span class="eyebrow">Evidence said</span>Photos are the top tap on phones: 29.9% of 15,071 taps (F3)</div><div><span class="eyebrow">We did</span>The form sits beside the photo, not in place of it</div></div>
+      <div class="r"><div><span class="eyebrow">Wireframe said</span><s>A 17-option destination select</s></div><div><span class="eyebrow">Evidence said</span>It is a BVI-only page (F11)</div><div><span class="eyebrow">We did</span>Destination prefilled, shown as a line that can be changed</div></div>
+      <div class="r"><div><span class="eyebrow">Wireframe said</span><s>A sticky sidebar or a modal</s></div><div><span class="eyebrow">Evidence said</span>81.5% of 16,258 paid sessions are on phones (F5)</div><div><span class="eyebrow">We did</span>A sticky "Get my quote" bar on phones</div></div>
+    </div>
+
+    <h3 style="margin-top:48px;font-size:1.1rem">Step 6: one hypothesis per variant, so any result can be traced to one idea</h3>
+    <div class="phones3">
+      <figure class="fig"><button type="button"><img src="images/paid-hero/01-v1-phone.jpg" alt="Variant 1 on a phone: a catamaran photo, the title, then a card headed Step 1 of 2 asking which type of charter." width="750" height="1624" loading="lazy"></button><figcaption><b>H1</b>Trip questions first</figcaption></figure>
+      <figure class="fig"><button type="button"><img src="images/paid-hero/04-v2-phone.jpg" alt="Variant 2 on a phone: a bay photo, the title, a from-price block and a card headed See your BVI price." width="750" height="1624" loading="lazy"></button><figcaption><b>H2</b>Price in the path</figcaption></figure>
+      <figure class="fig"><button type="button"><img src="images/paid-hero/07-v3-phone.jpg" alt="Variant 3 on a phone: a photo gallery, the title, three chips and a red Get my quote button above the fold." width="750" height="1624" loading="lazy"></button><figcaption><b>H4</b>Photo-led hero</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Sizing -->
+  <section class="block" id="sizing">
+    <p class="eyebrow">Sized to the ticket</p>
+    <h2>A copy tweak doesn't get the full process</h2>
+    <div class="size" tabindex="0" role="region" aria-label="Which steps each size runs">
+      <table>
+        <caption class="eyebrow" style="text-align:left;padding-bottom:10px">Which steps each size runs</caption>
+        <thead><tr><th scope="col"><span class="vh">Step</span></th><th scope="col">S<small>one page, existing parts</small></th><th scope="col">M<small>new page or pattern</small></th><th scope="col">L<small>top page, A/B arms</small></th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><span>01</span>Intake</th><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>02</span>Size</th><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>03</span>Metric</th><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>04</span>Evidence</th><td><i class="dot h" aria-hidden="true"></i><span class="vh">one pull</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>05</span>Hypotheses</th><td><i class="dot h" aria-hidden="true"></i><span class="vh">one</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">two to three</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes, in rounds</span></td></tr>
+          <tr><th scope="row"><span>06</span>Design</th><td><i class="dot h" aria-hidden="true"></i><span class="vh">one to two variants</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">two to three variants</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes, in rounds</span></td></tr>
+          <tr><th scope="row"><span>07</span>Instrumentation</th><td><i class="dot n" aria-hidden="true"></i><span class="vh">skipped</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>08</span>Measurement plan</th><td><i class="dot h" aria-hidden="true"></i><span class="vh">pre/post note only</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>09</span>Ship</th><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+          <tr><th scope="row"><span>10</span>Case study</th><td><i class="dot h" aria-hidden="true"></i><span class="vh">small</span></td><td><i class="dot h" aria-hidden="true"></i><span class="vh">small</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">full</span></td></tr>
+          <tr><th scope="row"><span>11</span>Readout</th><td><i class="dot n" aria-hidden="true"></i><span class="vh">only if asked</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td><td><i class="dot y" aria-hidden="true"></i><span class="vh">yes</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="legend sz"><span><i class="dot y"></i>runs in full</span><span><i class="dot h"></i>a lighter version</span><span><i class="dot n"></i>skipped</span></div>
+  </section>
+
+  <!-- The library -->
+  <section class="block">
+    <p class="eyebrow">The knowledge it carries</p>
+    <h2>Where its 47,206 words go</h2>
+    <div class="bars">
+      <div class="g-run"><h3>The runbook</h3><dl>
+        <div class="row"><dt>SKILL.md<small>the eleven steps and their gates</small></dt><dd><i style="width:calc((100% - 60px) * 2336 / 25938)"></i><em>2,336</em></dd></div>
+      </dl></div>
+      <div class="g-lib"><h3>References</h3><dl>
+        <div class="row"><dt>case-library.md<small>47 case studies, indexed by surface and principle</small></dt><dd><i style="width:calc((100% - 60px) * 25938 / 25938)"></i><em>25,938</em></dd></div>
+        <div class="row"><dt>psychology.md<small>57 principles and 9 refused patterns</small></dt><dd><i style="width:calc((100% - 60px) * 2598 / 25938)"></i><em>2,598</em></dd></div>
+        <div class="row"><dt>evidence.md</dt><dd><i style="width:calc((100% - 60px) * 833 / 25938)"></i><em>833</em></dd></div>
+        <div class="row"><dt>measurement.md</dt><dd><i style="width:calc((100% - 60px) * 811 / 25938)"></i><em>811</em></dd></div>
+        <div class="row"><dt>glossary.md<small>16 concepts, one source each</small></dt><dd><i style="width:calc((100% - 60px) * 746 / 25938)"></i><em>746</em></dd></div>
+        <div class="row"><dt>review.md<small>22 rules</small></dt><dd><i style="width:calc((100% - 60px) * 646 / 25938)"></i><em>646</em></dd></div>
+      </dl></div>
+      <div class="g-kit"><h3>Templates and scripts</h3><dl>
+        <div class="row"><dt>7 templates<small>case-study page, archive, ticket comment, seeds</small></dt><dd><i style="width:calc((100% - 60px) * 3403 / 25938)"></i><em>3,403</em></dd></div>
+        <div class="row"><dt>3 scripts<small>scaffold, build, inline</small></dt><dd><i style="width:calc((100% - 60px) * 1909 / 25938)"></i><em>1,909</em></dd></div>
+      </dl></div>
+      <div class="g-repo"><h3>In the repo, growing every ticket</h3><dl>
+        <div class="row"><dt>learning-log.md</dt><dd><i style="width:calc((100% - 60px) * 2808 / 25938)"></i><em>2,808</em></dd></div>
+        <div class="row"><dt>README.md<small>how the practice runs</small></dt><dd><i style="width:calc((100% - 60px) * 1116 / 25938)"></i><em>1,116</em></dd></div>
+        <div class="row"><dt>the method plan<small>what the skill was built from</small></dt><dd><i style="width:calc((100% - 60px) * 2423 / 25938)"></i><em>2,423</em></dd></div>
+        <div class="row"><dt>metrics.md + sources.md</dt><dd><i style="width:calc((100% - 60px) * 1639 / 25938)"></i><em>1,639</em></dd></div>
+      </dl></div>
+    </div>
+    <p class="mono" style="margin-top:14px">Words per file. Bars share one scale. The case library is used for lookups, not read start to finish.</p>
+  </section>
+
+  <!-- Psychology -->
+  <section class="block">
+    <p class="eyebrow">The psychology pass</p>
+    <h2>Every friction gets a named bias. Every lift gets a principle.</h2>
+    <div class="psy">
+      <div><b>Information<span class="n">16</span></b><div class="waffle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="mono">Hick's law, cognitive load, anchoring</span></div>
+      <div><b>Meaning<span class="n">16</span></b><div class="waffle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="mono">social proof, scarcity, goal gradient</span></div>
+      <div><b>Time<span class="n">14</span></b><div class="waffle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="mono">commitment, default bias, loss aversion</span></div>
+      <div><b>Memory<span class="n">11</span></b><div class="waffle" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><span class="mono">peak-end, Zeigarnik, picture superiority</span></div>
+    </div>
+    <div class="ethics">
+      <div><small>ETHICS QUESTION 1</small>Would the visitor agree if they saw how it was built?</div>
+      <div><small>ETHICS QUESTION 2</small>Does it still work if they know?</div>
+    </div>
+    <p class="mono" style="margin-top:22px">A hypothesis that fails either question is dropped, and the Challenge block says why. Named and refused:</p>
+    <ul class="refuse">
+      <li>pre-ticked consent</li><li>counts on cached availability</li><li>countdowns that reset</li><li>confirmshaming</li><li>costs revealed at payment</li><li>a hidden cancel</li><li>forced continuity</li><li>Zeigarnik nagging</li><li>a phone number only for sales calls</li>
+    </ul>
+  </section>
+
+  <!-- Learning log -->
+  <section class="block">
+    <p class="eyebrow">The learning log</p>
+    <h2>25 entries, read at the start of every ticket</h2>
+    <div class="log">
+      <div class="grp"><div><b>Build My Quote</b><span class="mono">YWEB-1830 · the study that set the shape</span></div>
+        <ul class="cells study">
+          <li><b>LL-001</b>calendar, dates</li><li><b>LL-002</b>summary box</li><li><b>LL-003</b>disclosure</li><li><b>LL-004</b>tap targets</li><li><b>LL-005</b>sticky bar</li><li><b>LL-006</b>errors, tracking</li><li><b>LL-007</b>first fold</li>
+        </ul></div>
+      <div class="grp"><div><b>Past tests, seeded</b><span class="mono">AB Tasty results from 2025 and 2026, logged so the same tests aren't run again</span></div>
+        <ul class="cells seed">
+          <li><b>LL-008</b>pencil icon</li><li><b>LL-009</b>field order</li><li><b>LL-010</b>was/now colour</li><li><b>LL-011</b>charter copy</li><li><b>LL-012</b>reviews</li><li><b>LL-013</b>sticky footer</li><li><b>LL-014</b>exp. pop-up</li>
+        </ul></div>
+      <div class="grp"><div><b>Paid landing page</b><span class="mono">YWEB-1708 · the first run of the skill</span></div>
+        <ul class="cells">
+          <li><b>LL-015</b>form order</li><li><b>LL-016</b>price, leads</li><li><b>LL-017</b>photos, fold</li><li><b>LL-018</b>attribution</li><li><b>LL-019</b>CMS, scale</li><li class="fix"><b>LL-020</b>error states</li><li><b>LL-021</b>promotion</li><li><b>LL-022</b>parity</li><li><b>LL-023</b>form API</li><li><b>LL-024</b>launch order</li>
+        </ul></div>
+      <div class="grp"><div><b>Reasons to believe</b><span class="mono">YWEB-1399 · the third ticket</span></div>
+        <ul class="cells"><li><b>LL-025</b>copy, numbers</li></ul></div>
+    </div>
+  </section>
+
+  <!-- Self-fix -->
+  <section class="block">
+    <p class="eyebrow">It fixes itself</p>
+    <h2>When the skill gets something wrong, the fix goes in before the ticket closes</h2>
+    <div class="diff">
+      <div class="top"><span>LL-020 → docs/growth/skill/SKILL.md</span><span>30 Sep 2026 · +2 lines</span></div>
+      <p class="why">I asked whether the error states had been thought through. They hadn't, and the case study would have claimed a finished form with no validation.</p>
+      <p class="add">+ Then a states pass, before any variant is called done: empty and invalid fields, message wording, submit with errors, pending, failure and offline, closed mid-way, keyboard in any pop-up, phone keyboards and autofill.</p>
+      <p class="add">+ Drive each state in the browser and capture it; a state that was not exercised is not done.</p>
+    </div>
+    <div class="grid two" style="max-width:46rem">
+      <figure class="fig"><button type="button"><img src="images/paid-hero/19-state-errors.jpg" alt="The step 2 pop-up after submitting empty: a line reading 4 fields need a change, each field outlined in red with a message under it." width="800" height="500" loading="lazy"></button><figcaption><b>The pass in use.</b> An empty submit: a count, a message under each field, focus on the first one.</figcaption></figure>
+      <figure class="fig"><button type="button"><img src="images/paid-hero/10-final-desktop-bvi.jpg" alt="The final hero on desktop: catamaran photo, title and from-price in white, a card asking charter type, travel month and cabins, and a strip of four proof points." width="800" height="500" loading="lazy"></button><figcaption><b>Where it ended.</b> The converged hero that was promoted into the design system.</figcaption></figure>
+    </div>
+  </section>
+
+  <!-- Folder -->
+  <section class="block">
+    <p class="eyebrow">One command at intake</p>
+    <h2>Every ticket gets the same folder</h2>
+    <div class="tree" tabindex="0" role="region" aria-label="The case-study folder">
+      <div><b>$ new-case-study.py YWEB-1708 paid-hero --size M</b></div>
+      <div><b>docs/case-studies/yweb-1708-paid-hero/</b></div>
+      <div class="i1">case-study.page.html<em>the designed page people see</em></div>
+      <div class="i1">case-study.md<em>the archive; every number has a denominator</em></div>
+      <div class="i1">data/jira-raw.md · clarity-raw.md · looker-raw.md …<em>verbatim pulls</em></div>
+      <div class="i1">evidence/2026-09-30-*.jpg<em>one capture per file</em></div>
+      <div class="i1">evidence-index.md<em>figure, source, claim, boundary</em></div>
+      <div class="i1">instrumentation.md · measurement-plan.md</div>
+      <div class="i1">README.md<em>the ticket's decision log</em></div>
+      <div><b>src/explorations/yweb-1708-paid-hero/case-study/page.tsx</b><em>served on the preview, no login</em></div>
+    </div>
+  </section>
+
+  <!-- Output -->
+  <section class="block">
+    <p class="eyebrow">What came out</p>
+    <h2>Two case studies on this site came out of this skill</h2>
+    <div class="out">
+      <a href="paid-hero.html"><img src="images/paid-hero/24-version1-desktop.jpg" alt="The paid landing page hero on desktop with a frosted lead form over a yacht photo." width="1280" height="800" loading="lazy"><b>A paid landing page</b><span>First run. Three variants, one final version, and version 1 live as the control.</span><span class="mono">YWEB-1708 · M · LL-015 to LL-024</span></a>
+      <a href="bmq.html"><img src="images/bmq/09-compare.jpg" alt="Build My Quote variants side by side on one compare page." width="1600" height="1000" loading="lazy"><b>Build My Quote</b><span>The ticket that set the shape. Eleven variants, two flows in a user test with 48 people.</span><span class="mono">YWEB-1830 · L · LL-001 to LL-014</span></a>
+    </div>
+  </section>
+
+  <p class="pull">The wireframe tells me what the team expects. The evidence tells me what to build.</p>
+
+  <a class="pointer" href="full/growth-design/index.html"><b>Read the long version &rarr;</b><span>the whole practice</span></a>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Counts come from the skill's own files in moorings-helix (docs/growth/skill and docs/growth), as of 20 October 2026. The library's principles and case studies are from Growth.Design's public material, rewritten in my own words.<br>
+    <a href="index.html">Index</a> &middot; <a href="full/growth-design/index.html">Long version</a> &middot; <a href="paid-hero.html">Paid landing page</a> &middot; <a href="bmq.html">Build My Quote</a> &middot; <a href="captain.html">The captain</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

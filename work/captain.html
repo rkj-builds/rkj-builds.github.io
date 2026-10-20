@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The captain — Rahul Jha</title>
+<meta name="description" content="A crew of agents that does my solo work across four brands, and the board I run it from. They draft; I decide.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="checkout.html">&larr; Checkout</a><a href="primitives.html">Primitives &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>A crew that does my solo work</h1>
+  <p class="what">Four brands, and I am the only designer on most of them. So I built a crew of agents that works my queue before I log on and drafts in my voice, and a board to run it from. They draft. I decide.</p>
+  <p class="mono">
+    <span>Oct 2026</span><span>Mine</span><span>Claude Code, hooks, scheduled runs, one HTML file</span><span>Running every weekday</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/01-deck.jpg" alt="A pixel-art office on a yacht deck: a captain's desk with papers, a copywriter at a typewriter, four brand skippers at desks on a navy rug, two with a ticket chip above their heads, a lookout's lantern by the rail, and a dock of buttons starting with Inbox 7." width="1600" height="1000"></button>
+    <figcaption><b>The board.</b> One skipper per brand, the copywriter in my corner, the lookout at the rail. Papers on a desk are real work; the plaque counts what needs me.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Why a game, for a tool</h2>
+    <div class="body">
+      <p>An agent you cannot see is an agent you will not trust. The first version was a dashboard of statuses, and I had to read every row to know if anything was wrong.</p>
+      <p><strong>State you can see beats state you have to read.</strong> Who is working, on what, what is waiting on me, what went out: one glance.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/captain/02-at-work.jpg" alt="Close-up of the skippers: two lean into their screens with a chip above naming the ticket and three typing dots, their screens lighting the desk; the others sit back, screens dark." loading="lazy"></button>
+      <figcaption><b>Working looks like working.</b> A skipper on a ticket leans in, types, and gets a chip naming it. Idle desks stay dark. Motion only where state changed.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/captain/04-night.jpg" alt="The same office at night: the deck dimmed, warm pools of light under the lamps and lantern, cool light only at the monitors of the skippers who are working." loading="lazy"></button>
+      <figcaption><b>Night, by the clock.</b> Light only where there is a source: lamps, the lantern, a screen someone is using. Nothing invented to fill the dark.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Motion, and where there is none</h2>
+    <div class="body">
+      <p>The board is open all day beside real work, so motion has one job: to mark a change of state. Anything you read or act on holds still.</p>
+    </div>
+    <table class="tbl">
+      <caption>Every animation on the board, and why it is there</caption>
+      <thead><tr><th scope="col">Moment</th><th scope="col">Motion</th><th scope="col">Why</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Work starts</th><td>The ticket chip pops in, 0.35s, a slight overshoot</td><td>The one change on screen worth noticing</td></tr>
+        <tr><th scope="row">Typing</th><td>Two frames, 0.34s, stepped</td><td>Pixel art moves in frames; a smooth tween would slide</td></tr>
+        <tr><th scope="row">Breathing</th><td>1.4px over 4.4s, offset per person</td><td>Alive without asking for attention, and never in unison</td></tr>
+        <tr><th scope="row">Dusk</th><td>A 2s fade</td><td>Night should arrive, not flash</td></tr>
+        <tr><th scope="row">Come aboard</th><td>Scale and fade, 1.2s, easing out</td><td>A change of place, not a page swap</td></tr>
+        <tr><th scope="row">Tags, buttons, the inbox</th><td>None</td><td>You read these. They hold still</td></tr>
+        <tr><th scope="row">Reduced motion</th><td>All of it stops</td><td>Chips, light and counts still carry the state</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h2>Two views, one store</h2>
+    <div class="body">
+      <p>The office is for glancing. The chart table is for getting through it. Both read the same store and call the same actions, so an approval on one is the approval on the other.</p>
+      <p>Each published page owns its own data, so two apps would have drifted by the second day. <strong>One source of truth; a view is only a way of looking at it.</strong></p>
+    </div>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/03-inbox.jpg" alt="The chart table: a crew rail of faces across the top, an Inbox on the left with filters for All, Slack, Jira, GitHub and Crew, each row labelled by source and how long it has waited, and a Jira question open in the middle with the message quoted, a reply on lined paper marked not sent, and Copy reply, Open in Jira and Not for me." loading="lazy" width="1600" height="1000"></button>
+    <figcaption><b>One inbox.</b> Everyone waiting on me in Slack, Jira and GitHub, plus the crew's drafts, longest wait first. The reply is written in my voice and never sent for me.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Drafts, never sends</h2>
+    <div class="body">
+      <p>A prompt is a suggestion. A hook is a guarantee. Every tool call the crew makes passes a gate in code before it runs.</p>
+    </div>
+<pre tabindex="0" role="region" aria-label="The rules the gate enforces"><span class="c"># hooks/gate.py, a PreToolUse hook</span>
+<span class="c">#</span>
+<span class="c"># Always: deny merging a pull request.</span>
+<span class="c">#</span>
+<span class="c"># Unattended runs: every outward write is denied</span>
+<span class="c">#   (Slack post, Jira write, git push, PR open or</span>
+<span class="c">#   comment, typing into a browser)</span>
+<span class="c"># unless the item carries <b>Rahul's approval</b>,</span>
+<span class="c"># or the desk has <b>earned level 2</b> for that action.</span>
+<span class="c">#</span>
+<span class="c"># The lookout writes nothing outward, reactions included.</span>
+<span class="c"># Every decision goes to ledger/gate.log.</span></pre>
+  </section>
+
+  <section class="block">
+    <h2>Trust is earned per action</h2>
+    <div class="body">
+      <p>Autonomy is a ladder for each desk and each kind of action, not a switch for the whole crew. Replying in Slack and pushing a branch are not the same risk.</p>
+    </div>
+    <ul class="rail">
+      <li><span class="n">L0</span><b>Shadow</b><span>Drafts, compared with what I actually sent. I never see them.</span></li>
+      <li><span class="n">L1</span><b>Drafter</b><span>Every draft comes to me. Where every desk is today.</span></li>
+      <li><span class="n">L2</span><b>Trusted</b><span>Acts, then tells me. Low-risk work only.</span></li>
+      <li><span class="n">L3</span><b>Autonomous</b><span>Acts alone, for that one kind of action.</span></li>
+    </ul>
+    <div class="body">
+      <p>A desk moves up when 95% of its last 20 drafts of that kind went out unchanged and its evals pass. One reversal moves it down. The likeness evals, replayed from my real history, score <strong>9 of 46</strong> today. That is the baseline the crew has to beat, and why nobody is past L1.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Scheduling is the hard part</h2>
+    <div class="body">
+      <p>A shift at 08:31 on weekdays, a lookout every hour from 09:30. The first real run froze on a permission prompt nobody was there to answer. Because it never finished, the next morning's run never started.</p>
+      <p><strong>A run that cannot ask must never need to, and a stalled run has to fail loud.</strong> The same rule I keep for a booking system's cron.</p>
+    </div>
+    <ul class="notes">
+      <li><b>No prompts in unattended runs.</b> Read-only reach where it can be, the gate for everything else.</li>
+      <li><b>A stall alarm.</b> Fifteen minutes with no activity is reported, not waited out.</li>
+      <li><b>Production is look-only.</b> Added after a desk clicked a control on a live brand page and sent real analytics events. Clicks and tracking checks run on QA or a preview.</li>
+    </ul>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/05-from-above.jpg" alt="The yacht seen from above, under way on a moving sea with a wake behind it, buoys and a small sailboat passing, a Come aboard label on the deck and the controls still on screen." loading="lazy" width="1600" height="1000"></button>
+    <figcaption><b>From above.</b> Sea, buoys and wake drift at one speed, so the boat reads as under way rather than decorated. Come aboard drops you back on deck.</figcaption>
+  </figure>
+
+  <section class="block" id="art">
+    <h2>How the art was made</h2>
+    <div class="body">
+      <p>Version one was pixel art drawn in code. It worked, and it looked flat. For version two I wrote the brief, Codex made the images, and scripts made them behave on a page.</p>
+    </div>
+    <ol class="flow">
+      <li><b>Brief</b><span>One style paragraph, one line per asset, written as a page with a copy button each.</span></li>
+      <li><b>Anchor</b><span>One image first. Every later image is generated against it.</span></li>
+      <li><b>Generate and review</b><span>Codex makes the set and grades it; flagged images are kept, not hidden.</span></li>
+      <li><b>Cut, fix, tile</b><span>Scripts trim and size the sprites, repair the blink frames, cut the boat out, make the sea repeat.</span></li>
+      <li><b>Inline</b><span>Every sprite goes into the one HTML file. No requests, nothing to host.</span></li>
+    </ol>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/10-v1-and-anchor.jpg" alt="Left, version one: a top-down boat office drawn in code, small and flat. Right, the style anchor: a richly shaded pixel-art skipper at a desk on a teak deck by the rail." loading="lazy" width="1600" height="650"></button>
+    <figcaption><b>From drawn in code to generated.</b> The anchor came first and set the look: pixel density, outline colour, light from the top left.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/11-brief.jpg" alt="The art brief page: a headline reading every image the boat needs, ready to paste, four numbered steps, a sidebar of asset groups with counts, and the style anchor card with its full prompt and a Copy prompt button." loading="lazy" width="1600" height="1000"></button>
+    <figcaption><b>The brief, as a page.</b> 61 assets in groups, each with its full prompt and a copy button. Codex worked from this and nothing else.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/12-codex-output.jpg" alt="A grid of 24 of the raw images Codex returned, each labelled with its file name: six crew members, the gull, desks, a sofa, the interview table, a bookshelf, lockers, the crate, post box and barrel, the ship's wheel, easel, coffee cart, a plant, a floor lamp, the anchor and the lantern." loading="lazy" width="1600" height="732"></button>
+    <figcaption><b>What came back, untouched.</b> Codex graded its own set: 43 passed, 9 flagged. The 9 were eight blink and talk frames and the sea tile, which is the work the next two steps do.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/13-blink-fix.jpg" alt="Five crops of the Moorings skipper: the base, the eyes-closed edit, every changed pixel marked red in a greyscale copy, the kept region marked green around the head, and the final blink frame." loading="lazy" width="1600" height="560"></button>
+    <figcaption><b>Blinks without the shimmer.</b> An edit redraws more than you ask for. Only changes inside the head are kept, so the body holds still while the eyes close.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/14-yacht-cutout.jpg" alt="Three steps for the yacht: the generated image with its own painted sea, the boat cut out on a transparent checkerboard, and the boat on the moving sea in the From above view." loading="lazy" width="1600" height="450"></button>
+    <figcaption><b>Off its painted sea.</b> A flood fill from the image edges stops at the hull, so the wheelhouse glass, the same teal as the water, stays.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/15-sea-tile.jpg" alt="Two blocks of four sea tiles: the generated tile repeated with visible seams forming a grid, and the fixed tile repeating with no seams." loading="lazy" width="1600" height="780"></button>
+    <figcaption><b>A sea that repeats.</b> The generated tile had a plain margin painted round it. Crop it, roll the tile by half so the seams meet in the middle, then cover that cross with dithered pixel blocks.</figcaption>
+  </figure>
+
+  <figure class="fig">
+    <button type="button"><img src="images/captain/16-sprites.jpg" alt="A sheet of every sprite that ships: boats, buoys, the crew with their blink frames, the gull, desks, furniture, plants, lamps, the anchor, the lantern, the papers and envelopes and a mug." loading="lazy" width="1600" height="852"></button>
+    <figcaption><b>What ships.</b> Trimmed, sized to about three times their size on screen so they stay sharp on a large display, and saved small enough to inline.</figcaption>
+  </figure>
+
+  <a class="pointer" href="full/captain-art/index.html"><b>Read the full asset chapter &rarr;</b><span>all 56 images, their prompts and review notes</span></a>
+
+  <section class="block">
+    <h2>Two designs from Codex, and what I kept</h2>
+    <div class="body">
+      <p>I also gave Codex a free hand on the interface, twice. Neither shipped as it was. Both changed what did.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/captain/17-codex-office.jpg" alt="Codex's version of the office: the same art with labelled rooms for an owner's cabin and a wheelhouse, framed buttons, and a Hold is on control." loading="lazy"></button>
+      <figcaption><b>Codex's office.</b> I kept its buttons, its panels with a close button, and glow on hover. I dropped the walls: the crew works on one open deck.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/captain/18-codex-app.jpg" alt="Codex's app redesign: a pale green workspace titled What needs my decision, a ranked queue of cards, a detail panel with two options to choose between, and a strip of the crew at their desks." loading="lazy"></button>
+      <figcaption><b>Codex's app.</b> I kept the decision-first layout and rebuilt it as the Chart table, on the board's own data and in its own look.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>What it is in practice</h2>
+    <ul class="notes">
+      <li><b>Six on the crew.</b> Four brand skippers, Wren who writes everything in my voice, and Skye who watches Slack, Jira and GitHub for anyone waiting on me.</li>
+      <li><b>Nine minutes</b> for the first full shift, scan to brief. Nothing posted.</li>
+      <li><b>34 gate checks</b> run on every change: what must be refused, and what must still get through.</li>
+      <li><b>Keyboard first.</b> J and K move, A approves, E edits, P parks, Escape backs out. Every control is named for a screen reader, and reduced motion holds still.</li>
+      <li><b>One HTML file.</b> No framework. The sprites are inlined, the store is the page's own.</li>
+    </ul>
+  </section>
+
+  <p class="pull">They draft. I decide. The gate makes sure of it.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Screens captured from the running board with example people and example work, so no colleague or ticket of theirs appears. The pixel art was generated to my brief and cut into sprites by a script.<br>
+    <a href="index.html">Index</a> &middot; <a href="helix.html">Helix</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

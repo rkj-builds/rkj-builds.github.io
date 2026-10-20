@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The toolbar — Rahul Jha</title>
+<meta name="description" content="Ten tools, the system that makes the eleventh cheap, and the skill that builds it.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="skills.html">&larr; The skills</a><a href="bmq.html">Build My Quote &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>Ten tools, one dock, and a way in</h1>
+  <p class="what">Helix renders a brand's real pages, and once it did, everyone wanted to do something <em>to</em> the page in front of them. I built the dock they live in, the kit they draw from, and the skill that builds the next one.</p>
+  <p class="mono">
+    <span>Oct 2026</span><span>Mine</span><span>10 tools, 1 registry, 1 skill</span><span>helix/chrome/toolbar/</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/tools/10-dock-on-page.jpg" alt="A live Moorings reviews page with a dark floating dock at the bottom holding seven tool icons, the preview switcher and a collapse control." width="1600" height="1089"></button>
+    <figcaption><b>The dock, on a real brand page.</b> It remembers the edge you left it on, and hides with one key when you are presenting.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Why a toolbar at all</h2>
+    <div class="body">
+      <p>Helix shipped without tools. A designer would see something wrong, screenshot it, paste it in Slack and describe where it was. The thread outlived the fix.</p>
+      <p>The obvious patch is a button on the page that needs one. Do that twice and you have two shortcuts and two opinions about what a panel is. <strong>So I built the dock first and the tools second.</strong></p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Comments, which is why the rest exist</h2>
+    <div class="body">
+      <p>Sign-off happened in a call: a shared screen, three people talking over each other, and one of them typing notes nobody could tie back to a pixel.</p>
+      <p>Comments pins the feedback to the element. A stakeholder opens the link, signs in with the work account they already have, and leaves a note on the thing itself. <strong>No install, no repository, no Figma seat.</strong> Identity is verified, so a note carries a name, and the allowed domains are enforced in the database rather than the browser, because a shared link is a shared link.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>Annotate, the same idea pointed the other way</h2>
+    <div class="body">
+      <p>Comments are for people. Annotate is for the agent: private notes that never leave your machine, built around the copy button.</p>
+      <p>A note carries what you typed <em>and</em> what you clicked, which is the component path, the file and the line. So <code>ReviewsCarousel &rsaquo; ReviewCard &rsaquo; hr</code> and "stars should sit on the baseline of the name" arrive as one prompt, and nothing has to guess which <code>hr</code> you meant. <strong>The categories are there so a pass can be batched</strong>: collect six spacing notes, send them once.</p>
+    </div>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/tools/14-annotate.jpg" alt="A note being written on a review card: a dark popover headed ReviewsCarousel, ReviewCard, hr with the source file beneath, category chips for Spacing, Typography, Color, Copy, Layout and Bug, and the typed note stars should sit on the baseline of the name." loading="lazy"></button>
+    <figcaption><b>A note that knows where it is.</b> The element is outlined, the popover names the component and the file. Enter adds it; the set copies as one prompt.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Seven more, each answering one complaint</h2>
+    <ul class="notes">
+      <li><b>Inspect</b> <span class="k">&#8679;I</span> &nbsp;"What is this and where does it live." Engineers kept asking designers which component a thing was, and designers kept not knowing. Now the page answers: name, size, spacing, colour tokens, the classes and what they resolved to, the file and the line.</li>
+      <li><b>Changes</b> <span class="k">&#8679;D</span> &nbsp;"What moved since Friday." Reviewers were re-reading whole pages to find one edit. It marks what changed here since your last visit, since main, or since the last commit.</li>
+      <li><b>Snap</b> <span class="k">&#8679;S</span> &nbsp;"I need this in the deck by eleven." People were cropping browser screenshots by hand and catching their own scrollbar. It copies the view or the full page at a chosen width, through the same headless browser that takes the exploration thumbnails, so a deck and a card cannot disagree.</li>
+      <li><b>Layout grid</b> <span class="k">&#8679;G</span> &nbsp;"Is this on the grid or near it." The design system's own columns and gutters over any page, so the argument is settled by looking.</li>
+      <li><b>Outlines</b> <span class="k">&#8679;O</span> &nbsp;"Which of these is actually a component." Every component on the page gets an outline, so the library and the one-off markup stop looking alike. It keeps up when the page changes under it.</li>
+      <li><b>Brand</b> <span class="k">&#8679;B</span> &nbsp;"Show me this in the other brand." A full-screen page has no sidebar to switch themes from, so the switch lives on the dock and the page repaints in place.</li>
+      <li><b>Copy link</b> <span class="k">&#8679;L</span> &nbsp;"Send me that." The address of the page in view, in one click, opening the same page for whoever you send it to.</li>
+    </ul>
+  </section>
+
+  <div class="grid three">
+    <figure class="fig">
+      <button type="button"><img src="images/tools/11-inspect.jpg" alt="Inspect open on a page: a dark readout naming the element, with the source file and line, rows for type, colour, space and radius, a Copy all control and a Fix this button." loading="lazy"></button>
+      <figcaption><b>Inspect.</b> Every row copies. <em>Fix this</em> hands the element to Annotate with the styles attached, so the two are one workflow.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/tools/15-changes.jpg" alt="The Changes menu listing components whose files changed, with who changed them and when." loading="lazy"></button>
+      <figcaption><b>Changes.</b> Read from git, not from a changelog anyone maintains. Each entry is marked on the page while the menu is open.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/tools/12-grid.jpg" alt="The layout grid overlay drawn across a page, columns and gutters visible." loading="lazy"></button>
+      <figcaption><b>Layout grid.</b> Columns and gutters from the brand's own tokens, so the overlay cannot go out of date.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Pick, which changed how decisions get made</h2>
+    <div class="body">
+      <p>Five variants and six opinions used to resolve into whoever spoke last. Pick makes the choice a record: everyone with the link picks one and says why, the tally is visible, the author decides.</p>
+      <p>After that only the author can change it. A deployed preview has no git history to say who owns an exploration, so <strong>the first person to decide owns the decision, and the database enforces it</strong> rather than the browser.</p>
+      <p>Pick and Comments are the two that need sign-in, so a signed-out dock carries seven of the ten. The registry doing its job: a tool says what it needs, and a context that cannot run it does not offer it.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>The part that is actually the work</h2>
+    <div class="body">
+      <p>Ten tools is not the achievement. The tenth costing an afternoon is.</p>
+      <p>A tool is one entry in one registry, and that registry is what the dock renders, the catalogue lists, the sidebar counts and the keyboard scheme reads, so a tool cannot exist in one and be missing from another. It declares a shape, an audience, a shortcut, and what it needs to run. That last one is why a tile can say <em>needs a dev server</em> and the dock greys it out instead of failing on the click.</p>
+    <table class="tbl">
+      <caption>The ten tools, and what each needs to run</caption>
+      <thead><tr><th scope="col">Tool</th><th scope="col">Shortcut</th><th scope="col">Needs</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Comment</th><td>&#8679;C</td><td>Sign-in</td></tr>
+        <tr><th scope="row">Annotate</th><td>&#8679;A</td><td>&mdash;</td></tr>
+        <tr><th scope="row">Pick</th><td>&#8679;P</td><td>Sign-in</td></tr>
+        <tr><th scope="row">Inspect</th><td>&#8679;I</td><td>&mdash;</td></tr>
+        <tr><th scope="row">Grid</th><td>&#8679;G</td><td>&mdash;</td></tr>
+        <tr><th scope="row">Outlines</th><td>&#8679;O</td><td>&mdash;</td></tr>
+        <tr><th scope="row">Changes</th><td>&#8679;D</td><td>A dev server</td></tr>
+        <tr><th scope="row">Brand</th><td>&#8679;B</td><td>Fullscreen pages</td></tr>
+        <tr><th scope="row">Link</th><td>&#8679;L</td><td>&mdash;</td></tr>
+        <tr><th scope="row">Snap</th><td>&#8679;S</td><td>A dev server</td></tr>
+      </tbody>
+    </table>
+
+      <p>Every value a tool reaches for has a name, including the ones people hard-code. <strong>A tool that needs one the kit lacks adds the token and its line of documentation in the same change.</strong> Motion included, because the alternative is ten tools easing ten ways.</p>
+    </div>
+    <table class="tbl">
+      <caption>The kit's motion, one name per job</caption>
+      <thead><tr><th scope="col">Motion</th><th scope="col">Value</th><th scope="col">Used for</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Ease</th><td>cubic-bezier(.2, .8, .2, 1)</td><td>Everything that answers a click</td></tr>
+        <tr><th scope="row">Spring</th><td>cubic-bezier(.2, 1.2, .35, 1)</td><td>The dock settling on an edge</td></tr>
+        <tr><th scope="row">Fast</th><td>0.15s</td><td>Hover, press</td></tr>
+        <tr><th scope="row">Base</th><td>0.22s</td><td>Menus and popovers opening</td></tr>
+        <tr><th scope="row">Slow</th><td>0.3s</td><td>Panels sliding in</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/tools/01-tools-page.jpg" alt="The Tools page: Inspect in a featured card, a New in Helix 2.0 group holding Inspect, Changes and Snap, a Moorings defaults group holding Annotate and Layout grid, each tile crediting its author and audience, and a Build a tool button in the header." loading="lazy"></button>
+      <figcaption><b>The catalogue.</b> A tile says who made it, who it is for and what it needs, and the count in the sidebar is the number this context can run. Add one and it joins your dock on every device you sign in from.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/tools/02-toolkit.jpg" alt="The Tool kit page listing five rules: one toolbar, one look, one sign-in, keyboard first, know your audience; then the dock drawn live below." loading="lazy"></button>
+      <figcaption><b>The guide, drawn with its own stylesheet.</b> Five rules, five shapes a tool can take, and the dock rendered live underneath, so the page cannot describe a toolbar it does not have.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>And a skill, so it is not my toolbar</h2>
+    <div class="body">
+      <p>A guide gets read once. I wanted the next tool built by someone who never read it, so the build is a skill.</p>
+      <p>A designer says "build a tool that measures the distance between two elements". The skill settles shape, audience and shortcut in one exchange, stands up a sandbox running this chrome, builds inside the kit, and opens the pull request. <strong>It refuses to run inside a brand's repository.</strong></p>
+      <p>That refusal is the design. A tool written into one brand is invisible to the other nine and is wiped by the next chrome update, so the refusal is the difference between one toolbar and ten forks of one.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/tools/18-tool-detail.jpg" alt="A tool's detail page describing what it does, who it is for and who made it." loading="lazy"></button>
+      <figcaption><b>A tool's own page.</b> What it does in three lines, its audience, its shortcut, its author. Written by the skill from the registry entry.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/tools/03-tools-dark.jpg" alt="The Tools page in dark mode." loading="lazy"></button>
+      <figcaption><b>Dark.</b> Tool surfaces stay dark in both appearances: the dock floats over brand pages of every colour and has to read as the same object on all of them.</figcaption>
+    </figure>
+  </div>
+
+  <p class="pull">Ten tools, one dock, one shortcut scheme, and nobody has to be told where the eleventh goes.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    <a href="index.html">Index</a> &middot; <a href="skills.html">The skills</a> &middot; <a href="bmq.html">Build My Quote</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

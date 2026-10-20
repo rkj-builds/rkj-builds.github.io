@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>Paid BVI Hero</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Instrument+Sans:wght@400;600&display=swap">
+<style>
+/* Layout: one 680px reading column for prose; a 1080px band for the numbers, figures and matrices. Left-aligned throughout. One accent (amber) for emphasis marks; the brand cyan for links and chart ink. */
+:root {
+  --paper: #f9f8f7; --sand: #f3f1ef; --card: #ffffff; --ink: #060f26; --navy: #15203c; --muted: #515154; --line: #d9d3c7;
+  --cyan: #15709a; --sea: #1b89ba; --sea-tint: #cae9f7; --amber: #f1cf6a; --red: #db3039;
+  --display: "EB Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Instrument Sans", -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper: #0d1526; --sand: #141d31; --card: #182240; --ink: #f3efe6; --navy: #e6e1d6; --muted: #a7afc0; --line: #2a344a; --cyan: #5fb3dc; --sea: #38a6d7; --sea-tint: #1f3a55; --amber: #d9b95a; color-scheme: dark; } }
+:root[data-theme="dark"] { --paper: #0d1526; --sand: #141d31; --card: #182240; --ink: #f3efe6; --navy: #e6e1d6; --muted: #a7afc0; --line: #2a344a; --cyan: #5fb3dc; --sea: #38a6d7; --sea-tint: #1f3a55; --amber: #d9b95a; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--cyan); }
+img { max-width: 100%; height: auto; display: block; }
+h1, h2, h3, .num { font-family: var(--display); font-weight: 500; letter-spacing: -0.01em; }
+h1 { font-size: clamp(34px, 5vw, 56px); line-height: 1.05; margin: 12px 0 16px; max-width: 18ch; text-wrap: balance; }
+h2 { font-size: clamp(26px, 3.2vw, 34px); line-height: 1.15; margin: 0 0 14px; max-width: 24ch; text-wrap: balance; }
+h3 { font-size: 21px; line-height: 1.2; margin: 0 0 8px; text-wrap: balance; }
+p { margin: 0 0 12px; max-width: 68ch; text-wrap: pretty; }
+ul, ol { margin: 0 0 12px; padding-left: 1.2em; max-width: 68ch; }
+li { margin-bottom: 6px; text-wrap: pretty; }
+strong { font-weight: 600; }
+.small { font-size: 13.5px; color: var(--muted); }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: 16px; }
+.read { max-width: 680px; }
+
+/* Sticky jump nav */
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; gap: 16px; padding-block: 10px; overflow-x: auto; scrollbar-width: none; }
+.nav .brand { font-family: var(--display); font-size: 18px; white-space: nowrap; }
+.nav a { color: var(--ink); text-decoration: none; font-size: 14px; white-space: nowrap; padding: 4px 0; border-bottom: 2px solid transparent; }
+.nav a:hover, .nav a:focus-visible { border-color: var(--amber); outline: none; }
+
+section { padding-block: 56px 8px; }
+.hero { padding-block: 40px 24px; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--amber); }
+.dek { font-size: 19px; line-height: 1.5; color: var(--ink); max-width: 60ch; }
+
+/* Before / after */
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; align-items: start; margin-top: 32px; }
+.phone { max-width: 300px; }
+.phone img { border: 1px solid var(--line); border-radius: 22px; background: var(--card); }
+.phone figcaption { margin-top: 10px; font-size: 14px; }
+.phone figcaption b { display: block; font-weight: 600; color: var(--ink); }
+.callouts { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; align-self: center; }
+.callouts li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; align-items: start; font-size: 15px; }
+.callouts span { width: 26px; height: 26px; border-radius: 50%; background: var(--amber); color: #060f26; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; justify-content: center; }
+
+/* Numbers */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 36px; }
+.tile { padding: 18px 20px 18px 0; border-right: 1px solid var(--line); margin-right: 20px; }
+.tile:last-child { border-right: 0; margin-right: 0; }
+.num { font-size: 44px; line-height: 1; font-variant-numeric: tabular-nums; }
+.tile p { margin: 8px 0 0; font-size: 14px; }
+.tile .small { display: block; margin-top: 4px; }
+
+.strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px 24px; margin-top: 28px; font-size: 14px; }
+.strip dt { color: var(--muted); font-size: 12px; margin-bottom: 2px; }
+.strip dd { margin: 0; }
+
+/* Hypothesis card */
+.hyp { background: var(--sand); border-left: 3px solid var(--amber); padding: 20px 24px; max-width: 760px; }
+.hyp p { max-width: none; }
+.hyp dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px 20px; margin: 14px 0 0; font-size: 14px; }
+.hyp dt { color: var(--muted); font-size: 12px; }
+.hyp dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* Evidence */
+.signal { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 28px; align-items: start; padding-block: 28px; border-top: 1px solid var(--line); }
+.signal:first-of-type { border-top: 0; }
+.signal .chart { min-width: 0; }
+.chart svg { width: 100%; height: auto; display: block; font-family: var(--sans); }
+.chart .lbl { font-size: 13px; fill: var(--ink); }
+.chart .val { font-size: 13px; fill: var(--ink); font-weight: 600; }
+.chart .ax { font-size: 12px; fill: var(--muted); }
+.chart .bar { fill: var(--sea); }
+.chart .bar-2 { fill: var(--sea-tint); stroke: var(--sea); stroke-width: 1; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .mark { fill: var(--amber); }
+.chart rect:hover { opacity: .85; }
+.legend { display: flex; gap: 16px; font-size: 13px; margin: 8px 0 0; color: var(--muted); }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.chart-cap { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.implication { font-size: 17px; line-height: 1.5; }
+.implication b { font-weight: 600; }
+
+/* Matrices */
+.matrix { width: 100%; border-collapse: collapse; font-size: 14.5px; margin-top: 8px; }
+.matrix th, .matrix td { text-align: left; vertical-align: top; padding: 10px 12px 10px 0; border-bottom: 1px solid var(--line); }
+.matrix th { font-weight: 600; color: var(--muted); font-size: 12px; }
+.matrix td:first-child { font-weight: 600; }
+.tbl { overflow-x: auto; }
+.tbl table { min-width: 560px; }
+.yes { color: var(--cyan); font-weight: 600; }
+.no { color: var(--muted); }
+
+/* Cards for decisions */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; margin-top: 8px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.card img { aspect-ratio: 3 / 4; object-fit: cover; object-position: top; border-bottom: 1px solid var(--line); }
+.card .body { padding: 14px 16px 16px; }
+.card .tag { display: inline-block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.card h3 { font-size: 19px; }
+.card p { font-size: 14px; margin: 0; }
+.rejects { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 24px; margin-top: 24px; font-size: 14.5px; }
+.rejects b { display: block; font-weight: 600; }
+
+/* Timeline (a real sequence) */
+.timeline { list-style: none; padding: 0; margin: 24px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0; counter-reset: step; max-width: none; }
+.timeline li { position: relative; padding: 14px 16px 0 0; border-top: 2px solid var(--line); font-size: 14px; }
+.timeline li::before { counter-increment: step; content: counter(step); position: absolute; top: -12px; left: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--paper); border: 2px solid var(--amber); font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.timeline b { display: block; font-weight: 600; }
+
+/* Scale */
+.trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 8px; }
+.trio figure { margin: 0; }
+.trio img { border: 1px solid var(--line); border-radius: 18px; }
+.trio figcaption { font-size: 14px; margin-top: 8px; }
+
+/* Open items */
+.todo { list-style: none; padding: 0; display: grid; gap: 8px; max-width: 760px; }
+.todo li { display: grid; grid-template-columns: 18px 1fr auto; gap: 10px; align-items: baseline; font-size: 15px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.todo i { width: 14px; height: 14px; border: 1.5px solid var(--muted); border-radius: 3px; display: inline-block; position: relative; top: 2px; }
+.todo .who { font-size: 13px; color: var(--muted); white-space: nowrap; }
+
+details { border-top: 1px solid var(--line); }
+details:last-of-type { border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; padding: 16px 0; font-family: var(--display); font-size: 21px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--sans); color: var(--muted); font-size: 20px; }
+details[open] summary::after { content: "–"; }
+details .inner { padding-bottom: 24px; }
+details p, details li { font-size: 15px; }
+code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--sand); border-radius: 3px; padding: 1px 5px; }
+footer { padding-block: 40px 60px; font-size: 13px; color: var(--muted); }
+@media (max-width: 720px) { .signal { grid-template-columns: 1fr; } .tile { border-right: 0; margin-right: 0; border-bottom: 1px solid var(--line); } .tile:last-child { border-bottom: 0; } .todo .who { white-space: normal; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<nav class="nav" aria-label="Sections">
+  <div class="wrap">
+    <span class="brand">YWEB-1708 Paid landing hero</span>
+    <a href="#decision">Decision</a><a href="#evidence">Evidence</a><a href="#hypothesis">Hypothesis</a><a href="#design">Design</a><a href="#states">States</a><a href="#edges">Edge cases</a><a href="#built">Built</a><a href="#measure">Measure</a><a href="#scale">Scale</a><a href="#open">Open</a><a href="#appendix">Appendix</a>
+  </div>
+</nav>
+
+<main>
+<section class="hero wrap" id="decision">
+  <span class="status">Version 1 ready to go live, 14 October 2026. Read date: 14 days after launch. Tests 1 and 2 planned.</span>
+  <h1>One hero, trip first, for every paid destination page</h1>
+  <p class="dek">The paid landing page inherits a phone audience that pages photos and taps Build My Quote. The hero keeps the photo, asks three trip questions before any personal detail, posts all nine HubSpot fields, and is judged on one number: lead submissions per session.</p>
+
+  <div class="pair">
+    <figure class="phone">
+      <img src="images/2026-09-30-bvi-page-phone-hero.jpg" alt="The BVI destination page on a phone today: photo, title, tabs, and a sticky Build My Quote bar" width="750" height="1624">
+      <figcaption><b>Today</b>The BVI page, which already lands about 3,000 paid users a week. No lead form; the quote builder is the only action.</figcaption>
+    </figure>
+    <figure class="phone">
+      <img src="images/2026-09-30-v4-phone-bvi.jpg" alt="The proposed paid hero on a phone: gallery, title, from-price, three trip chips and one Get my quote button" width="750" height="1624">
+      <figcaption><b>Proposed</b>The paid hero, shown for the BVI. The same component renders any destination.</figcaption>
+    </figure>
+    <ol class="callouts" aria-label="What changed">
+      <li><span>1</span>The photo stays first and swipeable: the gallery arrow is the most-tapped element on the page today.</li>
+      <li><span>2</span>The three trip questions sit inside the phone fold as chips, with the destination prefilled.</li>
+      <li><span>3</span>One red action, repeated in a sticky bar as the visitor scrolls. No modal.</li>
+      <li><span>4</span>Name, email and phone are asked last, in a pop-up that opens over the hero once the trip is known: a dialog on desktop, a sheet on phone.</li>
+    </ol>
+  </div>
+
+  <div class="tiles" aria-label="The numbers that shaped the decision">
+    <div class="tile"><div class="num">81.5%</div><p>of paid sessions are on a phone<span class="small">14,738 of 16,258 US paid sessions, week of 21 Sep 2026, GA4</span></p></div>
+    <div class="tile"><div class="num">29.9%</div><p>of mobile taps on the BVI page go to the photo gallery arrow<span class="small">4,503 of 15,071 taps, 30 days to 30 Sep, Clarity</span></p></div>
+    <div class="tile"><div class="num">15.2%</div><p>go to the three Build My Quote controls; the phone number gets 0.08%<span class="small">same sample</span></p></div>
+    <div class="tile"><div class="num">57%</div><p>of sales-qualified leads arrive as shared quotes, with trip details<span class="small">198 of 348 SQLs, week of 21 Sep, HubSpot</span></p></div>
+  </div>
+
+  <dl class="strip">
+    <div><dt>Ticket</dt><dd>YWEB-1708, Anusha Shetty</dd></div>
+    <div><dt>Role</dt><dd>Growth design, Rahul Jha</dd></div>
+    <div><dt>Surface</dt><dd>WordPress page, HubSpot form</dd></div>
+    <div><dt>Traffic today</dt><dd>About 3,000 paid users a week to the BVI page</dd></div>
+    <div><dt>Build</dt><dd>Megan (page), Gareth (HubSpot, paid), Kirti (events)</dd></div>
+    <div><dt>Status</dt><dd>Exploration; one final hero requested by the team</dd></div>
+  </dl>
+</section>
+
+<section class="wrap" id="problem">
+  <div class="read">
+    <h2>The brief describes Quark's page. The audience is not Quark's.</h2>
+    <p>The ticket asks for a hero with an embedded lead form, modelled on Quark Expeditions' PPC page, with nine confirmed HubSpot fields and a WordPress build that posts to HubSpot. The attached wireframes put name, email and phone at the top of the form and add a budget field the form does not have.</p>
+    <p>The traffic that will land here is known. Two Meta top-of-funnel campaigns carry more than half of paid users, at 24 to 32% engagement; 82% of paid sessions are on a phone; and on the page these users already reach, they page photos and tap the quote builder, not the phone number. A contact-first form on a split hero fights all three behaviours at once.</p>
+    <p>The one constraint that shaped the design: every one of the nine HubSpot fields has to be posted with its existing value, and leads have to carry a Paid source so marketing can report them.</p>
+  </div>
+</section>
+
+<section class="wrap" id="hypothesis">
+  <h2>Hypothesis</h2>
+  <div class="hyp">
+    <p><strong>If</strong> the hero keeps the photo and asks the three trip questions before any personal detail, <strong>then</strong> lead submissions per session will be higher than a nine-field contact-first form, <strong>because</strong> every comparable form orders it this way and 15% of mobile taps already go to a trip-question flow on the page these users reach today.</p>
+    <dl>
+      <div><dt>Primary metric</dt><dd>Lead submissions per session</dd></div>
+      <div><dt>Leading signal</dt><dd>Step-1 start rate; step-1 to step-2 rate</dd></div>
+      <div><dt>Quality</dt><dd>Sales-accepted rate at 14 days</dd></div>
+      <div><dt>Guardrails</dt><dd>Engagement rate vs the BVI page (46%), spam rate, consent opt-in, mobile load, cost per lead</dd></div>
+      <div><dt>Planning baseline</dt><dd>3% (paid Facebook median 3.8%, paid search 6.3%)</dd></div>
+      <div><dt>Smallest effect worth a test</dt><dd>30% relative; about 6,500 sessions per arm</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="wrap" id="evidence">
+  <h2>Three signals decided the shape</h2>
+
+  <div class="signal">
+    <div class="chart">
+      <h3>Where mobile taps go on the BVI page</h3>
+      <svg viewBox="0 0 640 300" role="img" aria-label="Horizontal bar chart of the share of mobile taps by element on the BVI destination page. Photo gallery next arrow 29.9 percent, Build My Quote controls 15.2, other gallery controls 4.2, menu 3.0, Itinerary tab 2.4, hero photo 1.1, video play 0.8, phone number 0.08.">
+        <g class="grid"><line x1="220" y1="8" x2="220" y2="270"/><line x1="353" y1="8" x2="353" y2="270"/><line x1="486" y1="8" x2="486" y2="270"/><line x1="619" y1="8" x2="619" y2="270"/></g>
+        <g class="ax"><text x="220" y="288">0</text><text x="353" y="288" text-anchor="middle">10%</text><text x="486" y="288" text-anchor="middle">20%</text><text x="619" y="288" text-anchor="end">30%</text></g>
+        <g>
+          <text class="lbl" x="210" y="28" text-anchor="end">Photo gallery, next arrow</text><rect class="bar" x="220" y="14" width="399" height="20" rx="2"><title>Photo gallery next arrow: 4,503 taps, 29.9%</title></rect><text class="val" x="611" y="28" text-anchor="end" fill="#fff">29.9%</text>
+          <text class="lbl" x="210" y="60" text-anchor="end">Build My Quote (3 controls)</text><rect class="bar" x="220" y="46" width="203" height="20" rx="2"><title>Build My Quote sticky bar, tab and inline button: 2,287 taps, 15.2%</title></rect><text class="val" x="431" y="60">15.2%</text>
+          <text class="lbl" x="210" y="92" text-anchor="end">Gallery: prev, close, view all</text><rect class="bar" x="220" y="78" width="56" height="20" rx="2"><title>Other gallery controls: 4.2%</title></rect><text class="val" x="284" y="92">4.2%</text>
+          <text class="lbl" x="210" y="124" text-anchor="end">Menu</text><rect class="bar" x="220" y="110" width="40" height="20" rx="2"><title>Hamburger menu: 3.0%</title></rect><text class="val" x="268" y="124">3.0%</text>
+          <text class="lbl" x="210" y="156" text-anchor="end">Itinerary tab</text><rect class="bar" x="220" y="142" width="32" height="20" rx="2"><title>Itinerary tab: 2.4%</title></rect><text class="val" x="260" y="156">2.4%</text>
+          <text class="lbl" x="210" y="188" text-anchor="end">Hero photo</text><rect class="bar" x="220" y="174" width="15" height="20" rx="2"><title>Hero photo: 1.1%</title></rect><text class="val" x="243" y="188">1.1%</text>
+          <text class="lbl" x="210" y="220" text-anchor="end">Video play</text><rect class="bar" x="220" y="206" width="11" height="20" rx="2"><title>Video play: 0.8%</title></rect><text class="val" x="239" y="220">0.8%</text>
+          <text class="lbl" x="210" y="252" text-anchor="end">Phone number</text><rect class="bar" x="220" y="238" width="2" height="20" rx="1"><title>Phone number: 0.08%</title></rect><text class="val" x="230" y="252">0.08%</text>
+        </g>
+      </svg>
+      <p class="chart-cap">Share of 15,071 taps, mobile, 30 days to 30 September 2026. Clarity tap heatmap, ranked elements. Taps, not users: one person paging a gallery contributes many.</p>
+    </div>
+    <p class="implication"><b>Photos first, then price.</b> A third of taps go to imagery and 15% to the quote builder. A hero that shrinks the photo to fit a form, or hides the price, works against both. The phone number, which the wireframes keep prominent, gets one tap in a thousand.</p>
+  </div>
+
+  <div class="signal">
+    <div class="chart">
+      <h3>Leads by channel: sales-qualified against marketing-qualified</h3>
+      <svg viewBox="0 0 640 250" role="img" aria-label="Grouped horizontal bars of HubSpot leads by channel for the week of 21 September 2026. Paid search 78 sales-qualified and 177 marketing-qualified. Direct 130 and 30. Email 66 and 8. Paid social 7 and 52. Organic search 40 and 8.">
+        <g class="grid"><line x1="150" y1="8" x2="150" y2="222"/><line x1="261" y1="8" x2="261" y2="222"/><line x1="372" y1="8" x2="372" y2="222"/><line x1="483" y1="8" x2="483" y2="222"/><line x1="594" y1="8" x2="594" y2="222"/></g>
+        <g class="ax"><text x="150" y="240">0</text><text x="261" y="240" text-anchor="middle">50</text><text x="372" y="240" text-anchor="middle">100</text><text x="483" y="240" text-anchor="middle">150</text><text x="594" y="240" text-anchor="middle">200</text></g>
+        <g>
+          <text class="lbl" x="140" y="30" text-anchor="end">Paid search</text><rect class="bar" x="150" y="12" width="173" height="12" rx="2"><title>Paid search, SQL about 78</title></rect><text class="val" x="329" y="22">78</text><rect class="bar-2" x="150" y="26" width="393" height="12" rx="2"><title>Paid search, MQL about 177</title></rect><text class="val" x="549" y="36">177</text>
+          <text class="lbl" x="140" y="72" text-anchor="end">Direct</text><rect class="bar" x="150" y="54" width="289" height="12" rx="2"><title>Direct, SQL about 130</title></rect><text class="val" x="445" y="64">130</text><rect class="bar-2" x="150" y="68" width="67" height="12" rx="2"><title>Direct, MQL about 30</title></rect><text class="val" x="223" y="78">30</text>
+          <text class="lbl" x="140" y="114" text-anchor="end">Email</text><rect class="bar" x="150" y="96" width="147" height="12" rx="2"><title>Email, SQL about 66</title></rect><text class="val" x="303" y="106">66</text><rect class="bar-2" x="150" y="110" width="18" height="12" rx="2"><title>Email, MQL about 8</title></rect><text class="val" x="174" y="120">8</text>
+          <text class="lbl" x="140" y="156" text-anchor="end">Paid social</text><rect class="bar" x="150" y="138" width="16" height="12" rx="2"><title>Paid social, SQL about 7</title></rect><text class="val" x="172" y="148">7</text><rect class="bar-2" x="150" y="152" width="116" height="12" rx="2"><title>Paid social, MQL about 52</title></rect><text class="val" x="272" y="162">52</text>
+          <text class="lbl" x="140" y="198" text-anchor="end">Organic search</text><rect class="bar" x="150" y="180" width="89" height="12" rx="2"><title>Organic search, SQL about 40</title></rect><text class="val" x="245" y="190">40</text><rect class="bar-2" x="150" y="194" width="18" height="12" rx="2"><title>Organic search, MQL about 8</title></rect><text class="val" x="174" y="204">8</text>
+        </g>
+      </svg>
+      <p class="legend"><span><i style="background:var(--sea)"></i>Sales-qualified (SQL)</span><span><i style="background:var(--sea-tint);border:1px solid var(--sea)"></i>Marketing-qualified (MQL)</span></p>
+      <p class="chart-cap">Non-call leads, Moorings, week of 21 to 27 September 2026, Looker HubSpot Leads page. Values read from bar length, about ±3.</p>
+    </div>
+    <p class="implication"><b>Ask for the trip, or get a newsletter lead.</b> Shared quotes are 198 of the week's 348 sales-qualified leads. Paid social, the channel this page will mostly serve, produced about 7 SQLs against 52 MQLs. A form that captures contact details without trip intent feeds the right-hand column.</p>
+  </div>
+
+  <div class="signal">
+    <div class="chart">
+      <h3>What comparable forms do</h3>
+      <div class="tbl" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="matrix">
+        <thead><tr><th>Form</th><th>Trip questions first</th><th>Price before the form</th><th>Phone required</th><th>Sticky phone CTA</th></tr></thead>
+        <tbody>
+          <tr><td>Quark PPC page</td><td class="yes">Yes, four selects</td><td class="no">No</td><td class="yes">Yes</td><td class="no">No</td></tr>
+          <tr><td>Dream Yacht landing page</td><td class="yes">Yes</td><td class="yes">Yes, price example</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td>Boatbookings enquiry</td><td class="yes">Yes</td><td class="yes">Yes, weekly rate</td><td class="yes">Yes</td><td class="no">No</td></tr>
+          <tr><td>The Moorings BVI page today</td><td class="yes">Quote builder</td><td class="yes">Yes, from-price</td><td class="no">No form</td><td class="yes">Yes</td></tr>
+          <tr><td>Ticket wireframe A</td><td class="no">No, contact first</td><td class="no">No</td><td class="yes">Yes</td><td class="no">No</td></tr>
+        </tbody>
+      </table></div>
+      <p class="chart-cap">Captured 28 to 30 September 2026. Navigare Yachting sat behind a cookie wall and was set aside.</p>
+    </div>
+    <p class="implication"><b>The wireframe is the outlier.</b> Every live form asks where, when and how many before it asks who. Two of the three charter sites show a price before the form; The Moorings already does on its destination page. Phone is required everywhere, so making it optional is a sales decision, not a design one.</p>
+  </div>
+</section>
+
+<section class="wrap" id="design">
+  <h2>What the hero does differently, and why</h2>
+  <div class="tbl" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="matrix">
+    <thead><tr><th>The wireframe said</th><th>The evidence says</th><th>The hero does</th></tr></thead>
+    <tbody>
+      <tr><td>Name, email and phone first</td><td>Every comparable form asks the trip first; commitment ordering</td><td>Charter type, month and cabins first; contact details in a step-2 pop-up</td></tr>
+      <tr><td>Split hero, photo halved on desktop, form under the title on phone</td><td>The gallery arrow is the top mobile tap</td><td>Photo or gallery first on phone; the form is chips and a sheet</td></tr>
+      <tr><td>A 17-option destination select</td><td>The page already knows the destination</td><td>Prefilled from the base, shown as a changeable line</td></tr>
+      <tr><td>Quark's hero has no price</td><td>The BVI page shows a from-price; quote-led leads book</td><td>From-price as a per-page toggle, live from the departures endpoint</td></tr>
+      <tr><td>A budget field</td><td>Not in the HubSpot form</td><td>Removed; the nine real fields are posted with their values</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="pair" style="margin-top:32px">
+    <figure style="margin:0;min-width:0">
+      <img src="images/2026-09-30-v4-desktop-bvi.jpg" alt="The proposed hero on desktop: full-bleed photo, headline and from-price on the left, the two-step card on the right" width="800" height="500" style="border:1px solid var(--line);border-radius:6px">
+      <figcaption class="small" style="margin-top:8px">Desktop, 18% of paid sessions: the photo is the ground, the card on the right asks the three trip questions.</figcaption>
+    </figure>
+    <figure style="margin:0;min-width:0">
+      <img src="images/2026-09-30-v2-desktop-step2-popup.jpg" alt="Step 2 as a pop-up over the hero: the trip summary, the price band and the contact fields" width="800" height="500" style="border:1px solid var(--line);border-radius:6px">
+      <figcaption class="small" style="margin-top:8px">Step 2 opens as a pop-up over the dimmed hero, with the trip summary at the top and, when the price toggle is on, the price band before the contact fields. A card that swapped its own contents gave no cue that a second form was waiting.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="wrap" id="decisions">
+  <h2>Three directions were drawn. One shape survived.</h2>
+  <div class="cards">
+    <article class="card">
+      <img src="images/2026-09-30-v1-phone.jpg" alt="Variant 1 on a phone" width="750" height="1624" loading="lazy">
+      <div class="body"><span class="tag">Variant 1, folded in</span><h3>Trip-first two-step form</h3><p>The ticket's split hero with the order fixed. Its desktop layout and its two-step card are the final's desktop.</p></div>
+    </article>
+    <article class="card">
+      <img src="images/2026-09-30-v2-phone.jpg" alt="Variant 2 on a phone" width="750" height="1624" loading="lazy">
+      <div class="body"><span class="tag">Variant 2, folded in as a toggle</span><h3>Price in the path</h3><p>From-price in the hero and a price band before contact details. Kept as an editor toggle; the band needs the departures data and Gareth's agreement on lead ownership.</p></div>
+    </article>
+    <article class="card">
+      <img src="images/2026-09-30-v3-phone.jpg" alt="Variant 3 on a phone" width="750" height="1624" loading="lazy">
+      <div class="body"><span class="tag">Variant 3, folded in</span><h3>Photo-led hero</h3><p>Gallery first, chips and one CTA inside the 665px fold, form as a sheet. This is the final's phone layout.</p></div>
+    </article>
+  </div>
+  <div class="rejects">
+    <p><b>Rejected: contact fields first.</b> Against every comparable form and the commitment evidence.</p>
+    <p><b>Reversed: step 2 inside the same card.</b> The first build swapped step 1 for step 2 in place; on review it read as a silent state change. Step 2 is now a pop-up: a dialog on desktop, a sheet on phone, the hero dimmed behind it.</p>
+    <p><b>Reversed: a navy step-1 button.</b> Red was held back for the final submit. The step-1 click is the leading signal and red already means "get my quote" on moorings.com, so both steps use it; the pop-up dims the hero, so one red button shows at a time.</p>
+    <p><b>Added: the pop-up's button stays in view.</b> When the contact fields outgrow the pop-up, they scroll under a sticky submit button with a short fade above it, so the visitor always sees what the step ends in and can fix a missed field without hunting for the button.</p>
+    <p><b>Rejected: a sticky sidebar form.</b> Desktop thinking for an 82% phone audience.</p>
+    <p><b>Rejected: hiding the price like Quark.</b> The Moorings has one; it is the advantage, not the problem.</p>
+    <p><b>Rejected: a budget field.</b> Not in the form; a question sales does not use.</p>
+    <p><b>Kept on the ticket as a sales decision:</b> phone required. Every competitor requires it; the design puts it last with a reason, and the toggle exists if sales agrees to optional.</p>
+  </div>
+  <div class="hyp" style="margin-top:28px">
+    <h3>Recommended for the first page: the converged hero with the price on</h3>
+    <p>The phone layout is not optional: 82% of paid sessions are phones and photos are their first action, so the gallery, the chips and the sheet are the base. The trip-first order is common to every comparable form. The one real choice is the price. Showing it is where the evidence points: shared quotes are 57% of sales-qualified leads, 15% of mobile taps already chase a price, and two of three charter competitors put a price before the form. Quark hides its price because it has none to show; The Moorings has one on the destination page today. Go live with the price toggle on. If the departures endpoint is not wired by launch, ship with it off and make "price on" the first A/B test, because it is the biggest bet with the clearest mechanism.</p>
+  </div>
+  <p class="small" style="margin-top:16px">Spacing pass after review (30 Sep): the form stack moved from the page's 30px column gutter to a 16px rhythm, visible labels shortened to match the chips, the card heading and button stepped down one size, and the hero's vertical padding reduced. The card went from about 600px to 433px tall, so hero, card and proof strip fit an 800px viewport; step 2 opens as a pop-up, and its submit button is a sticky footer with a fade above it, so long fields scroll under the button on short phones. The design system's form group still uses the 30px gutter for stacked fields; flagged for promotion.</p>
+</section>
+
+<section class="wrap" id="states">
+  <h2>What happens when it goes wrong</h2>
+  <p>A form is judged on its worst minute, not its first. Every state below is a decision with a source; the three that most often go by default (when to validate, what the message says, what a failure keeps) are the ones with the strongest evidence.</p>
+  <div class="pair">
+    <figure style="margin:0;min-width:0">
+      <img src="images/2026-09-30-v4-desktop-step2-errors.jpg" alt="Step 2 after an empty submit: a count line, four field messages in red, focus in the first field" width="800" height="500" style="border:1px solid var(--line);border-radius:6px">
+      <figcaption class="small" style="margin-top:8px">Submit with nothing filled: the first field takes focus, each message says what to enter, and the count line at the top tells a visitor who has scrolled why nothing happened.</figcaption>
+    </figure>
+    <figure style="margin:0;min-width:0">
+      <img src="images/2026-09-30-v4-desktop-step2-failed.jpg" alt="Step 2 after a failed send: a line explains, every answer is still in place, the button reads Try again" width="800" height="500" style="border:1px solid var(--line);border-radius:6px">
+      <figcaption class="small" style="margin-top:8px">The send fails: every answer stays, the line says so in plain words, the button becomes "Try again". Editing any field clears the line. The typing is the expensive part; a blank form here loses the lead.</figcaption>
+    </figure>
+  </div>
+  <div class="tbl" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="matrix" style="margin-top:28px">
+    <thead><tr><th>State</th><th>What the form does</th><th>Why</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr><td>Step 1, answer missing</td><td>Continues. Nothing on step 1 can error</td><td>All three trip questions are optional on the HubSpot form; the destination is prefilled</td><td>J3</td></tr>
+      <tr><td>Field left empty or wrong</td><td>The error appears when the field is left, not while typing</td><td>Premature validation made test participants stop and misread the message</td><td>Baymard B4</td></tr>
+      <tr><td>Field corrected</td><td>The error clears on the keystroke that makes it valid</td><td>A message that lingers after the fix "was highly misleading"</td><td>Baymard B4</td></tr>
+      <tr><td>Message wording</td><td>Under the field, says what to enter: "Enter an email like name@example.com."</td><td>Identify the field and suggest the fix; HubSpot's "Please complete this required field." is the floor</td><td>WCAG 3.3.1, 3.3.3, J3</td></tr>
+      <tr><td>Submit with errors</td><td>First invalid field takes focus and scrolls clear of the sticky footer; two or more errors add a count line</td><td>The button is often below the errors; a scrolled visitor needs to know why nothing happened</td><td>WCAG 3.3.1</td></tr>
+      <tr><td>Optional field</td><td>Labelled "(optional)"; no asterisks on required ones</td><td>Unmarked optional fields cause needless validation errors</td><td>Baymard B2</td></tr>
+      <tr><td>Sending</td><td>Button disabled and reads "Sending…", live text below it</td><td>A second tap cannot post twice; the visitor sees progress</td><td>Loading-button rule</td></tr>
+      <tr><td>Send fails</td><td>Line above the fields, answers kept, button reads "Try again"</td><td>The visitor's typing is the expensive part</td><td>Error-recovery rule</td></tr>
+      <tr><td>Offline</td><td>Caught before the request, same treatment</td><td>No request can succeed; say so before the wait</td><td>Timeout-feedback rule</td></tr>
+      <tr><td>Pop-up closed mid-way</td><td>Values kept; reopening shows them; focus returns to the opening button</td><td>Four fields are cheaper to keep than to interrupt with a confirm</td><td>APG B5</td></tr>
+      <tr><td>Keyboard in the pop-up</td><td>Focus moves in on open; Tab and Shift+Tab stay inside; Escape closes</td><td>The modal dialog contract</td><td>APG B5</td></tr>
+      <tr><td>Phone keyboards, autofill</td><td>Email and tel inputs; autocomplete on every contact field</td><td>82% of paid sessions are phones; autofill halves the typing</td><td>F5</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:16px">Not done, on purpose: per-field success ticks (Baymard's finding is for long checkouts; four short fields would make them noise), a "discard changes?" confirm (values are kept instead), an error summary with anchor links (the count line and the focus move do the job at four fields). For promotion: the design system's text input needs to own type, autocomplete, name and the aria attributes; the exploration sets them on the rendered input.</p>
+</section>
+
+<section class="wrap" id="edges">
+  <h2>Seen, weighed, and held back</h2>
+  <p>Walking the states surfaced seven cases beyond errors. None is built into the first release, on purpose: each is written down here with its cost and its trigger, so the team lands it as a decision rather than a surprise.</p>
+  <div class="tbl" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="matrix" style="margin-top:20px">
+    <thead><tr><th>Case</th><th>What would happen today</th><th>What we would land</th><th>Why held</th></tr></thead>
+    <tbody>
+      <tr><td>Pre-ticked marketing consent</td><td>The HubSpot form ships the box checked; the form copies it. The wireframe carries a UK phone number and UK pricing, and under UK PECR and GDPR a pre-ticked box is not consent</td><td>Unticked by default, or by locale</td><td>Legal and commercial call for Gareth, not a design default. First question on the ticket</td></tr>
+      <tr><td>Destination changed inside the form</td><td>"Change" swaps the destination, but the charter types and the price still belong to the page's destination</td><td>Options and price read from the chosen destination; or hide the price band when it differs from the page</td><td>Needs the destination config to be reachable from the form; scoped for the CMS build</td></tr>
+      <tr><td>Returning visitor who already asked</td><td>The same ad click twice shows the empty form and produces a duplicate lead, which also inflates submissions per session</td><td>Remember success in the browser; open on the thanks state with "send another request"</td><td>Needs a decision on how long to remember; affects the readout, so it is in the measurement plan</td></tr>
+      <tr><td>Ad to form message match</td><td>The hidden fields carry UTMs but the form does not read them; a "crewed" ad lands on a blank charter type</td><td>Charter type and month prefilled from the query string; the headline matched to the ad</td><td>Waits on Gareth's ad copy and campaign structure</td></tr>
+      <tr><td>Price band with no availability</td><td>With the price toggle on, an empty month from the departures endpoint would read "0 yachts match"</td><td>"No yachts on that month yet, a planner can check nearby dates"</td><td>Depends on the endpoint's shape; copy ready</td></tr>
+      <tr><td>Phone keyboard over the sheet</td><td>On iOS the keyboard shrinks the visible area but not the sheet, so the sticky submit can sit behind it while typing; the focused field scrolls clear, which covers most of it</td><td>Size the sheet to the visual viewport</td><td>Needs a real device check first</td></tr>
+      <tr><td>Photo slow or missing</td><td>Desktop puts white text on the photo; the fallback ground was added to the glass variant only</td><td>Navy ground behind the photo on every variant</td><td>Small; lands with promotion</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:16px">Already covered while building the states: long headlines are balanced and capped, one photo renders a static hero, phone optional flips the label and the rule, values survive a closed pop-up, and every variant reflows at 320px.</p>
+</section>
+
+<section class="wrap" id="built">
+  <h2>Built for the system, ready to take live</h2>
+  <p>The final hero is promoted into the Moorings design system as real components, with every state from the two sections above carried in, a layout the team can build against, and the full accessibility matrix run before the pull request.</p>
+  <div class="tbl" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="matrix" style="margin-top:20px">
+    <thead><tr><th>Component</th><th>What it is</th><th>Where to see it</th></tr></thead>
+    <tbody>
+      <tr><td>Hero</td><td>Landmark composite: media ground, content column, aside for the form, the proof strip along its bottom edge; together they fill the first fold. Strip and cream band on phones</td><td>Design system, Components, Hero</td></tr>
+      <tr><td>LeadForm</td><td>The two-step form on the system dialog: card and chips presentations, validation, pending, failure, offline, focus, sticky footer, price band, HubSpot seam; asks the destination by default, prefilled when the page knows it</td><td>Components, Lead Form</td></tr>
+      <tr><td>MediaCarousel</td><td>Swipeable photo strip on phone and tablet with one control cluster at the bottom (previous, count, next), looping and keyboard-paged; a single still photo from the desktop breakpoint, where text, scrim and form sit over it</td><td>Components, Media Carousel</td></tr>
+      <tr><td>StickyBar</td><td>The phone bottom bar with the price and the one action</td><td>Components, Sticky Bar</td></tr>
+      <tr><td>StatList</td><td>The proof strip as a definition list</td><td>Components, Stat List</td></tr>
+      <tr><td>Paid landing layout</td><td>The page assembled from the above, as WordPress would render it from its fields</td><td>Layouts, Paid Landing</td></tr>
+      <tr><td>Paid landing (generic) layout</td><td>The page for an ad with no destination, reduced on 14 Oct at the team's request to the Quark shape: one photo as the ground at every width (a new overlay mode on the hero), the full form card over it on phones too, no price, no proof strip</td><td>Layouts, Paid Landing Generic</td></tr>
+    </tbody>
+  </table></div>
+  <div class="tbl" tabindex="0" role="region" aria-label="Table, scrolls sideways"><table class="matrix" style="margin-top:24px">
+    <thead><tr><th>Review round, 30 Sep</th><th>What was seen</th><th>What shipped</th></tr></thead>
+    <tbody>
+      <tr><td>Pop-up parity</td><td>The promoted pop-up used the system dialog's look and docked to the bottom on desktop</td><td>The dialog gained a plain variant, a narrow width and a stacked header; measured against the exploration at both widths, zero deltas on desktop</td></tr>
+      <tr><td>Gallery controls</td><td>Edge arrows read as disabled; the photo count was unclear</td><td>One cluster at the bottom centre, previous, "1 / 4", next; paging loops</td></tr>
+      <tr><td>Gallery on desktop</td><td>Paging under text, scrim and form pages what nobody can see</td><td>A still photo from the desktop breakpoint; paging stays on phones, where the evidence for it lives</td></tr>
+      <tr><td>First fold</td><td>Hero plus trust strip should fill the first screen; the strip's padding was far more than approved</td><td>The hero fills the viewport less the header, with the strip on its bottom edge at 20px rhythm</td></tr>
+      <tr><td>Header hierarchy</td><td>Title small against the fields; eyebrow, title and subtitle undifferentiated</td><td>Title one step up; eyebrow 8px above as the panel's label; title and subtitle 4px apart</td></tr>
+      <tr><td>Button copy</td><td>"Continue" names the mechanism, not the outcome</td><td>"Get my quote" from the first click to the thanks</td></tr>
+      <tr><td>Edit link</td><td>The desktop pop-up had lost the summary's Edit</td><td>Restored; closes back to the card that still holds the answers</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:16px">Also extended for this: TextInput, Select and Checkbox now carry the input attributes a real form needs (types, autofill, names, change handlers, error wiring), the form layout primitives take a 16px gap, and the dialog can dock as a phone sheet. The pop-up is the approved one to the pixel: the system dialog gained a plain variant, a narrow width and a stacked header for it, and the promoted page was measured against the exploration at desktop and phone widths before the pull request. One deliberate change: the consent box now defaults to unchecked.</p>
+</section>
+
+<section class="wrap" id="measure">
+  <h2>How the result will be earned</h2>
+  <div class="read">
+    <p>Nothing here is a result yet. The page is new, so the first two weeks are read against the BVI page's paid landing sessions over the same period, by device and by campaign. A test comes after, and only if the traffic can carry one.</p>
+  </div>
+  <ol class="timeline">
+    <li><b>Launch version 1</b>The control, with the events and hidden fields in place. No test tool.</li>
+    <li><b>Day 14 read</b>Submissions per session, step rates, accepted rate, guardrails; BVI page as the control.</li>
+    <li><b>Test 1, social proof</b>Proof strip on or off, two arms in AB Tasty, if 13,000 sessions arrive within four weeks.</li>
+    <li><b>Test 2, shorter form</b>Chips and sheet against the full card on phones, same arithmetic.</li>
+    <li><b>Readout</b>At the planned end, never before: by device, by campaign, with probability to win.</li>
+  </ol>
+  <div class="tiles" aria-label="Test arithmetic">
+    <div class="tile"><div class="num">3%</div><p>planning baseline for submissions per session<span class="small">paid Facebook median 3.8%, paid search 6.3%; the BVI page's Submit form today 0.87%</span></p></div>
+    <div class="tile"><div class="num">6,500</div><p>sessions per arm to detect a 30% relative lift<span class="small">80% power, two-sided 5%</span></p></div>
+    <div class="tile"><div class="num">4 wks</div><p>if the BVI page's paid traffic moves here<span class="small">10 days if the Meta campaigns do too; not testable on BVI search alone</span></p></div>
+    <div class="tile"><div class="num">14 d</div><p>to the sales-accepted rate on the first leads<span class="small">HubSpot lead status, source Paid landing page</span></p></div>
+  </div>
+</section>
+
+<section class="wrap" id="scale">
+  <h2>One hero, any destination</h2>
+  <div class="read">
+    <p>The team will run paid pages for more than the BVI. The hero is a single WordPress block driven by a base: pick the destination, paste the ad headline, choose the photos, leave the price toggle on, pick the charter types the campaign sells, paste the HubSpot form id. The block prefills the destination, reads the from-price from the same departures endpoint the destination page uses, and writes the attribution fields into the lead.</p>
+  </div>
+  <div class="trio">
+    <figure><img src="images/2026-09-30-v4-phone-bvi.jpg" alt="The hero for the British Virgin Islands" width="750" height="1624" loading="lazy"><figcaption><b>British Virgin Islands.</b> Four photos, from $3,784, bareboat, crewed and power.</figcaption></figure>
+    <figure><img src="images/2026-09-30-v4-phone-exumas.jpg" alt="The hero for the Exumas" width="750" height="1624" loading="lazy"><figcaption><b>Exumas.</b> One photo, from $14,975, winter dates.</figcaption></figure>
+    <figure><img src="images/2026-09-30-v4-phone-croatia.jpg" alt="The hero for Croatia" width="450" height="974" loading="lazy"><figcaption><b>Croatia.</b> Price toggle off, phone optional, a different CTA label.</figcaption></figure>
+  </div>
+  <div class="tbl" style="margin-top:28px"><table class="matrix">
+    <thead><tr><th>Editor sets</th><th>Block reads for itself</th><th>Theme already has it</th></tr></thead>
+    <tbody>
+      <tr><td>Base (destination), headline, overline, lede</td><td>Destination value for HubSpot, default headline</td><td>Base helpers: title, charter types, default month, phone number</td></tr>
+      <tr><td>One to six photos</td><td>Static hero or gallery</td><td>Media library, Cloudinary crops</td></tr>
+      <tr><td>Price toggle</td><td>Cheapest departure, 7 nights, 2 passengers</td><td>Departures endpoint and the quote-cta client, manual base selection</td></tr>
+      <tr><td>HubSpot form id, charter types, phone required, labels</td><td>Month and cabin options, consent label and default</td><td>HubSpot block and component, dataLayer submit event, GA client id field</td></tr>
+      <tr><td>Sticky bar toggle</td><td>The bar itself</td><td>Not for non-base pages today: the existing bar only renders on the base's own page</td></tr>
+      <tr><td>Nothing</td><td>UTMs, click ids, landing URL, lead source, variant</td><td>Nothing: no attribution capture exists in the theme yet</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:12px">Full contract, block attributes and the two build decisions in <code>cms-contract.md</code>. The theme was read on 30 September; the QA page itself is locked and was not read.</p>
+  <div class="read" style="margin-top:40px">
+    <h3>And for an ad that names no destination</h3>
+    <p>On 9 October the team said a campaign may run a generic ad. The form had assumed the page knew the destination; a component should not assume what the page cannot promise. Its default state now asks the destination as the first question, required because HubSpot requires it, from HubSpot's own list; a page that knows its destination passes it and keeps the prefilled line with Change. The pop-up holds until a destination is chosen, the message says what to do and the select takes focus. A second layout, the generic page, exists so the team can preview that state on a phone without the design-system chrome.</p>
+  </div>
+  <div class="trio">
+    <figure><img src="images/2026-10-09-generic-phone.jpg" alt="The generic hero on a phone: four chips, the first one Destination" width="750" height="1624" loading="lazy"><figcaption><b>Generic page, phone.</b> A Destination chip first, then the three trip questions and one button.</figcaption></figure>
+    <figure><img src="images/2026-10-09-generic-phone-sheet-destination.jpg" alt="The sheet on step 1 with the destination select outlined and the message Choose a destination, or Undecided" width="750" height="1624" loading="lazy"><figcaption><b>No destination chosen.</b> The sheet opens on step 1 with the message on the select and focus on it.</figcaption></figure>
+    <figure><img src="images/2026-10-09-generic-desktop.jpg" alt="The generic hero on desktop with the destination select at the top of the card" width="800" height="500" loading="lazy"><figcaption><b>Generic page, desktop.</b> The card asks the destination first; the subtitle counts four questions on its own.</figcaption></figure>
+  </div>
+  <div class="read" style="margin-top:32px">
+    <h3>Version 1: the smallest page that can take a paid click</h3>
+    <p>Two weeks of evidence produced a hero with four ideas in it: trip questions first, a photo-led phone layout with chips and a sheet, a proof strip beside the ask, and a from-price in the path. Shipping all four at once would have meant never knowing which one earned the result. So the launch decision, taken on 14 October with the team, is to go live with the smallest page that can take a paid click and treat it as the control: one photo, the title, and the full form over it, in its default state with the destination as the first question. No price, because a generic ad has no destination to price. No proof strip yet. The additions the evidence argued for become the test sequence, one variable at a time, each with a baseline to beat.</p>
+  </div>
+  <ol class="timeline">
+    <li><b>Version 1, now</b>The reference shape, as the control. Events and hidden fields in place.</li>
+    <li><b>Day 14 read</b>Submissions per session, step rates, accepted rate, guardrails, by device and campaign.</li>
+    <li><b>Test 1: social proof</b>Add the proof strip beside the ask (H5). One change, two arms.</li>
+    <li><b>Test 2: a shorter form</b>Three chips and one button inside the phone fold, the form as a sheet (H4).</li>
+    <li><b>Then</b>Price in the path (H2), on destination pages, once the departures data is wired.</li>
+  </ol>
+  <div class="tbl" style="margin-top:24px"><table class="matrix">
+    <thead><tr><th>Version</th><th>What it adds</th><th>Why it is sequenced here</th><th>What it will claim</th></tr></thead>
+    <tbody>
+      <tr><td>Version 1</td><td>Nothing: photo, title, the full form, destination asked first</td><td>A control the team already trusts (the reference the campaign was briefed on), fastest to launch, and the only way later additions get a real baseline</td><td>Leads per session against the BVI page's paid sessions over the same two weeks</td></tr>
+      <tr><td>Test 1</td><td>The proof strip under the hero: years chartering, destinations, bases, fleet</td><td>Trust beside the ask was the strongest pattern signal (B1, B3) and the cheapest addition; it is the first thing worth measuring on its own</td><td>Whether proof next to the form lifts submissions, and whether accepted rate holds</td></tr>
+      <tr><td>Test 2</td><td>The shorter phone form: three chips and one button inside the 665px fold, details in a sheet</td><td>The phone-fold evidence (F3, F4) was the biggest bet and the biggest change; it needs its own test rather than being folded into the launch</td><td>Whether a lighter first step lifts starts and submissions on phones, 82% of paid sessions</td></tr>
+    </tbody>
+  </table></div>
+  <p class="small" style="margin-top:12px">Shipped with version 1 on the same day: the form card at 70% white over a blur of the photo (the smallest text clears 4.5:1 over any photo), the page gutter codified to production's 20px on phones, the hero title one step up on phones, the eyebrow tracking codified from production, the field focus ring moved outside the field, a hero wrap bug fixed at tablet widths, and the data-protection notice WordPress adds under every form given its place after the submit: a quiet line closed, the cream panel open. Decisions 30 to 42.</p>
+  <div class="trio">
+    <figure><img src="images/2026-10-14-popup-notice-closed-phone.jpg" alt="The step 2 pop-up on a phone with the data-protection line collapsed under the button" width="375" height="812" loading="lazy"><figcaption><b>Notice, closed.</b> A small line under the button, no heavier than the note above it.</figcaption></figure>
+    <figure><img src="images/2026-10-14-popup-notice-open-phone.jpg" alt="The same pop-up with the data-protection panel open, showing the four points" width="375" height="812" loading="lazy"><figcaption><b>Notice, open.</b> The pop-up's cream panel with the four points and the Privacy Policy links; the button stays above it.</figcaption></figure>
+  </div>
+  <div class="trio">
+    <figure><img src="images/2026-10-14-generic-frosted-phone.jpg" alt="The reduced generic hero on a phone: title and subtitle in white over the photo, the frosted form card under them" width="375" height="812" loading="lazy"><figcaption><b>Version 1, phone.</b> One photo as the ground; title, subtitle and the full card over it. The proof strip and the chips wait for their tests.</figcaption></figure>
+    <figure><img src="images/2026-10-14-generic-frosted-desktop.jpg" alt="The reduced generic hero on desktop with the form card slightly translucent over the photo" width="1280" height="800" loading="lazy"><figcaption><b>Version 1, desktop.</b> The card at 70% white over a blur of the photo; 70% keeps the smallest text above 4.5:1 over any photo.</figcaption></figure>
+  </div>
+</section>
+
+<section class="wrap" id="open">
+  <h2>Open before launch</h2>
+  <ul class="todo">
+    <li><i></i>Paid sessions per day expected here, and which campaigns land on it<span class="who">Gareth</span></li>
+    <li><i></i>Ad headline and copy, so the hero matches the ad<span class="who">Gareth</span></li>
+    <li><i></i>Phone optional or required<span class="who">Gareth with sales</span></li>
+    <li><i></i>Destination prefilled and hidden on the HubSpot form<span class="who">Gareth, Anusha</span></li>
+    <li><i></i>Hidden attribution fields on the form, and the capture script<span class="who">Gareth, Anusha, Kirti</span></li>
+    <li><i></i>GA4 events, with form submit as the key event<span class="who">Kirti</span></li>
+    <li><i></i>AB Tasty capacity; any live campaign on the BVI page<span class="who">James</span></li>
+    <li><i></i>Price toggle on or off for the first page (recommendation: on)<span class="who">Team</span></li>
+  </ul>
+  <div class="read" style="margin-top:24px">
+    <h3>What will be claimed, and nothing more</h3>
+    <p>After two weeks: leads from sessions, the accepted rate at 14 days, against the BVI page's reference. After a test: the change in submissions per session with its probability to win. Nothing about revenue until bookings from these leads are matched in HubSpot.</p>
+    <h3>Carried to the next ticket</h3>
+    <p>Check a reference's field order against the pattern evidence before drawing. On this audience photos are the first action, so measure the fold before placing the first control. Do not copy a reference's omission when the brand's advantage is the opposite.</p>
+  </div>
+</section>
+
+<section class="wrap" id="appendix">
+  <h2>Appendix</h2>
+
+  <details>
+    <summary>Evidence index, F1 to F16</summary>
+    <div class="inner tbl"><table class="matrix">
+      <thead><tr><th>Figure</th><th>Source and capture</th><th>Claim supported</th><th>Boundary</th></tr></thead>
+      <tbody>
+        <tr><td>F1</td><td>Clarity dashboard, BVI destination page, last 30 days, 30 Sep</td><td>30,049 sessions; 89% new; quick backs 19.95%; scroll depth 39.3%; Request quote 4,328 sessions (14.4%), Submit form 260 (0.87%)</td><td>Smart events count sessions where the event fired anywhere</td></tr>
+        <tr><td>F2</td><td>Same, referrer and browser cards</td><td>63.8% of sessions from Facebook and Instagram referrers; FacebookApp 53.6% of browsers</td><td>Referrer, not campaign</td></tr>
+        <tr><td>F3</td><td>Clarity tap heatmap, mobile, 15,071 taps</td><td>Gallery arrow 29.9%; Build My Quote controls 15.2%; phone 0.08%</td><td>Taps, not users; rows by CSS path</td></tr>
+        <tr><td>F4</td><td>Clarity AI summary of the same view</td><td>25.9% reach 10% of the page; fold 665 px; Build My Quote first and last interaction</td><td>Tool-generated text, denominators not shown</td></tr>
+        <tr><td>F5</td><td>Looker Paid channels, 21 to 27 Sep</td><td>16,258 paid sessions, 81.5% mobile; BVI page 3,038 paid users, 46% engagement; Meta campaigns 9,330 users at 24 to 32%</td><td>One week; Meta volume halved week on week</td></tr>
+        <tr><td>F6</td><td>Same, key events</td><td>Newsletter 218, Share Quote 89, Phone click 45, Contact form 7</td><td>All paid landing pages</td></tr>
+        <tr><td>F7</td><td>Looker HubSpot Leads, same week</td><td>631 leads: 348 SQL, 283 MQL; Shared Quote 198 SQL; paid social about 7 SQL / 52 MQL</td><td>Bar values ±3; one week</td></tr>
+        <tr><td>F8</td><td>Unbounce travel benchmark page</td><td>Median 4.8%; paid search 6.3%; paid Facebook 3.8%</td><td>Year and sample not stated</td></tr>
+        <tr><td>F9</td><td>Baymard and vendor form studies</td><td>Direction only: fewer required fields, easy questions first</td><td>Magnitudes not transferable</td></tr>
+        <tr><td>F10</td><td>Quark, Dream Yacht, Boatbookings, Moorings captures</td><td>Trip first, contact last; two show price before the form</td><td>Five sites by relevance</td></tr>
+        <tr><td>F11</td><td>The HubSpot form as served</td><td>Nine fields, four required contact, 17-option destination select</td><td>HubSpot's setup; the UI may reorder</td></tr>
+        <tr><td>F12</td><td>Wireframe PDF, 3 Aug</td><td>Three approaches; A contact-first with a budget field</td><td>Mid-fidelity print</td></tr>
+        <tr><td>F13</td><td>BVI page captures, 30 Sep</td><td>Current hero, sticky bar, from-price $3,784</td><td>US site as served</td></tr>
+        <tr><td>F14 to F16</td><td>Exploration variants 1 to 3, phone and desktop</td><td>H1, H2, H4 as designed</td><td>Local dev server captures</td></tr>
+      </tbody>
+    </table></div>
+  </details>
+
+  <details>
+    <summary>Hypotheses in full</summary>
+    <div class="inner">
+      <p><strong>H1. Trip questions first, contact details last, in two steps.</strong> Evidence: F10, F9. Lever: step 1 asks charter type, month and cabins with the destination prefilled; step 2 asks name, email, phone and consent in a pop-up (dialog on desktop, sheet on phone). Metric: submissions per session; step-1 start rate as the leading signal. Constraint: all nine fields posted with their HubSpot values. Confidence: high on direction, untested on this site.</p>
+      <p><strong>H2. Price in the path.</strong> Evidence: F7, F3, F10. Lever: the hero carries the from-price and step 1 ends in "See my price", which reveals a price band before the contact fields. Metric: submissions per session and sales-accepted rate. Constraint: Gareth on lead ownership; the live band would read the departures endpoint. Confidence: medium.</p>
+      <p><strong>H3. Fewer required fields.</strong> Destination prefilled; phone kept but last, with a reason; optional if sales agrees. Applied to every variant.</p>
+      <p><strong>H4. Photo-led hero.</strong> Evidence: F3, F4, the hero-mobile exploration decision. Lever: gallery first, chips and one CTA inside the 665 px fold, form as a sheet. Metric: form start rate and engagement rate. Confidence: medium-high.</p>
+      <p><strong>H5. Sticky bar on phone.</strong> The live page's sticky bar takes more taps than the inline button (F3 rows 2 and 4). Applied to every variant.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Instrumentation, 14 events and 6 hidden fields</summary>
+    <div class="inner">
+      <p>Events, snake case, no personal data: <code>lp_view</code>, <code>form_step1_start</code>, <code>form_step1_change</code>, <code>form_step1_complete</code>, <code>form_price_view</code>, <code>form_step2_open</code>, <code>form_field_error</code>, <code>form_submit_success</code> (the only key event), <code>form_submit_error</code>, <code>cta_click</code>, <code>bmq_click</code>, <code>gallery_interact</code>, <code>scroll_depth</code>, <code>phone_click</code>.</p>
+      <p>Hidden HubSpot fields: <code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, <code>utm_content</code>, <code>gclid</code> and <code>fbclid</code>, <code>landing_page_url</code>, <code>lead_source</code> = Paid landing page, <code>page_variant</code>, <code>ga_client_id</code>. The theme already writes the GA client id into a <code>googleid</code> field; nothing else exists yet. Full table with triggers, params and owners in <code>instrumentation.md</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Measurement plan arithmetic</summary>
+    <div class="inner">
+      <p>Baseline 3%, lift 30% relative (3% to 3.9%), 80% power, two-sided 5%: n per arm = (1.96 × √(2 × 0.0345 × 0.9655) + 0.84 × √(0.03 × 0.97 + 0.039 × 0.961))² ÷ 0.009² ≈ 6,500 sessions. Two arms need 13,000 sessions: about four weeks if the BVI page's paid landing traffic (about 3,000 users a week) moves here, ten days if the Meta campaigns (about 9,300 a week) do too, four months on the BVI search campaigns alone (about 800 a week), which is not a test. Stop rules: read only at the planned end, minimum two weekly cycles, stop early only if a guardrail breaks by more than 10% relative. Full plan in <code>measurement-plan.md</code>.</p>
+    </div>
+  </details>
+
+  <details>
+    <summary>Sources and files</summary>
+    <div class="inner">
+      <ul>
+        <li>J1 to J7: ticket, linked spike YWEB-1660, the HubSpot form, the Quark functional guides, the wireframe PDF. <code>data/jira-raw.md</code>, 30 Sep.</li>
+        <li>C1 to C3: Clarity, The Moorings project, BVI page dashboard, mobile tap heatmap, AI summary. <code>data/clarity-raw.md</code>, 30 Sep.</li>
+        <li>L1, L2, L2a: Looker Studio paid channels and HubSpot leads, week of 21 to 27 Sep, read 30 Sep. <code>data/looker-raw.md</code>.</li>
+        <li>B1 to B3: Unbounce, Baymard and vendor studies. <code>data/benchmark-raw.md</code>.</li>
+        <li>K1 to K6: Quark, Dream Yacht, Boatbookings, The Moorings, Navigare (set aside). <code>data/competitor-raw.md</code>.</li>
+        <li>WordPress theme survey and the block contract: <code>cms-contract.md</code>.</li>
+        <li>Exploration: <code>src/explorations/yweb-1708-paid-hero</code>, variants 1 to 4, on branch <code>exploration/yweb-1708-paid-hero</code>.</li>
+        <li>Learning log entries LL-015 to LL-019 in <code>docs/growth/learning-log.md</code>.</li>
+      </ul>
+      <p class="small">Data honesty: every price after a selection in the exploration is modelled and labelled; the from-prices are the live pages' figures on 30 September; photos are the live pages' own assets, hot-linked; no review score or reply-time promise is shown because none was verified; the headline is a placeholder until marketing shares the ad copy.</p>
+    </div>
+  </details>
+</section>
+</main>
+<footer class="wrap">Rahul Jha, growth design, The Moorings. Exploration published 30 September 2026. Not a production build; nothing on the preview submits anywhere.</footer>
+
+</html>

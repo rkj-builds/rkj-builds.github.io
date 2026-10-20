@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trip first, contact last — Rahul Jha</title>
+<meta name="description" content="A hero and lead form for a yacht charter brand's paid landing page: what the evidence changed in the brief, and why the smallest version shipped first.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="bmq.html">&larr; Build My Quote</a><a href="growth-design.html">The skill &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>Ask about the trip before the person</h1>
+  <p class="what">A yacht charter brand needed a hero with a lead form for its paid ads. The evidence put four ideas into it. We shipped the smallest version first, as the control, so each idea gets a test of its own.</p>
+  <p class="mono">
+    <span>Sep&ndash;Oct 2026</span><span>Mine</span><span>Three variants, one final</span><span>Version 1 shipped 14 Oct, tests next</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/paid-hero/24-version1-desktop.jpg" alt="A desktop hero: a sailing yacht photo as the ground, the title Your own yacht, in twenty destinations in white on the left, and a translucent card on the right asking destination, charter type, travel month and cabins, with a red Get my quote button." width="1280" height="800"></button>
+    <figcaption><b>Version 1, the control.</b> One photo, the full form, destination asked first. No price and no proof strip yet: those are the tests.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>What the evidence changed in the brief</h2>
+    <div class="body">
+      <p>The brief: a hero with an embedded form, above the fold, modelled on another brand's paid page. The wireframes asked for name, email and phone first.</p>
+    </div>
+    <ul class="notes">
+      <li><b>Trip questions first.</b> Every comparable form asks where, when and how many before who. Contact details moved to a second step.</li>
+      <li><b>Photos first on a phone.</b> 81.5% of paid sessions were phones, and paging the gallery was 29.9% of mobile taps on the page these ads already land on.</li>
+      <li><b>Price in the path.</b> The reference page hides price. This brand shows one, and shared quotes were 57% of the leads sales qualified that week.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>Three hypotheses, three variants</h2>
+    <div class="body">
+      <p>One hypothesis per variant, so a test could say which idea did the work.</p>
+    </div>
+  </section>
+
+  <div class="grid three phones">
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/01-v1-phone.jpg" alt="Variant 1 on a phone: a catamaran photo, the British Virgin Islands title on a grey band, then a card headed Step 1 of 2, Get your BVI quote, asking which type of charter, with a sticky Get my quote bar at the bottom." loading="lazy" width="750" height="1624"></button>
+      <figcaption><b>1. Trip first.</b> Three questions, then a second step for contact details.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/04-v2-phone.jpg" alt="Variant 2 on a phone: a rocky bay photo, the title, a from-price block reading yacht price and fees from, and a card headed See your BVI price, with a sticky See my price button." loading="lazy" width="750" height="1624"></button>
+      <figcaption><b>2. Price in the path.</b> The from-price leads, and a price shows before the contact fields.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/07-v3-phone.jpg" alt="Variant 3 on a phone: a photo gallery with arrows and a 1 of 4 count, the title, three chips for charter type, month and cabins, the destination line, and a red Get my quote button, all above the fold." loading="lazy" width="750" height="1624"></button>
+      <figcaption><b>3. Photo-led.</b> Gallery on top, three chips and one button inside the phone fold.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>One hero for any destination</h2>
+    <div class="body">
+      <p>The team asked for one final. It folds the three together: the photo-led layout on a phone, the split hero on desktop, the price as a toggle per page. Editors set the destination; the same component renders it.</p>
+    </div>
+  </section>
+
+  <div class="grid three phones">
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/11-final-phone-bvi.jpg" alt="The final hero on a phone for the British Virgin Islands: gallery, title, from-price, and a white card with chips for charter type, month and cabins." loading="lazy" width="450" height="974"></button>
+      <figcaption><b>British Virgin Islands.</b> Four photos, price on.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/12-final-phone-exumas.jpg" alt="The same hero for the Exumas: an aerial photo of a cay, a winter dates eyebrow, the from-price, chips and a red Get my quote button." loading="lazy" width="750" height="1624"></button>
+      <figcaption><b>Exumas.</b> One photo, winter dates.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/13-final-phone-croatia.jpg" alt="The same hero for Croatia: a harbour photo, no price, chips, and a red button reading Plan my charter." loading="lazy" width="450" height="974"></button>
+      <figcaption><b>Croatia.</b> Price off, a different button label.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Every state, then the system</h2>
+    <div class="body">
+      <p>Nothing validated in the first build. I designed each state as a decision: an error shows when you leave a field, clears on the keystroke that fixes it, and says what to enter. A failed send keeps every answer.</p>
+      <p>Then the final became design-system components: <code>Hero</code>, <code>LeadForm</code>, <code>MediaCarousel</code>, <code>StickyBar</code>, <code>StatList</code>. A review against the approved design made seven more changes, from the dialog's look to the button's words.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/19-state-errors.jpg" alt="The step 2 pop-up after submitting empty: a line reading 4 fields need a change, each field outlined in red with a message under it such as Enter your email so we can send the quote." loading="lazy" width="800" height="500"></button>
+      <figcaption><b>Submit with nothing filled.</b> Focus goes to the first field; a count line tells a scrolled visitor why nothing happened.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/paid-hero/10-final-desktop-bvi.jpg" alt="The final hero on desktop: catamaran photo as the ground, title and from-price in white, a card asking charter type, travel month and cabins, and a strip of four proof points along the bottom edge." loading="lazy" width="800" height="500"></button>
+      <figcaption><b>The final on desktop.</b> Trip questions in the card, contact details on the next step, proof along the bottom.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Version 1 is the control</h2>
+    <div class="body">
+      <p>A campaign might run a generic ad with no destination, so the form learned to ask for one first.</p>
+      <p>And four ideas launched together would leave no way to know which one earned the result. So version 1 is the smallest page that can take a paid click. The rest became a sequence, one variable each.</p>
+    </div>
+    <ul class="notes">
+      <li><b>Test 1.</b> The proof strip under the hero: the strongest pattern signal and the cheapest addition.</li>
+      <li><b>Test 2.</b> The shorter phone form: chips and one button inside the fold, details in a sheet.</li>
+      <li><b>Later.</b> Price in the path, once the departures data is wired.</li>
+    </ul>
+  </section>
+
+  <p class="pull">Ship the smallest page that can take a paid click. Every idea after it gets a real baseline.</p>
+
+  <a class="pointer" href="full/paid-hero/index.html"><b>Read the full case study &rarr;</b><span>every decision, state and test</span></a>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Figures are percentages from the brand's own analytics and paid-channel reports, one week or thirty days as stated. Captures are from the design system's preview.<br>
+    <a href="index.html">Index</a> &middot; <a href="full/paid-hero/index.html">Full case study</a> &middot; <a href="p831.html">Project 831</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

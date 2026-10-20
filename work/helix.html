@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Helix — Rahul Jha</title>
+<meta name="description" content="The design-system workspace ten brand teams use instead of Figma.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="comments.html">Comments &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>Ten brand teams, one workspace</h1>
+  <p class="what">Helix is where the design system lives now: tokens, components, layouts and explorations, rendered from each brand's own repository and shared as a link.</p>
+  <p class="mono">
+    <span>2026</span><span>Mine</span><span>Next.js 16, React 19, Tailwind v4</span><span>Chrome 2.0, ten brand teams</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/helix/01-overview.jpg" alt="The Helix Overview: a sidebar with Explorations, Specimens, Components, Layouts and Tools; cards for work in progress; a feed of what moved on main; a floating dark tool dock." width="1600" height="1089"></button>
+    <figcaption><b>Overview.</b> What needs you, what is in progress, what moved since you last looked. Built from the exploration files and the pick records, not from a list anyone maintains.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>What it is</h2>
+    <div class="body">
+      <p>Helix installs into a brand's Next.js repository and renders what is already in it. Folders become navigation. Every specimen, layout and exploration is a URL, opened with nothing installed.</p>
+      <p>Before it, a design was a picture handed to an engineer, and the picture and the build drifted apart. Figma still holds brand assets. It stopped holding the system.</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>One workspace, every brand&#39;s own system</h2>
+    <div class="body">
+      <p>Helix holds no brand. Each install reads its brand&#39;s own token stylesheet and draws the palette, type, spacing and radius from it, so every workspace looks like its brand and works like all the others. A new brand is an install, not a project.</p>
+      <p>Nine brands have built their systems in it so far. Others, like Hayes &amp; Jarvis, are still on the starter tokens every install begins with.</p>
+    </div>
+  </section>
+
+  <div class="grid three">
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/the-moorings.jpg" alt="The Moorings colour tokens: a navy primary ramp from 50 to 900 with hex values, then a Caribbean cyan accent ramp." loading="lazy"></button>
+      <figcaption><b>The Moorings.</b> Moorings navy for action, Caribbean cyan as the accent.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/sunsail.jpg" alt="Sunsail colour tokens: an ocean blue accent ramp, then its grey scale." loading="lazy"></button>
+      <figcaption><b>Sunsail.</b> The sister brand: an ocean-blue accent over its own neutral scale.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/headwater.jpg" alt="Headwater colour tokens: pale gold primaries, then other colours in gold, ocean, rose and slate." loading="lazy"></button>
+      <figcaption><b>Headwater.</b> Gold and ocean, with rose and slate, all set in OKLCH.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/enchanting-travels.jpg" alt="Enchanting Travels colour tokens: a bronze and taupe ramp, then parchment, linen and gilt." loading="lazy"></button>
+      <figcaption><b>Enchanting Travels.</b> A bronze and taupe signature accent, with parchment and gilt.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/europe-express.jpg" alt="Europe Express colour tokens: a primary blue ramp, then the start of a cool grey ramp." loading="lazy"></button>
+      <figcaption><b>Europe Express.</b> A primary blue whose hue turns toward navy as it darkens.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/exodus.jpg" alt="Exodus colour tokens: teal, red, purple, navy, green, saving green and pink swatches with hex values." loading="lazy"></button>
+      <figcaption><b>Exodus.</b> Teal for the main action, a family of reds, and a saving green.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/tcs.jpg" alt="TCS World Travel colour tokens: a brass ramp, then a burgundy ramp." loading="lazy"></button>
+      <figcaption><b>TCS World Travel.</b> Brass as the brand accent, burgundy for sections.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/quark.jpg" alt="Quark Expeditions colour tokens: three-step green, yellow and red ramps and the start of blue." loading="lazy"></button>
+      <figcaption><b>Quark Expeditions.</b> Green, yellow, red and blue ramps, each three steps.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/brands2/tiles/kalos-japan.jpg" alt="Kalos Japan colour tokens: a brand blue ramp, then a pale yellow highlight." loading="lazy"></button>
+      <figcaption><b>Kalos Japan.</b> Its own brand blue, with a yellow highlight.</figcaption>
+    </figure>
+  </div>
+  <p class="mono" style="margin-top:14px">Each brand&#39;s own token stylesheet, rendered by Helix chrome 2.0. The brand workspaces themselves run chrome 1.0.9 to 1.4.0, each updating on its own schedule.</p>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/helix/02-explorations.jpg" alt="The Explorations grid: cards with real screenshots of each exploration, status chips reading Active and Promoted, filters for All, Active and Promoted." loading="lazy"></button>
+      <figcaption><b>Explorations.</b> Each card is a photograph of the real page, taken by a headless browser after every merge, so a card can never show something the branch no longer does.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/50-exploration-detail.jpg" alt="An exploration opened: the variant running inside a framed browser, a variant menu, and a side panel with details and history." loading="lazy"></button>
+      <figcaption><b>One exploration.</b> The variant runs live in the frame. The panel beside it carries the author, the history and the command to pick the work up locally.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>What I obsessed over</h2>
+    <div class="body">
+      <p>The design-system page has no content of its own. It reads the brand's token stylesheet at request time and draws the ramps, the semantic set, the type scale and the spacing from it, grouped by the comments above them. <strong>There is nothing to publish and nothing to keep in step</strong>, so the page cannot tell you something the code does not.</p>
+      <p>Appearance sits on top: light and dark, and five accents, each a pair that clears AA as text on every surface. The accent from the original artboard measured 3.4:1, so it was replaced rather than shipped.</p>
+    </div>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/helix/03-design-system.jpg" alt="The Design system page: sticky Specimens and Components tabs, an On this page nav, and colour ramps with token names and hex values read from the brand stylesheet." loading="lazy"></button>
+    <figcaption><b>Design system.</b> Colour, typography, spacing and radius, read from the brand's own stylesheet at request time. Click a swatch to copy its token.</figcaption>
+  </figure>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/helix/11-design-system-dark.jpg" alt="The same design-system page in dark mode." loading="lazy"></button>
+      <figcaption><b>Dark.</b> The chrome's own appearance. A host's pages keep whatever theme the host gives them.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/14-accent-ochre-dark.jpg" alt="The Overview in dark mode with the ochre accent applied to counts, dots and the progress ring." loading="lazy"></button>
+      <figcaption><b>One of five accents.</b> Each is a light and dark pair. Update notices take their own amber, so they stand out whichever accent is picked.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>A component has a page, not a card</h2>
+    <div class="body">
+      <p>Each component gets its specimen in a frame, its props read off the type with the JSDoc and the destructured defaults, and every file that imports it. Owner, file and last change come from git. <strong>Nothing on it is written by hand</strong>, so it is right on the day someone reads it.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/helix/41-component-api.jpg" alt="A component page showing the import line, a props table with type, default and description, and a details panel with kind, file, owner and recent changes." loading="lazy"></button>
+      <figcaption><b>API.</b> Props, defaults and the prose the author left in the type. The description here is the one argued out in the component's own file.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/42-component-usage.jpg" alt="The Usage tab of a component page, listing every file that imports the component, grouped and linked." loading="lazy"></button>
+      <figcaption><b>Usage.</b> Every file that imports it. The answer to "can I change this" is on the page you are already on.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>The preview, which exists because of review calls</h2>
+    <div class="body">
+      <p>Sign-off happens on a shared screen. Someone presents a design at desktop width, and four minutes in, somebody asks what it does on a phone. The presenter resizes the window, loses their place, scrolls back, and by the time they find the section the room has moved on to something else. That happened in nearly every call.</p>
+      <p>So the preview opens both at once, and I built each control against a thing that was going wrong:</p>
+    </div>
+    <ul class="notes">
+      <li><b>Desktop, Tablet, Mobile, Both.</b> Four fixed widths, not a draggable handle. A dragged handle means every reviewer sees a different page and the notes cannot be compared.</li>
+      <li><b>Sync scroll, on by default.</b> The question is almost always the same section at another width. It turns off for the rarer case, comparing two different parts of a page.</li>
+      <li><b>The exact size and the zoom, written on the frame.</b> 1440&nbsp;&times;&nbsp;1000 at 72%. It ends the recurring argument about whether what is on the projector is real size.</li>
+      <li><b>The variant switcher stays inside the page.</b> It is the exploration's own panel, so a stakeholder steps through five directions, and toggles a piece on or off, without the presenter leaving the link or opening a second tab.</li>
+      <li><b>Width and variant live in the URL.</b> The link pasted into the recap reopens on exactly what the room was looking at, which is the difference between a decision and a reminder to have the meeting again.</li>
+      <li><b>Esc exits.</b> Presenting is the main use, so the exit is the key people press by reflex.</li>
+    </ul>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/helix/52-fullscreen-both.jpg" alt="A fullscreen preview showing the same page at desktop 1440 by 1000 and mobile 390 by 844 side by side, both at 72 percent, with Desktop, Tablet, Mobile and Both controls, a Sync scroll toggle, a variant counter reading 1 of 5, and the exploration's own preview panel open in each frame." width="1600" height="1089"></button>
+    <figcaption><b>Both widths, one scroll.</b> The same moment of the same page, twice. The dark panel is the exploration's own switcher, running in both frames, so stepping to variant four steps both.</figcaption>
+  </figure>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/helix/53-fullscreen-mobile.jpg" alt="The same exploration at mobile width alone, full screen." loading="lazy"></button>
+      <figcaption><b>One width, when that is the argument.</b> Most of this traffic is phones, so phone-only is a first-class view rather than a narrow desktop.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/51-exploration-reviews.jpg" alt="An exploration page with Details and Annotations tabs, the author, folder, last change and variant count, a history list, and a block of commands to edit it locally." loading="lazy"></button>
+      <figcaption><b>What sits beside the frame.</b> Author, folder, variant count and history from git, an Annotations tab for the feedback, and the three commands that put the work on your own machine.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>What it changed</h2>
+    <div class="body">
+      <p>Review stopped producing a follow-up thread. The questions that used to end a call with "can you send me the mobile version" get answered while everyone is still in the room, and the link in the recap opens on the frame that was agreed. <strong>Sign-off moved into the call it was always supposed to happen in.</strong></p>
+    </div>
+  </section>
+
+  <div class="grid three">
+    <figure class="fig">
+      <button type="button"><img src="images/helix/30-palette.jpg" alt="The command palette open over the Overview, filtered to pages matching the typed text." loading="lazy"></button>
+      <figcaption><b>Command palette.</b> Every page, by name.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/04-components.jpg" alt="The Components tab showing each component as a card with its specimen as the picture." loading="lazy"></button>
+      <figcaption><b>Components.</b> Cards or a table, remembered per person.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/helix/20-overview-390.jpg" alt="The Overview at phone width, cards stacked, the sidebar collapsed behind a control." loading="lazy"></button>
+      <figcaption><b>On a phone.</b> Review happens on the move, so it works there.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>What happened</h2>
+    <ul class="notes">
+      <li><b>Ten brand repositories run it</b>, plus four production site repositories where engineers promote Helix layouts straight into the live frontend.</li>
+      <li><b>Designers ship the pull requests.</b> 290 merged across the brand repositories in six months, from sixteen people, most merged the day they opened.</li>
+      <li><b>The accessibility gate runs on every build</b>, every page against every theme, and it was never lowered. It was switched off once for being slow, so we scoped the loop instead.</li>
+      <li><b>2.0 is the workspace on this page.</b> Sign-in, the redesign, the toolbar and the ten tools in it: 155 files, with a security pass before anyone looked at it.</li>
+    </ul>
+  </section>
+
+  <p class="pull">A design system you have to publish is a design system that is already out of date.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Captured from the workspace running against a brand repository.<br>
+    <a href="index.html">Index</a> &middot; <a href="comments.html">Comments</a> &middot; <a href="skills.html">The skills</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

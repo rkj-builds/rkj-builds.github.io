@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scheduling primitives — Rahul Jha</title>
+<meta name="description" content="A calendar, a slot picker, a zone search and a repeat field for coss ui, built on Base UI, with the date logic on Intl alone.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="captain.html">&larr; The captain</a><a href="helix.html">Helix &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>The slot picker, built in the open</h1>
+  <p class="what">Project 831 takes bookings in one time zone and rejects any other. Here is that shortcut done properly: four booking components for coss ui, on Base UI, written the way the library writes its own. Dates belong to the venue and times belong to whoever is booking.</p>
+  <p class="mono">
+    <span>Oct 2026</span><span>Mine</span><span>React, coss ui, Base UI, Intl</span><span>35 tests, no axe violations</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/primitives/03-slots-new-york.jpg" alt="A booking card seen from New York: a calendar of October with prices under each day, and times grouped as Evening, Sun Oct 18, with 8:30 PM to 11:30 PM each marked minus one day, then Morning, 12:30 AM to 11:30 AM." width="2304" height="836"></button>
+    <figcaption><b>Monday's slots, seen from New York.</b> The court opens at 06:00 in Bengaluru, which is 8:30 the evening before in New York. Those times come first, under the day they are on, each marked "−1 day". A screen reader hears "8:30 PM, the day before".</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>What page 06 left open</h2>
+    <div class="body">
+      <p>Project 831's venue has no daylight saving, so its slot maths uses a fixed offset, and a rule naming any other zone is refused. That was the right call for one venue. It is the wrong one for a scheduling product, where the person booking is rarely where the court is.</p>
+      <p>So I rebuilt the hard part as components, in coss ui's own shape: one file each, Base UI underneath, its tokens and dark mode, a <strong>data-slot</strong> on every part. <strong>The zone maths is under 300 lines on Intl, with no date library.</strong></p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/primitives/02-slots-bengaluru.jpg" alt="The same booking card seen from Bengaluru: times from 6:00 am to 9:00 pm grouped as Morning, Afternoon and Evening, some struck through as taken, one dashed as being booked." loading="lazy"></button>
+      <figcaption><b>The same instants, from Bengaluru.</b> No day marks, because nothing crosses midnight. The calendar and its prices don't move: a date is the venue's, so a Tuesday price stays on Tuesday for everyone.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/primitives/05-dark.jpg" alt="The Bengaluru view in dark mode, with 6:00 pm selected." loading="lazy"></button>
+      <figcaption><b>Dark, from the library's tokens.</b> The components don't set a single colour of their own, so they follow coss's theme without extra work.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>The week the clocks change</h2>
+    <div class="body">
+      <p>A weekly booking is a time on a wall in a named zone: Monday 07:00, Asia/Kolkata. Stored as a list of instants, it drifts an hour the first time anyone's clocks change. Stored as a rule, the venue's 07:00 stays 07:00, and what changes is what it means to you.</p>
+      <p>The preview shows the next dates in both zones and marks the row where that changes. <strong>New York leaves daylight saving on 1 November, so from 2 November the booking is 8:30 PM, not 9:30 PM, for someone there.</strong></p>
+    </div>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/primitives/04-clock-change.jpg" alt="A repeat preview: Every week on Monday at 7:00 AM, 8 times. Five rows with the venue date and time and Sun 9:30 PM yours, until Mon Nov 2, which reads Sun 8:30 PM yours and Your clocks change: 8:30 PM for you from here." loading="lazy"></button>
+    <figcaption><b>The row people get wrong, marked.</b> When the venue's own clocks change, the note says "same time on the wall" instead. Both cases are tested.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Four components, one file each</h2>
+    <div class="body">
+      <p>coss's Calendar wraps a third-party day picker, which is good at picking a date. A booking calendar needs more on each day: how full it is, what it costs, and a full day that stays readable instead of disappearing. That meant owning the grid. Everything else composes Base UI.</p>
+    </div>
+    <table class="tbl">
+      <caption>What each one is built on, and what it adds</caption>
+      <thead><tr><th scope="col">Component</th><th scope="col">Built on</th><th scope="col">What it adds</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">AvailabilityCalendar</th><td>Its own WAI-ARIA grid, coss Button</td><td>Status, price and a spoken description on every day. The week starts on the locale's first day.</td></tr>
+        <tr><th scope="row">TimeSlotPicker</th><td>Base UI RadioGroup and Radio</td><td>Instants shown in any zone and either clock, in the viewer's time order. Arrow keys skip taken times.</td></tr>
+        <tr><th scope="row">TimezoneCombobox</th><td>coss Combobox</td><td>Every zone the browser knows. Search by city, abbreviation or offset, with offsets for the booked day.</td></tr>
+        <tr><th scope="row">RecurrenceField</th><td>coss NumberField, Select, ToggleGroup, Popover</td><td>Rules kept as wall time in the venue's zone, and a preview that marks a clock change on either side.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/primitives/06-keyboard.jpg" alt="The calendar with a focus ring on a day one week and one day after the selected one." loading="lazy"></button>
+      <figcaption><b>The keyboard of a WAI-ARIA date grid.</b> Arrows move by day and week, Home and End go to the ends of the locale's week, Page Up and Down turn the month, and Shift turns the year. A move past the first bookable day stops on it instead of doing nothing.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/primitives/07-zone-search.jpg" alt="The zone search with +5:30 typed, listing Kolkata under Your time zone and Colombo under Asia, each at GMT+5:30." loading="lazy"></button>
+      <figcaption><b>Search the way people know zones.</b> By city, abbreviation or offset. The browser still lists Kolkata as Calcutta, so renamed cities show their current name, and the two names count as one zone.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Past the spec</h2>
+    <div class="body">
+      <p>Testing Library tests cover every keyboard path, and axe runs on each component. In the browser, axe found two things the unit tests couldn't, and both are fixed:</p>
+    </div>
+    <ul class="notes">
+      <li><b>Label in name.</b> A day button showed "20 ₹1,200" while its name read "Tuesday, 20 October 2026, ₹1,200 an hour". Someone using voice control says what they see. The price now sits outside the button, so the button's visible text is the day number and its name contains it (WCAG 2.5.3).</li>
+      <li><b>Dark muted text.</b> coss's dark muted grey measures 4.42:1 on a card, just under AA. Mixing it 80% instead of 90% gives about 5.3:1.</li>
+      <li><b>A 12-hour clock behind the venue.</b> "10:30 PM −1 day" wrapped inside its pill. It only shows for a 12-hour viewer whose times cross midnight, who is exactly who the mark is for. The mark now sits on its own line.</li>
+    </ul>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/primitives/08-docs.jpg" alt="The docs entry for AvailabilityCalendar: why it exists, what it is built on, a table of keys and a table of key props." loading="lazy"></button>
+    <figcaption><b>Docs in the library's register.</b> Each component's entry says why it exists, what it's built on, its keys and its props, so a reviewer can disagree with a decision, not just a result.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>What it is in practice</h2>
+    <ul class="notes">
+      <li><b>A public repo</b> with the booking demo, the docs and the tests. <span class="mono">pnpm dev</span> runs it.</li>
+      <li><b>35 tests</b>: date maths, spring-forward gaps and repeated autumn hours, month-end clamping, recurrence across clock changes, keyboard paths and axe.</li>
+      <li><b>No date library.</b> Offsets come from Intl's formatToParts, local times resolve the way Temporal's "compatible" option does, and the API is shaped so swapping in Temporal is small.</li>
+      <li><b>Example data</b>: one court, open 06:00 to 22:00 Bengaluru time, made up and deterministic. Nothing here books anything.</li>
+    </ul>
+  </section>
+
+  <p class="pull">Dates belong to the venue. Times belong to you.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Screens captured from the running demo, in a browser set to each visitor's own zone and locale.<br>
+    <!-- Fill in once the repo is public. -->
+    Source: <span style="color:var(--ink)">[repo link]</span><br>
+    <a href="index.html">Index</a> &middot; <a href="p831.html">Project 831</a> &middot; <a href="helix.html">Helix</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le Boat checkout — Rahul Jha</title>
+<meta name="description" content="A four-step checkout rebuilt around the decision, for two brands out of one token sheet.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="p831.html">&larr; Project 831</a><a href="captain.html">The captain &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>Checkout, rebuilt around the decision</h1>
+  <p class="what">Booking a boat holiday ends in a long form with twenty optional extras in it. The rebuild treats each step as a decision someone has to make, and gives the two brands one set of tokens to make it in. Designed and built in one week, live ten days later.</p>
+  <p class="mono">
+    <span>6&ndash;10 Jul 2026, one week</span><span>Mine</span><span>Next.js 16, next-intl, react-hook-form, Zod</span><span>Live since 20 July</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/checkout/06-review-and-pay-desktop-full.jpg" alt="The review and pay step: trip summary, guest details, a payment choice between deposit and pay in full, and the total." width="1600" height="1000"></button>
+    <figcaption><b>Review and pay.</b> The summary collapses on desktop but the dates and duration never leave the screen, because that is what people re-read before paying.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>What changed</h2>
+    <div class="body">
+      <p>Extras were an accordion of twenty things. Now each group shows its best two with the rest behind a count, so the page is scannable without hiding the category. The payment step stopped asking for a card type and started asking the only question that matters: deposit now, or all of it.</p>
+      <p>Between two steps the server re-prices the booking and it takes three to five seconds. <strong>The waiting state says so in words</strong> instead of spinning.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/01-extras-desktop-full.jpg" alt="The extras step with grouped add-ons, each group showing two options and a show more control." loading="lazy"></button>
+      <figcaption><b>Extras.</b> Two per group, the rest one tap away. Groups stay open; collapsing them recreates the problem the accordion caused.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/07-deposit-schedule.jpg" alt="A deposit schedule showing what is due today and what is due later, with dates." loading="lazy"></button>
+      <figcaption><b>Deposit schedule.</b> What leaves your account today and what leaves it later, with the dates. No "recommended" tag: which is better depends on money we know nothing about.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Fifteen ways a booking breaks</h2>
+    <div class="body">
+      <p>The failure states were specified as their own piece of work rather than swept up at the end. An extra that sold out while you browsed, a card that declines, a field that will not validate, a session that expires mid-flow.</p>
+      <p>Each one gets the same three things: what happened in plain words, what it means for the booking, and the one action that gets you moving again. <strong>Nothing dead-ends.</strong></p>
+    </div>
+  </section>
+
+  <div class="grid three">
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/09-payment-failed-modal.jpg" alt="A payment failed dialog explaining what happened and offering a retry." loading="lazy"></button>
+      <figcaption><b>Payment declined.</b> The booking is held, not lost, and the dialog says so before it offers the retry.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/E1-sold-out-extra.jpg" alt="A sold-out extra shown as an inline tag with no add action." loading="lazy"></button>
+      <figcaption><b>Sold out.</b> An inline tag and no action, so the control never promises something it cannot do.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/E3-inline-field-errors.jpg" alt="Inline field errors under the fields they belong to." loading="lazy"></button>
+      <figcaption><b>Field errors.</b> Under the field, in the field's own language, never a summary at the top.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Two brands, one sheet of tokens</h2>
+    <div class="body">
+      <p>The sister brand is not a fork. It is the same components with its own values for the brand roles, so a fix to the checkout reaches both and the second brand costs nothing to keep improving.</p>
+      <p>Both clear a WCAG 2.1 AA sweep at desktop and phone with no contrast violations, and the sweep runs on every build rather than at the end.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/13-emerald-extras-viewport.jpg" alt="The extras step in the sister brand's colours." loading="lazy"></button>
+      <figcaption><b>Sister brand.</b> Same components, different brand roles.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/checkout/11-extras-mobile-viewport.jpg" alt="The extras step at phone width." loading="lazy"></button>
+      <figcaption><b>Phone.</b> The pay control stays above the fold through the whole step.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>One week</h2>
+    <div class="body">
+      <p>The direction had already been user tested as an agency prototype. The week turned it into a checkout the engineers could ship, in the brand&#39;s own system, with every state a booking can reach.</p>
+    </div>
+    <div class="scroll-x" tabindex="0" role="region" aria-label="The week, day by day">
+      <table class="tbl">
+        <caption>Monday 6 to Friday 10 July, from the commit history</caption>
+        <thead><tr><th scope="col">Day</th><th scope="col">What landed</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Monday</th><td>Two prototypes side by side; one chosen and reskinned to the brand; the alignment meeting&#39;s actions applied the same day</td></tr>
+          <tr><th scope="row">Tuesday</th><td>Summary and payment, confirmation, payment failure, save quote, trust, every interaction state, searchable selects</td></tr>
+          <tr><th scope="row">Wednesday</th><td>Detail pop-ups, damage cover inside the compare cards, the booking note and the deposit schedule; an extras search explored and parked</td></tr>
+          <tr><th scope="row">Thursday</th><td>Sold-out states, the payment-failure pop-up, pay-today on the deposit, was/now on pay in full, the sister brand&#39;s theme</td></tr>
+          <tr><th scope="row">Friday</th><td>Refinements, then the brand alignment and the WCAG AA pass</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="block">
+    <h2>What moved</h2>
+    <div class="body">
+      <p>Three months live. The same thirteen weeks, 21 July to 19 October, against the old checkout a year earlier:</p>
+    </div>
+    <ul class="notes">
+      <li><b>Damage cover nearly doubled per booking,</b> from 0.84 to 1.65. It is the extra the redesign put in front of people, inside the compare cards, framed as the deposit you avoid.</li>
+      <li><b>Extras per booking up 26%,</b> from 3.38 to 4.25, and extras revenue per booking held.</li>
+      <li><b>Checkout errors down a quarter</b> per visitor who reached the booking stage, from 7.9% to 5.9%.</li>
+      <li><b>Fewer second thoughts.</b> People removing an extra they had just added fell 15%.</li>
+      <li><b>Nothing paid for it.</b> The share who went on to payment held, 7.75% to 7.88%.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>What the decision log says</h2>
+    <div class="body">
+      <p>Twenty decisions, each recorded with who agreed to it. Eight were agreed with stakeholders, six were my call with nothing validating them, one was verified only by tooling, one was still unresolved at handover.</p>
+      <p>And one was superseded: we held a bundles idea back to avoid confounding a test, <strong>while a bundles experiment was already running in production and nobody said so.</strong> It is the most useful row in the table, so it stayed in.</p>
+    </div>
+  </section>
+
+  <a class="pointer" href="full/leboat-checkout/index.html"><b>Read the full case study &rarr;</b><span>evidence, decisions, receipts</span></a>
+  <a class="pointer" href="full/leboat-error-states/index.html"><b>The fifteen failure states, in full &rarr;</b><span>every way a booking breaks</span></a>
+
+  <p class="pull">A failure state is not an edge case. It is the part of the product that decides whether someone books again.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Built to an approved, user-tested prototype and handed to the brand&#39;s engineers. Figures from the brand&#39;s analytics, read 20 October, year on year without a holdout.<br>
+    <a href="index.html">Index</a> &middot; <a href="captain.html">The captain</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>

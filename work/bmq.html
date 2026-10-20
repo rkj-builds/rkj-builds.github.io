@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Price the stay, not the date — Rahul Jha</title>
+<meta name="description" content="A booking flow rebuilt around a calendar that prices the week you actually want.">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="bar"><div class="wrap">
+  <a class="home" href="index.html">Rahul Jha</a>
+  <nav aria-label="Work"><a href="index.html">Index</a><a href="tools.html">&larr; Tools</a><a href="paid-hero.html">Paid landing page &rarr;</a></nav>
+</div></div>
+
+<main id="main">
+
+<header class="head"><div class="wrap">
+  <h1>Price the stay, not the date</h1>
+  <p class="what">The most visited page on a yacht charter site is the one where you build a quote. It asks for five answers and a calendar is one of them. The calendar is where I lost two weeks, and it was the right place to lose them.</p>
+  <p class="mono">
+    <span>Sep&ndash;Oct 2026</span><span>Mine</span><span>Eleven variants</span><span>Two flows in user testing</span>
+  </p>
+</div></header>
+
+<div class="wrap">
+
+  <figure class="fig">
+    <button type="button"><img src="images/bmq/15-v9-calendar-grid.jpg" alt="A January month grid where every bookable date shows a price, the 13th is marked Best and selected, the following seven nights are shaded through to a date marked Return, and a legend explains open to book, start, your seven nights, lowest this month and no yachts." width="1600" height="1111"></button>
+    <figcaption><b>The thing itself.</b> Every bookable date carries the price of <em>your</em> stay, not the nightly rate. The cheapest in the month is labelled rather than only coloured, and the week you picked is drawn on the grid.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>What the recordings showed</h2>
+    <div class="body">
+      <p>Three things, and all three pointed at the same place.</p>
+    </div>
+    <ul class="notes">
+      <li><b>Next and Prev were a fifth of every click on the page.</b> People were paging through months looking for a price the page would only show them one month at a time.</li>
+      <li><b>Two in five dead clicks landed on one row of the summary box.</b> It had a pencil drawn on it and nothing behind the pencil.</li>
+      <li><b>Half of desktop visitors never reached the bottom half.</b> On a phone it was worse, and most of the traffic is phones.</li>
+    </ul>
+  </section>
+
+  <section class="block">
+    <h2>Eleven variants, one hypothesis each</h2>
+    <div class="body">
+      <p>The first four changed one thing each and left everything else as production, so a test could isolate the effect. The next seven reimagined the flow mobile first, each solving every finding by a different model: a quote bar, one question at a time, a price timeline, a search that refines, a guided entry sheet.</p>
+    </div>
+  </section>
+
+  <figure class="fig">
+    <button type="button"><img src="images/bmq/09-compare.jpg" alt="A compare surface titled Build My Quote, eleven variants one page, with tabs V1 to V11 and the selected variant rendered at phone and desktop width side by side." loading="lazy"></button>
+    <figcaption><b>Eleven variants, one page.</b> Tabs across the top, the selected one running live at both widths, arrow keys to step. The hypothesis line under the tabs says what each variant is for.</figcaption>
+  </figure>
+
+  <section class="block">
+    <h2>Five decisions inside the calendar</h2>
+    <ul class="notes">
+      <li><b>No Next and no Prev.</b> They were the most clicked control on the page, which is not a sign that people love them. Months stack, and a strip of month tiles jumps to one. The tiles carry a from-price, so the choice is informed before the tap.</li>
+      <li><b>A price on every bookable date, in ordinary ink.</b> Checked against Booking, which does the same, and Google Flights, which uses exactly one colour for cheapest.</li>
+      <li><b>One label, not a heat map.</b> The lowest tier takes a single colour and the cheapest date in the month is labelled <em>Best</em>. A date that cannot be booked is struck through.</li>
+      <li><b>No red and green together.</b> The sales desk reported customers reading the pair backwards, and it is the one pair colour-blind users cannot separate. Nothing on the grid is red.</li>
+      <li><b>The price is the stay, not the night.</b> Seven nights from the 13th means all seven must be open, and the figure on the 13th is what those seven cost. Twenty-seven months of them, with the stay drawn across the grid and the end date marked Return.</li>
+    </ul>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/13-v9-stay-calendar.jpg" alt="The When step: nights as chips with price differences, year tabs for 2026, 2027 and 2028, twelve month tiles each with a from-price and the cheapest tagged lowest, then the month grid." loading="lazy"></button>
+      <figcaption><b>Nights first, then the month, then the date.</b> Each chip says what the change costs. Each month tile says what it starts from, and the cheapest month of the year is tagged.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/01-v9-calendar.jpg" alt="The first step of the guided flow: four charter cards with from-prices, and a quote card listing charter, guests, when and yacht with Go links." loading="lazy"></button>
+      <figcaption><b>The quote card is the map.</b> Four answers, each a row, each changeable from here. The price under it is live and says what it is per night.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>The one I got wrong</h2>
+    <div class="body">
+      <p>In the guided variant the month tiles sit above the day grid. On a desktop that reads fine. On a phone, tapping a month changes something below the fold, so the page looks like it did nothing. <strong>I watched it happen and it reads as broken, not as subtle.</strong></p>
+      <p>The next variant got its own picker: a month, then its days, in the same space, with a link back to the months. Same information, one surface at a time.</p>
+    </div>
+  </section>
+
+  <div class="grid three phones">
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/16-v9-calendar-phone.jpg" alt="The calendar at phone width: a step rail across the top, the month grid with a compact price on every date, Best on the 13th and the stay shaded to Return on the 20th, and a price bar fixed at the bottom." loading="lazy"></button>
+      <figcaption><b>The same calendar on a phone.</b> Prices shorten, the step rail stays, and the month tiles sit just above the top edge. That is the problem in the next section.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/03-v11-sheet-390.jpg" alt="A sheet at phone width asking one question at a time, with answered cards collapsed above the open one." loading="lazy"></button>
+      <figcaption><b>Guided entry.</b> One card at a time; an answered card closes to a row and the next opens.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/05-v5-quote-bar-390.jpg" alt="A phone view with a sticky bar of chips for charter, guests and dates, and a list of yachts priced underneath." loading="lazy"></button>
+      <figcaption><b>The quote bar.</b> Every answer a chip; a chip opens a sheet; the list re-prices behind it.</figcaption>
+    </figure>
+  </div>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/07-v10-search-refine.jpg" alt="A search-then-refine layout: one pill carrying when, how long and who, a filter row, and yachts as priced rows." loading="lazy"></button>
+      <figcaption><b>Search, then refine.</b> The marketplace model, with the one thing a marketplace cannot show: the real price of this boat for this week.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button"><img src="images/bmq/12-v7-price-timeline.jpg" alt="A variant replacing the calendar with a bar chart, one bar per start date, height as price." loading="lazy"></button>
+      <figcaption><b>The calendar as a chart.</b> One bar per start date, height as price, sold-out dates as stubs. Nothing hidden, and nothing to page through.</figcaption>
+    </figure>
+  </div>
+
+  <section class="block">
+    <h2>Where it stands</h2>
+    <div class="body">
+      <p>Two arms went forward for an A/B test later: the one that lets you compare, and the one that leads you. Before that, the team wanted to watch real bookers, so two flows at opposite ends are now in an unmoderated user test: today&#39;s page with answered steps folding away, and a pop-up that asks first and then shows the yachts.</p>
+      <p>One question: do people want the form, or a guided way in? Both prototypes are fully clickable, rebuilt to look like the live page, with no analytics and nothing submitted.</p>
+      <p>48 people on UserTesting, desktop and phone run separately, each comparing two pages: the live page against Flow A, the live page against Flow B, or Flow A against Flow B. Everyone gets the same task, 7 nights in March for 4 people. A clearly preferred flow goes on to a production A/B test.</p>
+    </div>
+  </section>
+
+  <div class="grid two">
+    <figure class="fig">
+      <button type="button" class="walk-play" aria-pressed="false" data-src="images/bmq/30-walkthrough-flow-a.webp"><img src="images/bmq/20-flow-a-desktop.jpg" alt="Flow A walkthrough: a sail charter for 4 people, 7 nights from 13 March. Passengers, then a date paged to March, 7 nights, a yacht, and Continue to Extras, each answered step folding away." loading="lazy"><span class="walk-label">Play, 23 seconds</span></button>
+      <figcaption><b>Flow A, the form, improved.</b> The testers&#39; task: a sail charter for 4 people, 7 nights in March. Each answered step folds away and the next comes into view.</figcaption>
+    </figure>
+    <figure class="fig">
+      <button type="button" class="walk-play" aria-pressed="false" data-src="images/bmq/31-walkthrough-flow-b.webp"><img src="images/bmq/22-flow-b-desktop.jpg" alt="Flow B walkthrough, same task: the pop-up asks the charter, then guests up to 4, 7 nights, March and a start date, then shows the yachts priced for the week and Continue to Extras." loading="lazy"><span class="walk-label">Play, 28 seconds</span></button>
+      <figcaption><b>Flow B, a guided way in.</b> The same task: four questions, one at a time, then the yachts priced for that week.</figcaption>
+    </figure>
+  </div>
+  <p class="mono" style="margin-top:14px">Recorded from the test prototypes, which submit nothing; prices in them are modelled. Compare them with <a href="https://www.moorings.com/destinations/caribbean/british-virgin-islands-yacht-charters/build-my-quote">today&#39;s live page</a>, the one the research measured.</p>
+
+  <a class="pointer" href="full/bmq/index.html"><b>Read the full case study &rarr;</b><span>the data, eleven variants and the test</span></a>
+
+  <p class="pull">Four clicks hunting for a price, for every one click that moved forward. That ratio was the whole brief.</p>
+
+</div>
+
+</main>
+
+<footer class="foot"><div class="wrap">
+  <p class="mono">
+    Figures are ratios from the site&rsquo;s own session recordings.<br>
+    <a href="index.html">Index</a> &middot; <a href="paid-hero.html">Paid landing page</a>
+  </p>
+</div></footer>
+
+<script src="assets/site.js"></script>
+</body>
+</html>
