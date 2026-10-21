@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The database ran out, not the code — Learnings — Rahul Jha</title>
+<meta name="description" content="At 11:56 the bot and the dashboard went down hard. Nothing had been deployed. The free database tier had spent its disk budget, and every symptom pointed s">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
+<nav class="top" aria-label="Back"><a href="index.html">← Learnings</a><span><time datetime="2026-10-10">10 Oct 2026</time></span></nav>
+<header class="stack-lg">
+  <h1>The database ran out, not the code</h1>
+  <p class="muted">At 11:56 the bot and the dashboard went down hard. Nothing had been deployed. The free database tier had spent its disk budget, and every symptom pointed somewhere else.</p>
+  <dl class="meta"><dt>Where</dt><dd>The whole product: bot, dashboard, desk</dd><dt>Cost</dt><dd>Hours down, on a Friday</dd><dt>The rule</dt><dd>Three different errors meant one thing. Rule out capacity before blaming a deploy.</dd></dl>
+</header>
+<section class="block" aria-labelledby="what-happened"><h2 id="what-happened">What happened</h2><p>The database runs on Supabase's free tier, on the smallest instance. On 10 October it ran out of Disk IO budget. Checkpoints that took 0.6 seconds took 43. Every query timed out. The API layer could not even load its schema cache, so every route answered 500 or 503.</p><p>The dashboard did not say any of that. It said "Too many login attempts. Try again later." The login limiter fails closed by design, so an unreachable database reads as a lockout. We looked at the limiter. Then at the 45 commits a colleague had just pushed. The load had been flat at 80 to 110 requests an hour the whole time. The data had simply outgrown the tier.</p><figure class="card"><dl class="glance"><div><b>0.6 s → 43 s</b><span>a database checkpoint, before and during</span></div><div><b>80 to 110</b><span>requests an hour, flat through the outage</span></div><div><b>3 errors</b><span>lockout, 500, 503: one cause</span></div><div><b>0 deploys</b><span>in the window where it broke</span></div></dl><figcaption>What the numbers said, once we looked at the right ones.</figcaption></figure></section>
+<section class="block" aria-labelledby="what-it-taught-us"><h2 id="what-it-taught-us">What it taught us</h2><p>Capacity is a live constraint, not a setting. A flat workload on a small instance degrades as the data grows, with no code change to point at.</p><p>And symptoms point away from the cause. A login lockout, a 500 and a 503 were one fact in three disguises. An earlier note of ours also claimed the database was on a paid plan; it never was, and that wrong belief cost a whole line of investigation.</p></section>
+<section class="block" aria-labelledby="the-rule-now"><h2 id="the-rule-now">The rule now</h2><p>Before touching code for a production symptom, check the database's health and its budget. Recovery was a fast reboot plus raising one role's statement timeout from 8 to 60 seconds so the API could rebuild its cache, then putting it straight back. The runtime logs now print a database error count per request: 1 is broken, 0 is healthy, and a 401 from an unauthenticated probe is a healthy answer, not a fault.</p></section>
+<footer class="foot"><p>One entry per failure, written the week it happens. <a href="index.html">All learnings</a> · <a href="../index.html">Home</a></p><ul><li>Newer: <a href="a-credit-before-a-refund.html">A customer paid ₹350, was moved, and was asked for ₹350 again</a></li><li>Older: <a href="check-what-is-deployed-first.html">Three correct fixes, none of which could run</a></li></ul></footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

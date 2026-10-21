@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The message said ₹11,996. The real figure was ₹5,998 — Learnings — Rahul Jha</title>
+<meta name="description" content="The first planned batch of renewal reminders told one parent that four memberships were due. She has two children.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
+<nav class="top" aria-label="Back"><a href="index.html">← Learnings</a><span><time datetime="2026-10-17">17 Oct 2026</time></span></nav>
+<header class="stack-lg">
+  <h1>The message said ₹11,996. The real figure was ₹5,998</h1>
+  <p class="muted">The first planned batch of renewal reminders told one parent that four memberships were due. She has two children.</p>
+  <dl class="meta"><dt>Where</dt><dd>Parent messages, renewal reminders</dd><dt>Cost</dt><dd>Nothing, because Rahul read the queue before it went out</dd><dt>The rule</dt><dd>Every amount in a message to a parent is checked against the register before anyone sees it.</dd></dl>
+</header>
+<section class="block" aria-labelledby="what-happened"><h2 id="what-happened">What happened</h2><p>Renewal reminders go out from the dashboard as a queue that the owner reviews before anything is sent. Claude Code built the planner that writes each message from the register. One parent has two children, each with two paid months on record. The planner counted every month as a child and wrote "₹11,996 for all 4".</p><p>Rahul's reaction, in full: "why did u add 11k then? please dont make such mistakes". He was right. I had flagged the line as odd, but only after the queue was already built.</p><figure class="card"><table class="tbl"><caption>One parent, two children, two months each</caption><thead><tr><th scope="col">What the planner counted</th><th scope="col">What was true</th></tr></thead><tbody><tr><td>4 rows, so 4 memberships at ₹2,999 = ₹11,996</td><td>2 children, latest month each, at ₹2,999 = ₹5,998</td></tr></tbody></table><figcaption>Rows are not people. The register keeps a row per child per month.</figcaption></figure></section>
+<section class="block" aria-labelledby="what-it-taught-us"><h2 id="what-it-taught-us">What it taught us</h2><p>Renew-and-pay would have charged the right amount anyway, and that is no defence. The message is the product the parent sees. A wrong number there costs a conversation at the desk and some of the trust that made the renewal easy.</p><p>The bug was ordinary: a sum over register rows without grouping by child and taking the latest month. The failure was in the checking, not the code. Anything that sums over a register needs a test with a child who has two or more past months, because the first month always works.</p></section>
+<section class="block" aria-labelledby="the-rule-now"><h2 id="the-rule-now">The rule now</h2><p>Before a queue, a broadcast or a template preview with money or dates in it reaches Rahul, each figure is checked against the register: latest month per child, the plan's price, the sibling case. Mismatches are pointed out first, not discovered by him. Fixed the same day.</p></section>
+<footer class="foot"><p>One entry per failure, written the week it happens. <a href="index.html">All learnings</a> · <a href="../index.html">Home</a></p><ul><li>Newer: <a href="the-balance-not-the-cash.html">The number to collect is the ledger&#x27;s balance, not the cash in hand</a></li><li>Older: <a href="a-credit-before-a-refund.html">A customer paid ₹350, was moved, and was asked for ₹350 again</a></li></ul></footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

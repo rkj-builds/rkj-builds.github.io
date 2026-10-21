@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Learnings — Rahul Jha</title>
+<meta name="description" content="Short reads from running a two-court venue on software we wrote: real bookings, real money, one WhatsApp number. One entry per failure, written the week it happens.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
+<nav class="top" aria-label="Back"><a href="../index.html">← Rahul Jha</a><span>Learnings</span></nav>
+<header class="stack-lg">
+  <h1>Learnings</h1>
+  <p class="muted">We run a two-court venue on software we wrote. Real bookings, real money, one WhatsApp number that also carries the login. Things break, and each one teaches something a tutorial would not. These are short: what happened, what it taught us, the rule now. One entry per failure, written the week it happens, as a ritual rather than a retrospective.</p>
+</header>
+<section class="block" aria-labelledby="all"><h2 id="all">Newest first</h2>
+<ol class="learn">
+  <li><a href="the-balance-not-the-cash.html"><span class="t">The number to collect is the ledger&#x27;s balance, not the cash in hand</span><span class="d">A settlement question is answered by the ledger, never by adding up who holds what.</span></a><time datetime="2026-10-20">20 Oct 2026</time></li>
+  <li><a href="eleven-thousand-nine-ninety-six.html"><span class="t">The message said ₹11,996. The real figure was ₹5,998</span><span class="d">Every amount in a message to a parent is checked against the register before anyone sees it.</span></a><time datetime="2026-10-17">17 Oct 2026</time></li>
+  <li><a href="a-credit-before-a-refund.html"><span class="t">A customer paid ₹350, was moved, and was asked for ₹350 again</span><span class="d">Money on a cancelled booking becomes a credit at once, and the credit comes off before any new ask.</span></a><time datetime="2026-10-11">11 Oct 2026</time></li>
+  <li><a href="the-database-ran-out-not-the-code.html"><span class="t">The database ran out, not the code</span><span class="d">Three different errors meant one thing. Rule out capacity before blaming a deploy.</span></a><time datetime="2026-10-10">10 Oct 2026</time></li>
+  <li><a href="check-what-is-deployed-first.html"><span class="t">Three correct fixes, none of which could run</span><span class="d">A symptom that contradicts the code is a deploy question first. Check the SHA before changing anything.</span></a><time datetime="2026-10-06">6 Oct 2026</time></li>
+  <li><a href="fix-the-bug-not-the-design.html"><span class="t">A design question is a request for an answer, not a mandate to build it</span><span class="d">Ship the smallest change that fixes the report. Name the bigger change in one line and let the owner choose.</span></a><time datetime="2026-10-06">6 Oct 2026</time></li>
+  <li><a href="one-number-carries-the-login.html"><span class="t">Our one WhatsApp number also carries the login</span><span class="d">The load-bearing number never sends marketing. Split the numbers before the first promotional send, not after.</span></a><time datetime="2026-09-27">27 Sep 2026</time></li>
+  <li><a href="six-days-on-one-sentence.html"><span class="t">Six days on a one-sentence error</span><span class="d">When a write fails, get the database&#x27;s own message before theorising. Two blockers can stack.</span></a><time datetime="2026-09-19">19 Sep 2026</time></li>
+  <li><a href="names-stay-on-the-register.html"><span class="t">Names stay on the register until someone stops them</span><span class="d">The desk records money in arrears. Only four things take a name off a register, and the end of a month is not one of them.</span></a><time datetime="2026-09-13">13 Sep 2026</time></li>
+  <li><a href="code-goes-live-before-its-columns.html"><span class="t">Code goes live before its columns exist, every single time</span><span class="d">A column from a migration that has not run is omitted, never written as null. Verify migrations by running them.</span></a><time datetime="2026-08-17">17 Aug 2026</time></li>
+  <li><a href="a-missing-feature-can-wait.html"><span class="t">A missing feature can wait. A wrong value being written cannot</span><span class="d">Ship with a known gap list, and fix before shipping only what writes something false.</span></a><time datetime="2026-08-15">15 Aug 2026</time></li>
+  <li><a href="half-an-hour-is-thirty-minutes.html"><span class="t">Half an hour is thirty minutes</span><span class="d">A length of time a person reads is spelled out, never divided. One formatter, no inline maths.</span></a><time datetime="2026-08-14">14 Aug 2026</time></li>
+  <li><a href="the-route-that-never-reached-the-code.html"><span class="t">The route that never reached the code</span><span class="d">Read the HTTP status before theorising about layers. A 405 rules out the whole application.</span></a><time datetime="2026-08-09">9 Aug 2026</time></li>
+</ol>
+</section>
+<section class="block" aria-labelledby="how"><h2 id="how">How these are written</h2><p>Each entry starts from the record: a commit, a log line, a message in the chat where the mistake was caught. The figures are the real ones. Where Claude Code made the mistake, it says so; where I did, it says that. Customer names never appear. The rule at the end is the part we keep, usually as a test, sometimes as a sentence in the rules file the agent reads before every session.</p></section>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

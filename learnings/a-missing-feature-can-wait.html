@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A missing feature can wait. A wrong value being written cannot — Learnings — Rahul Jha</title>
+<meta name="description" content="The rebuilt bookings page went live with a written list of what it did not do yet. Two things were fixed first, because they were not gaps. They were lies.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
+<nav class="top" aria-label="Back"><a href="index.html">← Learnings</a><span><time datetime="2026-08-15">15 Aug 2026</time></span></nav>
+<header class="stack-lg">
+  <h1>A missing feature can wait. A wrong value being written cannot</h1>
+  <p class="muted">The rebuilt bookings page went live with a written list of what it did not do yet. Two things were fixed first, because they were not gaps. They were lies.</p>
+  <dl class="meta"><dt>Where</dt><dd>The bookings page, rebuilt</dd><dt>Cost</dt><dd>Nothing, which was the point</dd><dt>The rule</dt><dd>Ship with a known gap list, and fix before shipping only what writes something false.</dd></dl>
+</header>
+<section class="block" aria-labelledby="what-happened"><h2 id="what-happened">What happened</h2><p>The rebuild had six things the old page did that the new one did not. The alternative to shipping was a restoration pass on all six before anyone had touched the new screen. Rahul's call: go live, run it for a few days, fix what actually hurts, one change at a time, so a working page is never traded for a speculative one.</p><p>Two defects were fixed before the ship anyway. The page was switching off the server's sixty-minute guard against double-sending reminders. And bulk "mark paid" defaulted to cash, inventing a channel that lands in the drawer reconciliation.</p></section>
+<section class="block" aria-labelledby="what-it-taught-us"><h2 id="what-it-taught-us">What it taught us</h2><p>Real use is a better filter for which gaps matter than my ranking was. But the rule that separated the two fixes from the gap list is the one worth keeping: a missing feature makes someone wait; a wrong value being written makes the books wrong.</p></section>
+<section class="block" aria-labelledby="the-rule-now"><h2 id="the-rule-now">The rule now</h2><p>The gap list lives in the pull request, read before anything is added to the page. The biggest gaps are still open and known: no restore for a cancel, the pay-first flag invisible, court pooling that ignores sport.</p></section>
+<footer class="foot"><p>One entry per failure, written the week it happens. <a href="index.html">All learnings</a> · <a href="../index.html">Home</a></p><ul><li>Newer: <a href="code-goes-live-before-its-columns.html">Code goes live before its columns exist, every single time</a></li><li>Older: <a href="half-an-hour-is-thirty-minutes.html">Half an hour is thirty minutes</a></li></ul></footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>
