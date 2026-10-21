@@ -4,199 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rahul Jha · Résumé</title>
-<meta name="description" content="Résumé of Rahul Jha, product design engineer: product design, design systems and production React/TypeScript.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-  /* One A4 page, one reading column. Section labels hang in a narrow gutter so a
-     recruiter scans down the left edge and an ATS reads it top to bottom as plain text. */
-  :root{
-    --ink:#16140f; --ink-2:#3d3931; --ink-3:#787266; --rule:#e5e0d6; --accent:#b8441c; --tint:#f7f3ec; --desk:#e9e6df;
-    --fs:'Instrument Serif',Georgia,'Times New Roman',serif; --fb:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif; --fm:'JetBrains Mono',ui-monospace,Menlo,monospace;
-    --gutter:17mm;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{background:var(--desk)}
-  body{font:400 8.3pt/1.38 var(--fb);color:var(--ink);-webkit-font-smoothing:antialiased;font-feature-settings:"cv11","ss01"}
-  a{color:inherit;text-decoration:none}
-  b{font-weight:600;color:var(--ink)}
-  .bar{max-width:210mm;margin:24px auto 12px;display:flex;justify-content:space-between;align-items:center;padding-inline:4px;font:500 13px/1 var(--fb);color:var(--ink-2)}
-  .bar .pdf{background:var(--ink);color:#fff;padding:9px 14px;border-radius:8px}
-
-  .page{width:210mm;height:297mm;margin:0 auto 40px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.06),0 14px 44px -14px rgba(0,0,0,.22);padding:11mm 12mm 10mm;display:flex;flex-direction:column;gap:3.4mm;overflow:hidden}
-
-  /* Header */
-  header{display:grid;grid-template-columns:1fr auto;align-items:end;gap:2mm 8mm;padding-bottom:3.4mm;border-bottom:.9pt solid var(--ink)}
-  .name{font:400 31pt/.9 var(--fs);letter-spacing:-.015em}
-  .name i{font-style:italic;color:var(--accent)}
-  .title{margin-top:2.6mm;font:500 11pt/1.2 var(--fb);letter-spacing:-.005em}
-  .title span{font-weight:400;color:var(--ink-3)}
-  .contact{font:400 7.6pt/1.55 var(--fm);color:var(--ink-2);text-align:right}
-  .contact a{border-bottom:.5pt solid var(--rule)}
-
-  /* Rows: label in the gutter, content beside it */
-  .row{display:grid;grid-template-columns:var(--gutter) 1fr;gap:0 4mm}
-  .row > h2{font:500 6.6pt/1.6 var(--fm);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);padding-top:.4mm}
-  .row > .body{min-width:0;display:grid;gap:2.4mm}
-  .row + .row{padding-top:3.2mm;border-top:.6pt solid var(--rule)}
-
-  .summary{font:400 11.6pt/1.28 var(--fs);color:var(--ink);text-wrap:pretty;letter-spacing:-.003em}
-  .summary em{font-style:italic;color:var(--accent)}
-
-  .nums{display:grid;grid-template-columns:repeat(4,1fr);background:var(--tint);border-radius:1.6mm}
-  .nums div{padding:2.6mm 3mm 2.8mm;display:grid;gap:.8mm;align-content:start}
-  .nums div + div{border-left:.6pt solid var(--rule)}
-  .nums b{font:400 18pt/1 var(--fs);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
-  .nums b i{font-style:normal;color:var(--accent)}
-  .nums span{font-size:7.1pt;line-height:1.35;color:var(--ink-3)}
-
-  .job{display:grid;gap:1mm}
-  .jh{display:flex;justify-content:space-between;align-items:baseline;gap:4mm}
-  .org{font:600 9.3pt/1.3 var(--fb)}
-  .org span{font-weight:400;color:var(--ink-2)}
-  .when{font:400 7.4pt/1.3 var(--fm);color:var(--ink-3);white-space:nowrap;font-variant-numeric:tabular-nums}
-  .what{font-size:7.7pt;color:var(--ink-3);margin-top:-.5mm}
-  .what a{color:var(--accent)}
-  ul{list-style:none;display:grid;gap:.7mm}
-  li{position:relative;padding-left:3.4mm;color:var(--ink-2);text-wrap:pretty}
-  li::before{content:"";position:absolute;left:.4mm;top:.62em;width:1.3mm;height:.6pt;background:var(--ink-3)}
-  .film{color:var(--ink-2)}
-
-  .skills{display:grid;gap:1.2mm}
-  .skills p{display:grid;grid-template-columns:19mm 1fr;gap:3mm;color:var(--ink-2)}
-  .skills p b{font-weight:600}
-  .edu{display:grid;gap:1mm;color:var(--ink-2)}
-
-  @page{size:A4;margin:0}
-  @media print{html{background:#fff}.bar{display:none}.page{margin:0;box-shadow:none}}
-  @media screen and (max-width:820px){
-    body{font-size:15px}.bar{margin:16px 18px 8px}
-    .page{width:auto;height:auto;margin:0;box-shadow:none;padding:28px 18px;gap:22px}
-    header{grid-template-columns:1fr}.contact{text-align:left}
-    .row{grid-template-columns:1fr;gap:10px}
-    .nums{grid-template-columns:1fr 1fr}.nums div:nth-child(3){border-left:0}
-    .nums div:nth-child(n+3){border-top:.6pt solid var(--rule)}
-    .jh{flex-wrap:wrap;gap:2px 12px}
-    .skills p{grid-template-columns:1fr;gap:2px}
-  }
-</style>
+<meta name="description" content="Résumé of Rahul Jha, product design engineer.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
 </head>
-<body>
-<div class="bar"><a href="index.html">← rkj-builds.github.io</a><a class="pdf" href="resume.pdf">Download PDF</a></div>
+<body class="cv">
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
 
-<main class="page">
-  <header>
-    <div>
-      <h1 class="name">Rahul <i>Jha</i></h1>
-      <p class="title">Product Design Engineer</p>
-    </div>
-    <p class="contact">
-      Bengaluru, India · Remote<br>
-      <a href="mailto:rahul.rkj55@gmail.com">rahul.rkj55@gmail.com</a><br>
-      <a href="https://rkj-builds.github.io">rkj-builds.github.io</a> · <a href="https://www.linkedin.com/in/rahuljha5/">linkedin.com/in/rahuljha5</a><br>
-      <a href="https://github.com/rkj-builds">github.com/rkj-builds</a>
-    </p>
-  </header>
+<nav class="top no-print" aria-label="Back"><a href="index.html">← Rahul Jha</a><span><a href="resume.pdf">PDF</a></span></nav>
+<header class="stack">
+  <h1>Rahul Jha <span class="muted" style="font-weight:400">· Product Design Engineer</span></h1>
+  <p class="muted">Bengaluru, India · Remote · <a href="mailto:rahul.rkj55@gmail.com">rahul.rkj55@gmail.com</a> · <a href="https://rkj-builds.github.io">rkj-builds.github.io</a> · <a href="https://www.linkedin.com/in/rahuljha5/">linkedin.com/in/rahuljha5</a> · <a href="https://github.com/rkj-builds">github.com/rkj-builds</a></p>
+  <p>Product designer who ships in code: booking products, design systems and the headless primitives under them. <span class="muted">Nearly five years at startups, usually as the only designer.</span></p>
+</header>
+<section class="block" aria-labelledby="sw"><h2 id="sw">Selected work</h2>
+  <div class="job"><div class="h"><span><b>Court booking on coss ui</b> <span class="muted">· open source · <a href="https://rkj-builds.github.io/slot-picker/">rkj-builds.github.io/slot-picker</a> · <a href="https://github.com/rkj-builds/slot-picker">code</a></span></span><span>Oct 2026</span></div>
+    <ul><li>Rebuilt Project 831's booking product on <b>Cal.com's coss ui</b> and Base UI, all 55 components unmodified: booking with part payments and holds, the venue desk, members, payments and settings.</li><li><b>Headless primitives of my own</b> where coss has none (slot grid, recurrence, time zones), keyboard- and axe-tested. 434 tests, 74 demo states.</li></ul></div>
+  <div class="job"><div class="h"><span><b>coss ui · Calendar locale fix</b> <span class="muted">· merged · <a href="https://github.com/cosscom/ui/pull/890">github.com/cosscom/ui/pull/890</a></span></span><span>Oct 2026</span></div>
+    <ul><li>The month dropdown ignored the calendar's locale: a one-line fix to Cal.com's design system.</li></ul></div>
+  <div class="job"><div class="h"><span><b>Project 831</b> <span class="muted">· co-founder, design &amp; engineering · <a href="https://rkj-builds.github.io/project-831-case-study/">case study</a></span></span><span>Mar 2026 – now</span></div>
+    <ul><li>A two-court pickleball venue in Jamshedpur. I designed and built the system it runs on: booking and payment inside WhatsApp (Cloud API, Flows) and on the web, a staff desk PWA, memberships and a kids' programme.</li><li>Self-serve bookings went from <b>15% to 74%</b> (May to September); <b>₹5.6 lakh</b> taken through the system since May; <b>69%</b> of people sent the WhatsApp flow go on to book.</li><li>React 19, Supabase Postgres, Razorpay, Vercel. 1,698 commits, 70% co-authored with Claude Code.</li></ul></div>
+</section>
+<section class="block" aria-labelledby="ex"><h2 id="ex">Experience</h2>
+  <div class="job"><div class="h"><span><b>Travelopia</b> <span class="muted">· Product Designer &amp; Design Engineer · remote</span></span><span>Sep 2024 – now</span></div>
+    <ul><li>Set up the <b>design-system foundations</b> for Le Boat's move to a new platform, first as a consultant, then full-time.</li></ul></div>
+  <div class="job"><div class="h"><span><b>BiteSpeed</b> <span class="muted">· Product Design Consultant · contract</span></span><span>Oct 2024 – Jun 2026</span></div>
+    <ul><li><b>Designed and built the AI Marketing Agent end to end</b>: the idea, UX and UI, the front end, and the analysis and prompts behind it. It benchmarks a brand against ten competitors and prices each gap in revenue.</li></ul></div>
+  <div class="job"><div class="h"><span><b>BiteSpeed</b> <span class="muted">· Product Designer · Bengaluru</span></span><span>Feb 2023 – Sep 2024</span></div>
+    <ul><li><b>The only product designer</b>, across product, brand and growth, for WhatsApp marketing on Shopify (backed by Sequoia's Surge). Named Best Employee in three quarters, 2023–24.</li><li>Designed Broadcasts, the campaign composer, and Journeys, the automation builder; the ads, landing pages and investor deck.</li></ul></div>
+  <div class="job"><div class="h"><span><b>Dukaan</b> <span class="muted">· Product Designer · store builder for Indian sellers</span></span><span>Jan 2022 – Feb 2023</span></div>
+    <ul><li>Redesigned checkout for a <b>+23% lift in conversion</b>; built Dorsome, the design system; shipped 10+ features.</li></ul></div>
+  <div class="job"><div class="h"><span><b>10kdesigners</b> <span class="muted">· Designer in Residence, then Design Mentor</span></span><span>Jul 2021 – 2024</span></div></div>
+  <div class="job"><div class="h"><span><b>Film &amp; series, Mumbai</b> <span class="muted">· Production sound mixer</span></span><span>Sep 2018 – Mar 2021</span></div>
+    <p class="muted">Location sound on <i>The Fame Game</i> (Netflix), <i>Bandish Bandits</i> (Prime Video), <i>Hundred</i> and <i>Hostages</i> (Hotstar).</p></div>
+</section>
+<section class="block" aria-labelledby="sk"><h2 id="sk">Skills</h2>
+  <dl class="meta"><dt>Design</dt><dd>Product and interaction design, design systems and tokens, prototyping, accessibility (WCAG), motion, Figma</dd><dt>Engineering</dt><dd>React, TypeScript, Tailwind CSS, Base UI, Vitest and Testing Library, Supabase / Postgres</dd><dt>AI</dt><dd>AI-assisted development with Claude Code; LLM features and prompt design</dd></dl>
+</section>
+<section class="block" aria-labelledby="ed"><h2 id="ed">Education</h2>
+  <div class="job"><div class="h"><span><b>Tata Institute of Social Sciences</b> <span class="muted">· BSc Filmmaking, Sound Design &amp; Recording</span></span><span>2015 – 2018</span></div></div>
+</section>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
 
-  <section class="row">
-    <h2>Profile</h2>
-    <div class="body">
-      <p class="summary">Product designer who <em>ships in code</em>. Nearly five years on B2B SaaS and commerce at startups, usually as the only designer: interaction design, design systems and production React. I built and run Project 831's booking product, and have a fix merged into coss ui, Cal.com's design system.</p>
-      <div class="nums">
-        <div><b>15<i>→</i>74%</b><span>bookings made self-serve at Project 831, May → Sep</span></div>
-        <div><b>₹5.6L</b><span>taken through the 831 booking engine since May</span></div>
-        <div><b>69%</b><span>of people sent the WhatsApp booking flow go on to book</span></div>
-        <div><b>+23%</b><span>checkout conversion after my redesign at Dukaan</span></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <h2>Experience</h2>
-    <div class="body">
-      <div class="job">
-        <div class="jh"><p class="org">Travelopia <span>· Product Designer &amp; Design Engineer · specialist travel brands · Remote</span></p><span class="when">Sep 2024 – now</span></div>
-        <ul>
-          <li>Set up the <b>design-system foundations</b> for Le Boat's move to a new platform, first as a consultant, then full-time.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="jh"><p class="org">BiteSpeed <span>· Product Design Consultant · Contract</span></p><span class="when">Oct 2024 – Jun 2026</span></div>
-        <ul>
-          <li><b>Designed and built the AI Marketing Agent end to end</b>: the idea, UX and UI, the front end, and the analysis and prompts behind it.</li>
-          <li>It reads a brand's whole send history, benchmarks it against ten competitors, prices each gap as monthly revenue, and writes ready-to-send campaigns plus a downloadable strategy report.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="jh"><p class="org">BiteSpeed <span>· Product Designer · Bengaluru</span></p><span class="when">Feb 2023 – Sep 2024</span></div>
-        <p class="what">WhatsApp and omnichannel marketing for Shopify D2C brands, backed by Sequoia's Surge.</p>
-        <ul>
-          <li><b>The only product designer</b>, across product, brand and growth. Named <b>Best Employee in three quarters</b>, 2023–24.</li>
-          <li>Designed <b>Broadcasts</b>, the multichannel campaign composer, and <b>Journeys</b>, the drag-and-drop automation builder.</li>
-          <li>Designed the ads, landing pages and the <b>investor deck</b> for the company's fundraise.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="jh"><p class="org">Dukaan <span>· Product Designer · online store builder for Indian sellers</span></p><span class="when">Jan 2022 – Feb 2023</span></div>
-        <ul>
-          <li>Redesigned checkout for a <b>+23% lift in conversion</b>; built <b>Dorsome</b>, the company's design system.</li>
-          <li>Owned and shipped <b>10+ seller features</b>, including the seller dashboard, RTO optimiser and partial payments.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="jh"><p class="org">10kdesigners <span>· Designer in Residence, then Design Mentor, in a product design cohort</span></p><span class="when">Jul 2021 – 2024</span></div>
-      </div>
-
-      <div class="job">
-        <div class="jh"><p class="org">Film &amp; series, Mumbai <span>· Production sound mixer</span></p><span class="when">Sep 2018 – Mar 2021</span></div>
-        <p class="film">Location sound on <i>The Fame Game</i> (Netflix), <i>Bandish Bandits</i> (Prime Video), <i>Hundred</i>, <i>Hostages</i> (Hotstar).</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <h2>Projects</h2>
-    <div class="body">
-      <div class="job">
-        <div class="jh"><p class="org">Project 831 <span>· Co-founder, design &amp; engineering</span></p><span class="when">Mar 2026 – now</span></div>
-        <p class="what">A two-court pickleball venue in Jamshedpur. <a href="https://rkj-builds.github.io/project-831-case-study/">Case study: rkj-builds.github.io/project-831-case-study</a></p>
-        <ul>
-          <li>Designed and built the system it runs on, <b>0 → 1</b>: booking and payment inside WhatsApp (Cloud API, Flows) and on the web, a staff desk PWA, memberships and a kids' programme. <b>₹5.6 lakh</b> taken since May.</li>
-          <li>React 19, Vite, Supabase Postgres, Vercel, Razorpay; 1,500+ commits, 2,700+ tests, built with Claude Code.</li>
-        </ul>
-      </div>
-
-      <div class="job">
-        <div class="jh"><p class="org">Venue dashboard on coss ui <span>· Open source</span></p><span class="when">Oct 2026</span></div>
-        <p class="what"><a href="https://rkj-builds.github.io/slot-picker/">Live: rkj-builds.github.io/slot-picker</a> · <a href="https://github.com/rkj-builds/slot-picker">github.com/rkj-builds/slot-picker</a></p>
-        <ul>
-          <li>Rebuilt 831 as a venue SaaS on <b>coss ui</b> (Base UI + Tailwind): bookings, availability, programmes, members, payments, inbox, roles and settings, behind one typed data adapter so the real backend drops in screen by screen.</li>
-          <li>Built <b>headless primitives</b> for what coss lacks (slot grid, recurrence, time zones), keyboard- and axe-tested. Fixed a locale bug in coss ui's Calendar: <b>merged</b> (cosscom/ui #890).</li>
-        </ul>
-      </div>
-    </div>
-  </section>
-
-  <section class="row">
-    <h2>Skills</h2>
-    <div class="body skills">
-      <p><b>Design</b><span>Product and interaction design, design systems and tokens, component libraries, prototyping, information architecture, accessibility (WCAG), motion, Figma</span></p>
-      <p><b>Engineering</b><span>React, TypeScript, Tailwind CSS, Base UI and headless components, Vite, Vitest and Testing Library, Supabase / Postgres, Vercel</span></p>
-      <p><b>Product &amp; AI</b><span>0 → 1 products, B2B SaaS, Shopify and WhatsApp commerce, payments, LLM features and prompt design, AI-assisted development with Claude Code</span></p>
-    </div>
-  </section>
-
-  <section class="row">
-    <h2>Education</h2>
-    <div class="body edu">
-      <div class="jh"><p><b>Tata Institute of Social Sciences</b> · BSc Filmmaking, Sound Design &amp; Recording</p><span class="when">2015 – 2018</span></div>
-    </div>
-  </section>
 </main>
 </body>
 </html>

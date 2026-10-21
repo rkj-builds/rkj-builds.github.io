@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout, rebuilt around the decision — Rahul Jha</title>
+<meta name="description" content="Booking a boat holiday ends in a long form with twenty optional extras in it. The rebuild treats each step as a decision someone has to make, and give">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../../style.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
+
+<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Le Boat · Jul 2026 · Next.js, next-intl, react-hook-form, Zod</span></nav>
+<header class="stack-lg">
+  <h1>Checkout, rebuilt around the decision</h1>
+  <p class="muted">Booking a boat holiday ends in a long form with twenty optional extras in it. The rebuild treats each step as a decision someone has to make, and gives two brands one set of tokens to make it in. Designed and built in one week, live ten days later.</p>
+  <dl class="meta"><dt>My part</dt><dd>Designed and built it, to an agency's prototype; the decision log and the failure states</dd><dt>With</dt><dd>The Le Boat team; twenty decisions, eight agreed with stakeholders</dd><dt>When</dt><dd>6 to 10 July 2026, one week; live since 20 July</dd><dt>Status</dt><dd>Three months live, two brands</dd></dl>
+  <dl class="glance"><div><b>0.84 → 1.65</b><span>damage cover per booking, nearly doubled</span></div><div><b>3.38 → 4.25</b><span>extras per booking, up 26%</span></div><div><b>7.9% → 5.9%</b><span>checkout errors per visitor who reached booking, down a quarter</span></div><div><b>7.75% → 7.88%</b><span>the share who went on to payment held</span></div></dl>
+  <figure class="card"><img src="../images/checkout/06-review-and-pay-desktop-full.jpg" alt="The review and pay step: trip summary, guest details, a payment choice between deposit and pay in full, and the total." loading="lazy"><figcaption>Review and pay. The summary collapses on desktop but the dates and duration never leave the screen, because that is what people re-read before paying.</figcaption></figure>
+</header>
+<section class="block" aria-labelledby="what-changed"><h2 id="what-changed">What changed</h2><p>Extras were an accordion of twenty things. Now each group shows its best two with the rest behind a count, so the page is scannable without hiding the category. The payment step stopped asking for a card type and started asking the only question that matters: deposit now, or all of it.</p><p>Between two steps the server re-prices the booking and it takes three to five seconds. The waiting state says so in words instead of spinning.</p><figure class="card"><img src="../images/checkout/07-deposit-schedule.jpg" alt="A deposit schedule showing what is due today and what is due later, with dates." loading="lazy"><figcaption>Deposit schedule. What leaves your account today and what leaves it later, with the dates. No "recommended" tag: which is better depends on money we know nothing about.</figcaption></figure></section><section class="block" aria-labelledby="fifteen-ways-a-booking-breaks"><h2 id="fifteen-ways-a-booking-breaks">Fifteen ways a booking breaks</h2><p>The failure states were specified as their own piece of work rather than swept up at the end. An extra that sold out while you browsed, a card that declines, a field that will not validate, a session that expires mid-flow. Each one gets the same three things: what happened in plain words, what it means for the booking, and the one action that gets you moving again. <b>Nothing dead-ends.</b></p><figure class="card pair"><img src="../images/checkout/09-payment-failed-modal.jpg" alt="A payment failed dialog explaining what happened and offering a retry." loading="lazy"><img src="../images/checkout/E3-inline-field-errors.jpg" alt="Inline field errors under the fields they belong to." loading="lazy"><figcaption>Payment declined: the booking is held, not lost, and the dialog says so before the retry. Field errors: under the field, in the field's own language.</figcaption></figure></section><section class="block" aria-labelledby="two-brands-one-sheet-of-tokens"><h2 id="two-brands-one-sheet-of-tokens">Two brands, one sheet of tokens</h2><p>The sister brand is not a fork. It is the same components with its own values for the brand roles, so a fix to the checkout reaches both and the second brand costs nothing to keep improving. Both clear a WCAG 2.1 AA sweep at desktop and phone with no contrast violations, and the sweep runs on every build.</p></section><section class="block" aria-labelledby="what-the-decision-log-says"><h2 id="what-the-decision-log-says">What the decision log says</h2><p>Twenty decisions, each recorded with who agreed to it. Eight were agreed with stakeholders, six were my call with nothing validating them, one was verified only by tooling, one was still unresolved at handover. And one was superseded: we held a bundles idea back to avoid confounding a test, while a bundles experiment was already running in production and nobody said so. It is the most useful row in the table, so it stayed in.</p><span class="pull">A failure state is not an edge case. It is the part of the product that decides whether someone books again.</span></section>
+<footer class="foot">
+  <p>The full write-up, as I made it:</p>
+  <ul><li><a href="../checkout.html">The case study, as I made it</a></li><li><a href="../full/leboat-checkout/index.html">The full case study</a> · evidence, decisions, receipts</li><li><a href="../full/leboat-error-states/index.html">The fifteen failure states, in full</a></li></ul>
+  <p>Next: <a href="p831.html">Project 831</a> · <a href="../../index.html">All work</a></p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

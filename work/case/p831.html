@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Project 831 — Rahul Jha</title>
+<meta name="description" content="A two-court pickleball venue I co-founded and run. I built the booking platform it runs on: a WhatsApp bot, a staff desk, a public widget and a voice ">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../../style.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap">
+
+<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Co-founder · Mar 2026 to now · React, Vercel functions, Postgres</span></nav>
+<header class="stack-lg">
+  <h1>Project 831</h1>
+  <p class="muted">A two-court pickleball venue I co-founded and run. I built the booking platform it runs on: a WhatsApp bot, a staff desk, a public widget and a voice agent, all asking one module what is free. Live since March, in daily use.</p>
+  <dl class="meta"><dt>My part</dt><dd>Designed and built the system, from zero; ran the partnerships, brand and marketing</dd><dt>With</dt><dd>A co-founder on the venue; Claude Code on the code, 70% of commits co-authored</dd><dt>When</dt><dd>March to October 2026</dd><dt>Status</dt><dd>Live. The data is real, which is why every screen here is in mock mode</dd></dl>
+  <dl class="glance"><div><b>15% → 74%</b><span>self-serve bookings, May to September</span></div><div><b>₹5.6 lakh</b><span>through the system since May</span></div><div><b>69%</b><span>of people sent the WhatsApp flow go on to book</span></div><div><b>1,698 commits</b><span>in 208 days</span></div></dl>
+  <figure class="card"><img src="../images/p831/01-bookings-day.jpg" alt="A day view: courts as columns, time down the side, bookings drawn as blocks with names and amounts, held coaching slots hatched, a line marking the current time." loading="lazy"><figcaption>The day, as the desk sees it. Half-hour slots priced per court, holds hatched, the current time drawn across. The header is the only number the owner asks for: how much of today is sold.</figcaption></figure>
+</header>
+<section class="block" aria-labelledby="one-answer-about-what-is-free"><h2 id="one-answer-about-what-is-free">One answer about what is free</h2><p>Four surfaces can take a booking and they cannot disagree. The desk, the public widget, the WhatsApp bot and the voice API all call one availability module, and the same module runs on the server when the booking is written. So the desk never offers a slot the bot has just taken, and a race on the last court comes back as a refusal rather than a double booking.</p><figure class="card"><img src="../images/p831/11-new-booking.jpg" alt="A New booking dialog: sport, area set to any free court, start time, duration, customer, how they booked, payment options, price." loading="lazy"><figcaption>Any free court. The desk asks for a time, not a court, and the dialog resolves which one it will be before you commit. Payment is three honest choices, not a dropdown.</figcaption></figure></section><section class="block" aria-labelledby="recurrence-in-three-layers"><h2 id="recurrence-in-three-layers">Recurrence, in three layers</h2><p>A weekly programme needs a rule for what repeats and something that stops a weekend selling once it has happened. I split those apart on purpose, because the obvious design puts correctness in the cron job. The rule, the read-time selection that makes the site correct, and the nightly roll that only adds supply. A dead cron degrades to "nothing available", never to "book a date that already passed".</p></section><section class="block" aria-labelledby="dates-that-never-slip-a-day"><h2 id="dates-that-never-slip-a-day">Dates that never slip a day</h2><p>A booking date has no time in it, and a date with no time is the classic off-by-one: stored as midnight UTC, shown in a browser two zones west, it becomes the day before. So every date-only value is formatted in UTC, and every clock time is formatted in the venue's own zone, named, never the device's. The venue has no daylight saving, so its slot maths uses a fixed offset, and a rule naming any other zone is refused rather than computed wrongly. Doing it properly, for any zone, is what the <a href="coss-ui.html">coss ui build</a> is.</p><figure class="card side"><img src="../images/p831/09-bookings-390.jpg" alt="The same day view at phone width, with a bottom tab bar." loading="lazy"><figcaption>On a phone. The desk is a phone at the counter most evenings, so the controls come first and the grid scrolls under them.</figcaption></figure></section><section class="block" aria-labelledby="the-desk-stopped-doing-maths"><h2 id="the-desk-stopped-doing-maths">The desk stopped doing maths</h2><p>Every booking that ran over turned into a negotiation at the front desk. Staff Mode is two taps, Start and Finish, that produce the number, and a bill the customer can read settles it. Written for one person who doesn't read much. In the last 90 days, 303 court bookings; 30% were walk-ins entered by the desk; 53% had no full payment recorded. The first real shift is the test.</p><figure class="card pair"><img src="../staff-mode/img/game.jpg" alt="Staff Mode during a game: a running clock and one Finish button." loading="lazy"><img src="../staff-mode/img/bill-slip.jpg" alt="The till slip: the booked hour, the extra time, the amount." loading="lazy"><figcaption>Game over, then the slip. Nothing typed.</figcaption></figure></section>
+<footer class="foot">
+  <p>The full write-up, as I made it:</p>
+  <ul><li><a href="https://rkj-builds.github.io/project-831-case-study/">The case study</a> · why I cared: the venue, the money, the people</li><li><a href="../p831.html">The engine, as I wrote it up</a></li><li><a href="../staff-mode/">Staff Mode</a></li></ul>
+  <p>Next: <a href="captain.html">The captain</a> · <a href="../../index.html">All work</a></p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

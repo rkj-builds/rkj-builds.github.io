@@ -1,0 +1,68 @@
+/* rkj — one visual family with the 831 case study: chalk paper, ink, one ember accent. */
+:root{
+  --paper:#f2f3ef; --band:#ebece6; --sheet:#ffffff; --ink:#14181a; --ink-2:#3d4549; --ink-3:#5f686d;
+  --rule:#d9ddd6; --rule-2:#e8eae5; --ember:#c8461c; --ember-ink:#a83a15; --ember-wash:#f7e3da;
+  --g0:#e3e6df; --g1:#f2c9b7; --g2:#e59a78; --g3:#d4693f; --g4:#a83a15;
+  --fd:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --fb:'Geist',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --fm:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0f1312; --band:#151a18; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
+  --rule:#2a312f; --rule-2:#202625; --ember:#ec6a3d; --ember-ink:#f28a63; --ember-wash:#33201a;
+  --g0:#1d2321; --g1:#4a2a1f; --g2:#7d3b23; --g3:#c4532a; --g4:#f28a63;
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#0f1312; --band:#151a18; --sheet:#171c1b; --ink:#eef1ec; --ink-2:#c3cac5; --ink-3:#8e9893;
+  --rule:#2a312f; --rule-2:#202625; --ember:#ec6a3d; --ember-ink:#f28a63; --ember-wash:#33201a;
+  --g0:#1d2321; --g1:#4a2a1f; --g2:#7d3b23; --g3:#c4532a; --g4:#f28a63;
+  color-scheme:dark; }
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font:400 16px/1.6 var(--fb);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration-color:var(--rule);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ember)}
+.wrap{max-width:720px;margin:0 auto;padding-inline:clamp(16px,5vw,32px)}
+.k{font:500 12px/1.3 var(--fm);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
+.mono{font-family:var(--fm);font-variant-numeric:tabular-nums}
+
+/* Top */
+.top{padding-block:clamp(48px,10vw,96px) 28px;display:grid;gap:14px}
+.top h1{font:700 clamp(34px,6vw,48px)/1.02 var(--fd);letter-spacing:-.03em;font-stretch:85%}
+.top h1 em{font-style:normal;color:var(--ember)}
+.top p{font-size:18px;color:var(--ink-2);max-width:56ch;text-wrap:pretty}
+.links{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:15px;margin-top:4px}
+.links a{display:inline-flex;align-items:center;gap:6px}
+.links a::after{content:"↗";font-size:12px;color:var(--ink-3)}
+.links a.local::after{content:""}
+
+/* Sections */
+section{padding-block:28px;border-top:1px solid var(--rule)}
+section > .k{display:block;margin-bottom:14px}
+.list{list-style:none;display:grid}
+.item{display:grid;grid-template-columns:1fr auto;gap:2px 20px;padding-block:12px;border-top:1px solid var(--rule-2)}
+.item:first-child{border-top:0;padding-top:0}
+.item h2,.item h3{font:600 16px/1.35 var(--fb);letter-spacing:-.005em}
+.item p{grid-column:1/-1;font-size:15px;color:var(--ink-2);max-width:60ch}
+.item .meta{font:400 13px/1.35 var(--fm);color:var(--ink-3);white-space:nowrap;text-align:right}
+.item .go{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;margin-top:4px}
+.item .go a{color:var(--ember-ink)}
+.item .go span{color:var(--ink-3)}
+.badge{display:inline-block;font:500 11px/1 var(--fm);letter-spacing:.04em;padding:3px 6px;border-radius:4px;background:var(--ember-wash);color:var(--ember-ink);vertical-align:2px;margin-left:6px}
+
+/* Contribution grid */
+.grid-wrap{overflow-x:auto;padding-bottom:4px}
+.grid{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,9px);gap:3px;width:max-content}
+.grid i{width:9px;height:9px;border-radius:2px;background:var(--g0);display:block}
+.grid i[data-l="1"]{background:var(--g1)} .grid i[data-l="2"]{background:var(--g2)}
+.grid i[data-l="3"]{background:var(--g3)} .grid i[data-l="4"]{background:var(--g4)}
+.grid-foot{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:13px;color:var(--ink-3)}
+
+footer{padding-block:28px 56px;border-top:1px solid var(--rule);font-size:13px;color:var(--ink-3);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:560px){.item{grid-template-columns:1fr}.item .meta{text-align:left}}
+
+/* Subtle alternating section tints */
+main > section:nth-of-type(even){background:var(--band);box-shadow:0 0 0 100vmax var(--band);clip-path:inset(0 -100vmax);--paper:var(--band)}
+main > section{border-top:0;padding-block:36px}
