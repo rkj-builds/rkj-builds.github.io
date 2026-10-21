@@ -141,3 +141,7 @@ figure.card.pair figcaption { width: 100%; }
 .tbl tbody th { font-weight: 550; }
 pre.code { margin: 0; padding: 4px 2px; font: 13px/20px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 svg.fig { width: 100%; height: auto; display: block; }
+
+/* Case pages: who the company is, before the case */
+.about { color: var(--muted); padding-left: 14px; border-left: 2px solid var(--line); }
+.about b { color: var(--fg); font-weight: 550; }
