@@ -187,6 +187,21 @@ dict(
 
 ENTRIES.sort(key=lambda e: e["iso"], reverse=True)
 
+# One word per entry, shown under the title on the index and the home page.
+TAGS = {
+    "the-balance-not-the-cash": "Money", "eleven-thousand-nine-ninety-six": "Messages",
+    "a-credit-before-a-refund": "Payments", "the-database-ran-out-not-the-code": "Database",
+    "check-what-is-deployed-first": "Deploys", "fix-the-bug-not-the-design": "Process",
+    "one-number-carries-the-login": "WhatsApp", "six-days-on-one-sentence": "Database",
+    "names-stay-on-the-register": "Registers", "code-goes-live-before-its-columns": "Deploys",
+    "a-missing-feature-can-wait": "Process", "half-an-hour-is-thirty-minutes": "Words",
+    "the-route-that-never-reached-the-code": "Routing",
+}
+
+def item(e, href):
+    return (f'  <li><a href="{href}"><span class="t">{esc(e["title"])}</span>'
+            f'<span class="d">{TAGS[e["slug"]]} · <time datetime="{e["iso"]}">{e["date"]}</time></span></a></li>\n')
+
 HEAD = """<!doctype html>
 <html lang="en">
 <head>
@@ -200,7 +215,7 @@ HEAD = """<!doctype html>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<main id="main" class="wrap">
+<main id="main" class="wrap read">
 """
 FOOT = """<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
 
@@ -239,7 +254,7 @@ def index():
     out.append('  <p class="muted">We run a two-court venue on software we wrote. Real bookings, real money, one WhatsApp number that also carries the login. Things break, and each one teaches something a tutorial would not. These are short: what happened, what it taught us, the rule now. One entry per failure, written the week it happens, as a ritual rather than a retrospective.</p>\n')
     out.append('</header>\n<section class="block" aria-labelledby="all"><h2 id="all">Newest first</h2>\n<ol class="learn">\n')
     for e in ENTRIES:
-        out.append(f'  <li><a href="{e["slug"]}.html"><span class="t">{esc(e["title"])}</span><span class="d">{esc(e["rule"])}</span></a><time datetime="{e["iso"]}">{e["date"]}</time></li>\n')
+        out.append(item(e, e["slug"] + ".html"))
     out.append('</ol>\n</section>\n')
     out.append('<section class="block" aria-labelledby="how"><h2 id="how">How these are written</h2><p>Each entry starts from the record: a commit, a log line, a message in the chat where the mistake was caught. The figures are the real ones. Where Claude Code made the mistake, it says so; where I did, it says that. Customer names never appear. The rule at the end is the part we keep, usually as a test, sometimes as a sentence in the rules file the agent reads before every session.</p></section>\n')
     out.append(FOOT)
@@ -251,4 +266,10 @@ if __name__ == "__main__":
         nxt = ENTRIES[i+1] if i+1 < len(ENTRIES) else None
         open(os.path.join(HERE, e["slug"] + ".html"), "w").write(page(e, prev, nxt))
     open(os.path.join(HERE, "index.html"), "w").write(index())
-    print(f"wrote {len(ENTRIES)} entries + index")
+    # The home page shows the latest four, between its markers.
+    home = os.path.join(HERE, "..", "index.html")
+    src = open(home).read()
+    latest = ''.join(item(e, "learnings/" + e["slug"] + ".html") for e in ENTRIES[:4])
+    src = re.sub(r'(<!-- learnings:start -->\n).*?(  <!-- learnings:end -->)', lambda m: m.group(1) + latest + m.group(2), src, flags=re.S)
+    open(home, "w").write(src)
+    print(f"wrote {len(ENTRIES)} entries + index + home list")

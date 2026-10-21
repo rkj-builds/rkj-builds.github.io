@@ -126,21 +126,34 @@ figure.card.pair figcaption { width: 100%; }
 .clipbtn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
 
 /* Learnings: the list, small tables, code and inline diagrams */
-.learn { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 18px; }
-.learn li { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }
-.learn a { text-decoration: none; display: block; }
-.learn .t { display: block; font-weight: 550; line-height: 22px; }
-.learn .d { display: block; color: var(--muted); line-height: 22px; }
+ol.learn, section.block ol.learn { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.learn a { display: block; padding: 8px 0; text-decoration: none; }
+.learn .t { display: block; color: var(--fg); font-weight: 500; }
+.learn .d { display: block; color: var(--dim); }
 .learn a:hover .t { text-decoration: underline; text-decoration-color: var(--under); text-underline-offset: 3px; }
-.learn time { color: var(--dim); white-space: nowrap; line-height: 22px; }
-@media (max-width: 600px) { .learn li { flex-direction: column; gap: 2px; } }
-.tbl { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 22px; }
-.tbl caption { text-align: left; color: var(--dim); padding-bottom: 8px; }
-.tbl th, .tbl td { text-align: left; vertical-align: top; padding: 6px 12px 6px 0; border-top: 1px solid var(--rule); }
+
+/* Learnings pages read like an essay: one blank line between paragraphs, air before each section, a rule after its heading */
+.wrap.read { gap: 80px; }
+.read header.stack-lg { gap: 20px; }
+.read .meta { gap: 6px 16px; }
+.read section.block { gap: 0; }
+.read section.block > h2 { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+.read section.block > h2::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+.read section.block > * + * { margin-top: 26px; }
+.read section.block > h2 + * { margin-top: 0; }
+.read section.block > * + figure { margin-top: 32px; }
+.read section.block > h2 + ol.learn { margin-top: -8px; }
+.read figure.card { padding: 16px; gap: 14px; }
+.read .foot ul { gap: 8px; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 15px; line-height: 24px; }
+.tbl caption { text-align: left; color: var(--dim); padding-bottom: 12px; }
+.tbl th, .tbl td { text-align: left; vertical-align: top; padding: 10px 16px 10px 0; border-top: 1px solid var(--rule); }
 .tbl thead th { border-top: 0; color: var(--dim); font-weight: 400; }
 .tbl tbody th { font-weight: 550; }
-pre.code { margin: 0; padding: 4px 2px; font: 13px/20px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+pre.code { margin: 0; padding: 4px 2px; font: 13px/22px ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
 svg.fig { width: 100%; height: auto; display: block; }
+/* On a phone a diagram keeps readable labels and scrolls inside its card instead of shrinking */
+@media (max-width: 600px) { svg.fig { min-width: 540px; } figure.card:has(> svg.fig) { overflow-x: auto; } }
 
 /* Case pages: who the company is, before the case */
 .about { color: var(--muted); padding-left: 14px; border-left: 2px solid var(--line); }
