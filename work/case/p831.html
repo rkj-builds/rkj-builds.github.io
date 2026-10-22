@@ -4,25 +4,76 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project 831 — Rahul Jha</title>
-<meta name="description" content="A two-court pickleball venue I co-founded and run. I built the booking platform it runs on: a WhatsApp bot, a staff desk, a public widget and a voice ">
+<meta name="description" content="The software my sports venue runs on, so one caretaker can run the desk while bookings come in by themselves.">
 <meta name="color-scheme" content="dark light">
 <link rel="stylesheet" href="../../style.css">
 <script src="../../theme.js"></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
-<main id="main" class="wrap">
+<main id="main" class="wrap read">
 
-<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Co-founder · Mar 2026 to now · React, Vercel functions, Postgres</span></nav>
+<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Project 831 · co-founder · Mar 2026 to now</span></nav>
 <header class="stack-lg">
   <h1>Project 831</h1>
-  <p class="about"><b>Project 831</b> is in Jamshedpur, in eastern India. People book its two pickleball courts by WhatsApp, on the web or at the desk, and parents enrol children in a weekend fitness programme run with a coach.</p>
-  <p class="muted">A two-court pickleball venue I co-founded and run. I built the booking platform it runs on: a WhatsApp bot, a staff desk, a public widget and a voice agent, all asking one module what is free. Live since March, in daily use.</p>
-  <dl class="meta"><dt>My part</dt><dd>Designed and built the system, from zero; ran the partnerships, brand and marketing</dd><dt>With</dt><dd>A co-founder on the venue; Claude Code on the code, 70% of commits co-authored</dd><dt>When</dt><dd>March to October 2026</dd><dt>Status</dt><dd>Live. The data is real, which is why every screen here is in mock mode</dd></dl>
-  <dl class="glance"><div><b>15% → 74%</b><span>self-serve bookings, May to September</span></div><div><b>₹5.6 lakh</b><span>through the system since May</span></div><div><b>69%</b><span>of people sent the WhatsApp flow go on to book</span></div><div><b>1,698 commits</b><span>in 208 days</span></div></dl>
-  <figure class="card"><img src="../images/p831/01-bookings-day.jpg" alt="A day view: courts as columns, time down the side, bookings drawn as blocks with names and amounts, held coaching slots hatched, a line marking the current time." loading="lazy"><figcaption>The day, as the desk sees it. Half-hour slots priced per court, holds hatched, the current time drawn across. The header is the only number the owner asks for: how much of today is sold.</figcaption></figure>
+  <p class="about">The software my sports venue runs on, so one caretaker can run the desk while bookings come in by themselves.</p>
+  <p class="muted"><b>Project 831</b> is a two-court pickleball venue in Jamshedpur, in eastern India, that I co-founded and run alongside my design job. People book a court by WhatsApp, on the website or at the desk, and parents enrol their children in a weekend fitness club. I designed and built everything it runs on.</p>
+  <dl class="meta"><dt>My part</dt><dd>Designed and built the whole system, from zero</dd><dt>With</dt><dd>A co-founder on the venue; Claude Code on the code</dd><dt>When</dt><dd>March to October 2026</dd><dt>Status</dt><dd>Live, in daily use</dd></dl>
+  <dl class="glance"><div><b>15% → 74%</b><span>of court bookings made with no one on the phone, May to September</span></div><div><b>69%</b><span>of people who open the WhatsApp booking flow go on to book</span></div><div><b>₹5.6 lakh</b><span>about $6,700, through the system since May</span></div><div><b>1,698 commits</b><span>in 208 days, 70% co-authored with Claude Code</span></div></dl>
+  <figure class="card pair"><img src="../images/p831/wa-pick-slot.jpg" alt="The WhatsApp booking flow: Pick a start time, Thursday 15 October, duration 1 hour, a list of free times, several marked only 1 court left." loading="lazy"><img src="../images/p831/wa-confirmed.jpg" alt="The confirmation message in WhatsApp: booked at 831, Thursday 15 October, 6:00 to 7:00 PM, pay ₹700 at the venue, the address and a map link." loading="lazy"><figcaption>Booking a court without talking to anyone: pick a time inside WhatsApp, get the confirmation a minute later.</figcaption></figure>
 </header>
-<section class="block" aria-labelledby="one-answer-about-what-is-free"><h2 id="one-answer-about-what-is-free">One answer about what is free</h2><p>Four surfaces can take a booking and they cannot disagree. The desk, the public widget, the WhatsApp bot and the voice API all call one availability module, and the same module runs on the server when the booking is written. So the desk never offers a slot the bot has just taken, and a race on the last court comes back as a refusal rather than a double booking.</p><figure class="card"><img src="../images/p831/11-new-booking.jpg" alt="A New booking dialog: sport, area set to any free court, start time, duration, customer, how they booked, payment options, price." loading="lazy"><figcaption>Any free court. The desk asks for a time, not a court, and the dialog resolves which one it will be before you commit. Payment is three honest choices, not a dropdown.</figcaption></figure></section><section class="block" aria-labelledby="recurrence-in-three-layers"><h2 id="recurrence-in-three-layers">Recurrence, in three layers</h2><p>A weekly programme needs a rule for what repeats and something that stops a weekend selling once it has happened. I split those apart on purpose, because the obvious design puts correctness in the cron job. The rule, the read-time selection that makes the site correct, and the nightly roll that only adds supply. A dead cron degrades to "nothing available", never to "book a date that already passed".</p></section><section class="block" aria-labelledby="dates-that-never-slip-a-day"><h2 id="dates-that-never-slip-a-day">Dates that never slip a day</h2><p>A booking date has no time in it, and a date with no time is the classic off-by-one: stored as midnight UTC, shown in a browser two zones west, it becomes the day before. So every date-only value is formatted in UTC, and every clock time is formatted in the venue's own zone, named, never the device's. The venue has no daylight saving, so its slot maths uses a fixed offset, and a rule naming any other zone is refused rather than computed wrongly. Doing it properly, for any zone, is what the <a href="coss-ui.html">coss ui build</a> is.</p><figure class="card side"><img src="../images/p831/09-bookings-390.jpg" alt="The same day view at phone width, with a bottom tab bar." loading="lazy"><figcaption>On a phone. The desk is a phone at the counter most evenings, so the controls come first and the grid scrolls under them.</figcaption></figure></section><section class="block" aria-labelledby="the-desk-stopped-doing-maths"><h2 id="the-desk-stopped-doing-maths">The desk stopped doing maths</h2><p>Every booking that ran over turned into a negotiation at the front desk. Staff Mode is two taps, Start and Finish, that produce the number, and a bill the customer can read settles it. Written for one person who doesn't read much. In the last 90 days, 303 court bookings; 30% were walk-ins entered by the desk; 53% had no full payment recorded. The first real shift is the test.</p><figure class="card pair"><img src="../staff-mode/img/game.jpg" alt="Staff Mode during a game: a running clock and one Finish button." loading="lazy"><img src="../staff-mode/img/bill-slip.jpg" alt="The till slip: the booked hour, the extra time, the amount." loading="lazy"><figcaption>Game over, then the slip. Nothing typed.</figcaption></figure></section>
+
+<section class="block" aria-labelledby="problem"><h2 id="problem">Why I built it</h2>
+<p>In the first months, a booking was a conversation. Somebody called or messaged the venue's number, and a person checked a paper sheet, quoted a price from memory, held a slot and remembered to collect. That works at ten bookings a week and collapses at fifty, worst in the evening, when the person holding the phone is also the person running the desk.</p>
+<p>In May, 72 of the 85 court bookings came in that way. At about ten minutes of calls and messages each, that was <b data-estimate>around 12 hours a month</b><!-- ESTIMATE: 85 − 13 self-serve = 72 manual bookings in May (links.md); 72 × 10 min = 720 min = 12 h. Replace with the real figure. --> on bookings alone, plus "did anyone pay cash today?" most days, and my father driving over to collect it. It meant keeping staff on the phone, and that came straight out of revenue: the venue costs ₹62,000 a month just to open its doors.</p>
+<p>So the goal was simple: the venue should take its own bookings, and one caretaker should be able to run the desk without doing sums.</p>
+</section>
+
+<section class="block" aria-labelledby="bookings"><h2 id="bookings">1. Bookings that take themselves</h2>
+<p>A customer messages the venue on WhatsApp and gets a booking flow inside the chat: pick a date, a length and a time, and the confirmation arrives with the price and a map. The website, the desk and a phone voice agent take bookings too. All of them ask one place what is free, so they can never offer the same slot twice.</p>
+<p>Self-serve went from <b>15% of court bookings in May to 74% in September</b>, and 69% of people who open the WhatsApp flow finish it. By September only 19 bookings in the month needed a person: <b data-estimate>about 3 hours</b><!-- ESTIMATE: 73 − 54 self-serve = 19 manual bookings in September (links.md); 19 × 10 min ≈ 3 h. Replace with the real figure. --> of calls instead of twelve.</p>
+</section>
+
+<section class="block" aria-labelledby="desk"><h2 id="desk">2. A desk one caretaker can run</h2>
+<p>There are two apps: a dashboard for the owner and the desk, and a much simpler phone app for whoever is at the counter, Staff Mode (below). The dashboard sees the day as a board: courts across, time down, every booking a block with a name and an amount. Adding a booking asks for a time, not a court, and picks the free court itself. Payment is three plain choices, not a dropdown.</p>
+<figure class="card"><img src="../images/p831/01-bookings-day.jpg" alt="A day view: courts as columns, time down the side, bookings drawn as blocks with names and amounts, held coaching slots hatched, a line marking the current time." loading="lazy"><figcaption>The day as the desk sees it. The header answers the only question the owner asks: how much of today is sold.</figcaption></figure>
+</section>
+
+<section class="block" aria-labelledby="staff"><h2 id="staff">3. Staff Mode: the desk stops doing maths</h2>
+<p>The person at the desk works standing up, is often mid-conversation, and shouldn't need to be good at sums. A game that starts at 7:40 and is booked for 2 hours 20 minutes ends at 10:00. Nobody at the counter should have to work that out, or argue about the twelve minutes someone played past their hour.</p>
+<p>So the staff app does it. Two taps, Start and Finish. The board shows when each game ends and when its free minutes run out. Overtime follows one published rule, ten minutes free and then fifteen-minute steps, and the screen says one number: <b>"Take this money: ₹175."</b> Since 21 October it opens in Hindi, for my dad at the desk, and asks for attendance before anything else.</p>
+<figure class="card pair"><img src="../staff-mode/img/hindi-courts.jpg" alt="The staff app in Hindi: today's attendance not marked with a Mark attendance button, then Court 1 playing, ends 7:00 PM, extra free till 7:10 PM, paid." loading="lazy"><img src="../staff-mode/img/game.jpg" alt="Game over in the staff app: Take this money ₹175, with the court time and what was already paid." loading="lazy"><figcaption>The board in Hindi, with attendance first. At the end of a game, one number to collect.</figcaption></figure>
+<a class="cta" href="../staff-mode/">Read about Staff Mode →</a>
+</section>
+
+<section class="block" aria-labelledby="learnings"><h2 id="learnings">4. What broke, written the week it broke</h2>
+<p>A venue that runs on software finds every bug in front of a customer. Each failure gets a short write-up the week it happens: what went wrong, what it cost, and the rule that stops it happening again.</p>
+<a class="cta" href="../../learnings/index.html">Read the learnings →</a>
+</section>
+
+<section class="block" aria-labelledby="otherwise"><h2 id="otherwise">Where the data said otherwise</h2>
+<ol class="turns">
+<li><b>Per-minute billing was exact, and impossible to defend.</b><span>Charging every minute over was the fairest maths and the worst conversation at the counter. Coarse steps with a free window are easy to say out loud, so that became the rule, published on the bill.</span></li>
+<li><b>A reminder said ₹11,996. The real figure was ₹5,998.</b><span>The planner counted register rows, and one parent had two children with two paid months each. It was caught in review before it went out. Now every amount in a message is checked against the register first.</span></li>
+<li><b>"8.5:00 – 10.5:00 PM".</b><span>A duration divided by sixty was printed as it was. The maths was right and the message read like a bug. Now every length of time a person reads goes through one formatter: "8:30 – 10:30 PM (2 hours)".</span></li>
+<li><b>The site went down, and nothing had been deployed.</b><span>The free database tier ran out of its disk budget on a Friday, and the login screen blamed the user instead. The rule now: rule out capacity before blaming a deploy.</span></li>
+</ol>
+</section>
+
+<section class="block" aria-labelledby="built"><h2 id="built">How it's built <span class="for">for engineers</span></h2>
+<ul>
+<li><b>React 19 and a Vite PWA</b> for the desk, the staff app and the dashboard; serverless functions on Vercel; Postgres underneath.</li>
+<li><b>WhatsApp Cloud API and WhatsApp Flows</b> for booking inside the chat; Razorpay for payments.</li>
+<li><b>One availability module</b> answers for the desk, the website, the bot and the voice agent, and runs again on the server when a booking is written, so a race for the last court comes back as a refusal, not a double booking.</li>
+<li><b>Dates that never slip a day.</b> A date with no time, stored as midnight UTC and shown in a browser behind UTC, becomes the day before. Every date-only value is formatted in UTC.</li>
+<li><b>1,698 commits in 208 days</b>, 70% of them co-authored with Claude Code. I write the spec and review every diff.</li>
+</ul>
+</section>
+
+<section class="block" aria-labelledby="stands"><h2 id="stands">Where it stands</h2>
+<p>Live since March and in daily use. Self-serve reached 74% of court bookings in September; October so far is 65%. Staff Mode has been in Hindi since 21 October, and the paper sheet runs alongside it for the first weeks so the two can be compared every night.</p>
+</section>
+
 <footer class="foot">
   <p><a href="https://rkj-builds.github.io/project-831-case-study/">The full case study</a> · the venue, the money, the people</p>
   <p>Next: <a href="captain.html">The captain</a> · <a href="../../index.html">All work</a></p>

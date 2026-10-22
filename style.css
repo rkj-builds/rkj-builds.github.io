@@ -184,3 +184,26 @@ svg.fig { width: 100%; height: auto; display: block; }
 .about { color: var(--muted); padding-left: 14px; border-left: 2px solid var(--line); }
 .about b { color: var(--fg); font-weight: var(--w-title); }
 kbd { font: var(--text-sm)/1 var(--mono); padding: 2px 5px; border-radius: 4px; box-shadow: inset 0 0 0 1px var(--rule); }
+
+/* Story pages: one read per project, for someone with no context.
+   Order: what it is, the problem, the pieces, where the data said otherwise, how it is built, where it stands.
+   A piece ends in one button to its full page. The button is the only filled shape on the page. */
+.cta { display: inline-flex; align-items: center; gap: 6px; align-self: flex-start; min-height: 40px; padding: 8px 16px; border-radius: 10px; background: var(--fg); color: var(--bg); font-size: var(--text-sm); line-height: var(--leading-sm); font-weight: var(--w-title); text-decoration: none; }
+.cta:hover { background: var(--muted); }
+.cta:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+.cta.ghost { background: none; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
+.cta.ghost:hover { box-shadow: inset 0 0 0 1px var(--dim); }
+.ctas { display: flex; flex-wrap: wrap; gap: 8px; }
+.read section.block > .cta, .read section.block > .ctas { margin-top: 24px; }
+h2 .for { color: var(--dim); font-weight: var(--w-body); }
+/* The crew: who does what, as cards */
+section.block ul.crew { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.crew li { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.crew li b { color: var(--fg); }
+@media (max-width: 600px) { section.block ul.crew { grid-template-columns: minmax(0, 1fr); } }
+/* Where the data said otherwise: numbered turns, one rule between each */
+section.block ol.turns { list-style: none; padding: 0; gap: 0; counter-reset: turn; }
+ol.turns li { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 4px 12px; padding: 16px 0; border-top: 1px solid var(--rule); counter-increment: turn; }
+ol.turns li:first-child { border-top: 0; padding-top: 0; }
+ol.turns li::before { content: counter(turn); grid-row: 1; color: var(--dim); font-variant-numeric: tabular-nums; }
+ol.turns li > * { grid-column: 2; }

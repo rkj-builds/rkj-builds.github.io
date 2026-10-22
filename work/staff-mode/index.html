@@ -70,6 +70,7 @@ p strong{color:var(--ink);font-weight:600}
 .theme{display:flex;border:1px solid var(--rule);border-radius:999px;padding:2px;flex:none}
 .theme button{font:500 12px/1 var(--fb);color:var(--ink-3);background:none;border:0;padding:6px 10px;border-radius:999px;cursor:pointer}
 .theme button[aria-pressed="true"]{background:var(--rule-2);color:var(--ink)}
+@media (max-width:960px){.top nav{gap:12px}}
 @media (max-width:820px){.top nav{display:none}}
 
 section{padding-block:clamp(56px,9vw,104px);border-top:1px solid var(--rule)}
@@ -187,6 +188,11 @@ table.rule tr.hl td b{color:var(--ember-ink)}
 .rail figcaption .mono{font-size:12px;color:var(--ember-ink)}
 .rail figcaption b{color:var(--ink);font-weight:600}
 @media (max-width:900px){.rail{grid-auto-columns:64%}}
+/* A short rail: two or three phones at the same size as the long one, not stretched to fill */
+.rail.short{grid-auto-columns:minmax(196px,224px)}
+@media (max-width:900px){.rail.short{grid-auto-columns:64%}}
+.rail + .facts{margin-top:clamp(24px,3vw,36px)}
+.facts + .note{margin-top:16px}
 
 /* The bill */
 .bill{display:grid;grid-template-columns:minmax(0,400px) 1fr;gap:clamp(28px,5vw,72px);align-items:start}
@@ -217,7 +223,7 @@ footer{padding-block:40px 64px;border-top:1px solid var(--rule)}
 <header class="top">
   <a class="mark" href="#top">831<span>.</span><small>Staff mode</small></a>
   <nav aria-label="Sections">
-    <a href="#problem">Problem</a><a href="#reframe">Reframe</a><a href="#rule">The rule</a><a href="#desk">The desk</a><a href="#flow">Flow</a><a href="#bill">The bill</a><a href="#build">Build</a><a href="#status">Status</a>
+    <a href="#problem">Problem</a><a href="#reframe">Reframe</a><a href="#rule">The rule</a><a href="#desk">The desk</a><a href="#flow">Flow</a><a href="#bill">The bill</a><a href="#build">Build</a><a href="#status">Status</a><a href="#hindi">Hindi</a>
   </nav>
   <div class="theme" role="group" aria-label="Theme">
     <button type="button" data-t="light">Light</button><button type="button" data-t="auto">Auto</button><button type="button" data-t="dark">Dark</button>
@@ -358,6 +364,7 @@ footer{padding-block:40px 64px;border-top:1px solid var(--rule)}
           </tbody>
         </table>
         <p class="note" style="margin-top:16px">The evening from section 01 comes out at <strong>₹0</strong>: 61 minutes from Start. The rule settled what the desk couldn't, and the answer happened to favour the customer, which is the point: a fair default is what makes the rule enforceable.</p>
+        <p class="note" style="margin-top:10px">The desk never adds times up either. A game that starts at 7:40 for 2 hours 20 minutes ends at 10:00; the board shows "ends 10:00 PM" and when the free minutes run out, so nobody works it out on paper.</p>
         <p class="note" style="margin-top:10px">Owner settings: 15 or 30-minute steps, the grace window, and a step price that rounds up to the next ₹10.</p>
       </div>
     </div>
@@ -483,7 +490,7 @@ footer{padding-block:40px 64px;border-top:1px solid var(--rule)}
     <div class="head">
       <span class="tag"><b>08</b> · Where it stands</span>
       <h2>Shipped. The first real shift is the test.</h2>
-      <p>It's live, and so far only the owner has used it, through View as. The plan for the first week: keep the paper sheet running alongside, and compare the two every night.</p>
+      <p>It's live, and the desk has been trained on it. Since 21 October it also speaks Hindi, for the person at the desk: my dad. The plan for the first weeks: keep the paper sheet running alongside, and compare the two every night.</p>
     </div>
     <div class="ledger">
       <div>
@@ -505,6 +512,29 @@ footer{padding-block:40px 64px;border-top:1px solid var(--rule)}
     </div>
   </div>
 </section>
+<section id="hindi">
+  <div class="wide">
+    <div class="head">
+      <span class="tag"><b>09</b> · Since launch</span>
+      <h2>In Hindi, for the person at the desk.</h2>
+      <p>The desk is often run by someone who reads Hindi far more easily than English, and who shouldn't need to be good at sums to run a court. So the staff app now opens in their language, and asks for their attendance before anything else.</p>
+    </div>
+    <div class="rail short" tabindex="0" aria-label="Hindi screens, scroll sideways">
+      <figure><div class="phone"><img src="img/hindi-language.jpg" alt="First open: Choose your language, in Hindi and English. Each option shows the same court card: Court 1, 18 minutes left, take this money ₹175." loading="lazy" width="390" height="843"></div>
+        <figcaption><span class="mono">First open · भाषा चुनें</span><b>Each choice shows a real card in that language,</b> so it can be picked by recognising it, not by reading the word "Hindi".</figcaption></figure>
+      <figure><div class="phone"><img src="img/hindi-courts.jpg" alt="Courts now in Hindi: today's attendance not marked, with a Mark attendance button; Court 1 playing, minutes left, ends 7:00 PM, extra free till 7:10 PM, paid." loading="lazy" width="390" height="843"></div>
+        <figcaption><span class="mono">कोर्ट · Courts now</span><b>Attendance first, then the board.</b> "I am at work" when they arrive, "Done for today" when they leave.</figcaption></figure>
+    </div>
+    <div class="facts">
+      <div class="fact"><span class="k">Per phone</span><p>Hindi or English on first open; More › Language switches it later.</p></div>
+      <div class="fact"><span class="k">Numbers stay numbers</span><p>Money, times and court numbers keep the digits everyone at the counter already uses: ₹175, 7:40 PM, court 1.</p></div>
+      <div class="fact"><span class="k">Attendance</span><p>A tap in, a tap out, an undo for one hour, and no editing your own times. The owner sees the week and every change, with who made it.</p></div>
+    </div>
+    <p class="note">Not yet in Hindi: the customer's bill, which stays in English on purpose, and four older screens under More.</p>
+    <p class="note">Screens from the shipped app running on mock data; the names are made up.</p>
+  </div>
+</section>
+
 
 </main>
 
