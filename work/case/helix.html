@@ -60,6 +60,14 @@
 <a class="cta" href="../comments.html">Read how comments are built →</a>
 </section>
 
+<section class="block" aria-labelledby="playground"><h2 id="playground">Try it: a playground on two invented brands</h2>
+<p>Helix lives in Travelopia's brand code, so you can't open it. The playground is the same ideas, built new on two made-up brands, a sailing school and a canal-boat hire. It isn't Helix's code, and no Travelopia brand or data is in it.</p>
+<p>Switch brand and every page redraws from that brand's stylesheet. The design-system page has no content of its own, the props tables are read from each component's types, and the preview shows one booking page at two widths with scroll kept in step. The overview lists what needs fixing. It still flags one real thing: a highlight dot in the canal brand's dark mode that's 2.37:1, under AA.</p>
+<p>It has 54 tests, including both brands' colours held to AA and every page checked with axe. Writing them found three bugs in the playground itself: a focus ring at 2.38:1, component summaries read from the wrong comment, and an image's fields listed as props of their own. This page passed a layout check before it went up: a script loads it at six widths, light and dark, and fails on overlaps, sideways scroll, clipped text and small tap targets.</p>
+<figure class="card"><img src="../images/helix/61-playground-preview.jpg" alt="The Helix playground's Preview page: the canal-boat brand's booking page at 390 and 1024 pixels wide, side by side, with width and variant switches above." loading="lazy"><figcaption>Preview. One booking page, built only from the five components, at two widths. The link keeps the widths and the variant.</figcaption></figure>
+<div class="ctas"><a class="cta" href="../helix-playground/">Open the playground →</a></div>
+</section>
+
 <section class="block" aria-labelledby="otherwise"><h2 id="otherwise">Where the data said otherwise</h2>
 <ol class="turns">
 <li><b>The first accent colour failed.</b><span>The accent on Helix's original artboard measured 3.4 to 1 against its background, below the 4.5 needed to read as text. It was replaced rather than shipped. Every accent now comes as a pair that passes on every surface.</span></li>

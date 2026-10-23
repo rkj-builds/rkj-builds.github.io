@@ -220,6 +220,8 @@ kbd { font: var(--text-sm)/1 var(--mono); padding: 2px 5px; border-radius: 4px; 
 .cta.ghost { background: none; color: var(--fg); box-shadow: inset 0 0 0 1px var(--line); }
 .cta.ghost:hover { box-shadow: inset 0 0 0 1px var(--dim); }
 .ctas { display: flex; flex-wrap: wrap; gap: 8px; }
+/* A link on its own line still gets a 24px tap area (WCAG 2.5.8); the padding adds height, not looks. */
+a.more { display: inline-block; padding-block: 3px; }
 .read section.block > .cta, .read section.block > .ctas { margin-top: 24px; }
 /* A QR code beside a WhatsApp button, for a reader on a laptop. Always dark on white, so every camera reads it.
    Hidden on a phone, where the button itself opens WhatsApp. */
