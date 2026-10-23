@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skills and agents — Rahul Jha</title>
+<meta name="description" content="Every Claude Code skill and agent I've built or built on, in one place: what each one does, who uses it, and the checks that keep a person in charge.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../../style.css">
+<script src="../../theme.js"></script>
+<style>
+.tbl tbody tr.sys th { padding-top: 22px; color: var(--dim); font-weight: var(--w-body); font-size: var(--text-sm); letter-spacing: .04em; }
+.tbl tbody tr.sys:first-child th { padding-top: 10px; }
+.tbl td.n { font-variant-numeric: tabular-nums; }
+.tbl code { font-family: var(--mono, ui-monospace, monospace); font-size: inherit; }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap read">
+
+<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Skills and agents · 2026</span></nav>
+<header class="stack-lg">
+  <h1>Skills and agents</h1>
+  <p class="about">Everything I've built for working with AI agents, in one place. The skills I wrote, the ones I built on, the agents that run them, and the checks that make sure a person still decides.</p>
+  <p class="muted">A skill is a set of rules an agent loads at the moment they matter, instead of a document nobody opens. I write them for my own work, and for designers who don't write code.</p>
+  <dl class="meta"><dt>My part</dt><dd>Every skill on this page except the two marked as other people's. I write the rules; Claude Code helps build them.</dd><dt>Built in</dt><dd>Claude Code skills and hooks; Helix's also run on OpenCode</dd><dt>Used by</dt><dd>Sixteen people at Travelopia through Helix, and me every day</dd><dt>When</dt><dd>2026</dd></dl>
+  <dl class="glance"><div><b>28 skills</b><span>written by me, across five systems</span></div><div><b>16 people</b><span>have shipped through the Helix skills, 290 changes in six months</span></div><div><b>3 gates in code</b><span>that an agent can't talk its way past</span></div><div><b>10 of 46, 5 of 8</b><span>my own eval scores, which is why no agent acts alone yet</span></div></dl>
+</header>
+
+<section class="block" aria-labelledby="rule"><h2 id="rule">The same three rules, everywhere</h2>
+<ol>
+<li><b>One skill, one job.</b> A skill that does everything gets loaded for everything and followed for nothing.</li>
+<li><b>The check comes with the work.</b> The rule that matters loads in the same step as the build, not in a review afterwards.</li>
+<li><b>What must never happen is a hook, not a sentence.</b> A prompt is a suggestion. A hook in code refuses the merge, the send or the push, whatever the agent thinks.</li>
+</ol>
+</section>
+
+<section class="block" aria-labelledby="helix"><h2 id="helix">1. Helix: fourteen skills other designers use</h2>
+<p>At Travelopia most brands have one designer, and most of those designers don't write code. Helix puts each brand's design system in its real code, and the skills are how a designer works in it. One sets a brand up, one starts a design system from nothing, one turns an exploration into a real component.</p>
+<p>The audit and the accessibility check load with every build, and that's enforced in four places, including a hook. The skills ship from one source to two harnesses, Claude Code and OpenCode, so a team can use either.</p>
+<p>This is the part I'm proudest of. A designer goes from getting access to a first page merged into the brand's code in under an hour, and the first command is a skill. Sixteen people have shipped 290 changes through it.</p>
+<figure class="card"><img src="../images/helix/06-get-started.jpg" alt="Helix's Get started page: seven steps with a copyable install command and the everyday commands beside them." loading="lazy"><figcaption>Onboarding is a page. The first command is a skill, so nobody has to read a setup guide.</figcaption></figure>
+<div class="ctas"><a class="cta" href="../skills.html">Read about the Helix skills →</a><a class="cta ghost" href="helix.html">Helix</a></div>
+</section>
+
+<section class="block" aria-labelledby="growth"><h2 id="growth">2. Growth design: one skill on top of Helix's</h2>
+<p>How I work a growth ticket, written down as one skill: eleven steps from intake to readout, six of them stops where I decide. It pulls the evidence and writes the plan, and for the design itself it hands over to Helix's explore skill. It never draws, and it never merges. Each ticket adds to a learning log that the next ticket reads first. It has 25 entries so far.</p>
+<p>Its first run was a paid landing page. 81.5% of paid visitors were on phones, so the photos went first.</p>
+<div class="ctas"><a class="cta" href="growth-design.html">Read the growth-design skill →</a></div>
+</section>
+
+<section class="block" aria-labelledby="captain"><h2 id="captain">3. The captain: five skills that work my queue</h2>
+<p>Four brands send me work through Slack, Jira and GitHub all day. The captain is a crew of agents that does the groundwork before I log on, and every draft comes to me.</p>
+<ul class="crew">
+<li><b>growth-ops</b><span>The morning run. It reads everything addressed to me and works each item in its own worktree through the growth-design and Helix skills. It posts nothing.</span></li>
+<li><b>copywriter</b><span>Writes every reply in my voice, with the facts looked up first. It never posts.</span></li>
+<li><b>captain-eval</b><span>Replays 46 real situations from my history blind and grades the crew against what I actually did.</span></li>
+<li><b>captain-learn</b><span>Reads what I changed in the week's drafts and proposes lessons as a pull request, with eval results attached. I merge it, or nothing changes.</span></li>
+<li><b>captain-interview</b><span>Turns my answers to its questions into decision rules the crew follows.</span></li>
+</ul>
+<p>The gate is a hook that always refuses to merge. When I'm away it refuses every post that doesn't carry my approval. Trust is earned one desk at a time: 95% of the last 20 drafts going out unchanged, and the evals passing. The crew scores 10 of 46, so every desk is still at level one.</p>
+<figure class="card"><img src="../images/captain/01-deck.jpg" alt="The captain's board drawn as a yacht deck: a skipper at each brand's desk, a copywriter and a lookout." loading="lazy"><figcaption>The board. Each paper on a desk is a real ticket being worked on.</figcaption></figure>
+<div class="ctas"><a class="cta" href="captain.html">Read about the captain →</a><a class="cta ghost" href="../captain-deck/">Work the deck</a></div>
+</section>
+
+<section class="block" aria-labelledby="desk"><h2 id="desk">4. The application desk: five skills and a gate</h2>
+<p>I built this for my own job applications, including the one you might be reading this from. Scout sorts postings by my rules. Reader reads a posting the way its hiring manager would. Writer drafts only from a file of facts I can show. Editor checks every claim, then hands the answer to an agent with no context to see what a stranger takes from it.</p>
+<p>The fifth skill is the gate, a hook with 67 tests. It refuses every submit, send, publish and push. The only way through is a one-off go I type myself, good for one action and ten minutes. The writer passed 5 of 8 blind answers against mine, so I read everything before it goes anywhere.</p>
+<div class="ctas"><a class="cta" href="application-desk.html">How the desk works →</a></div>
+</section>
+
+<section class="block" aria-labelledby="p831"><h2 id="p831">5. Project 831: rules for every AI tool on the team</h2>
+<p>My sports venue's software is the one where a mistake costs real money, because its database holds real bookings and payments. So the repo opens with a rules file that applies to every AI tool and every person on the team. Never put fake data in the database. Test in mock mode, where nothing leaves the browser. And the test suite fails any test that tries to reach a server.</p>
+<p>Under that sits a memory of 98 facts, one per file. Each one is a correction I made once and never wanted to make again. 70% of the venue's 1,698 commits were co-authored with Claude Code. A design-system skill for its dashboard is written and on a branch; it isn't merged yet.</p>
+<div class="ctas"><a class="cta" href="../how-i-build.html">How I build →</a><a class="cta ghost" href="p831.html">Project 831</a></div>
+</section>
+
+<section class="block" aria-labelledby="others"><h2 id="others">6. Built on other people's skills</h2>
+<p><b>Emil Kowalski's course, AI for Designers and Engineers,</b> became two skills of mine. <b>rkj-ui</b> is how I build a screen, in order. It splits the course into six areas (foundations, forms, motion, polish, design systems and prototyping), with my own house rules on top. When I correct a screen, the fix goes into those rules too, so the next screen starts right.</p>
+<p><b>rkj-ui-review</b> checks a real page before I call it done. A script loads it at six widths in light and dark mode, and fails on overlaps, sideways scrolling, clipped text, small tap targets and broken images. Its first full run was on the application desk page, where it found phone problems I then fixed. The page now passes all twelve checks.</p>
+<table class="tbl">
+<caption>The application desk page, checked on 23 October 2026</caption>
+<thead><tr><th scope="col">Width</th><th scope="col">Light</th><th scope="col">Dark</th></tr></thead>
+<tbody>
+<tr><th scope="row">1920, 1440, 1280</th><td>0 findings</td><td>0 findings</td></tr>
+<tr><th scope="row">1024, 860</th><td>0 findings</td><td>0 findings</td></tr>
+<tr><th scope="row">390, a phone</th><td>0 findings</td><td>0 findings</td></tr>
+</tbody>
+</table>
+<p><b>coss ui's own skill</b> is how the court-booking app is put together. It uses all 55 of the library's components, composed the way the skill and its examples say. A one-line fix of mine to the library was merged.</p>
+<div class="ctas"><a class="cta" href="coss-ui.html">Court booking on coss ui →</a></div>
+</section>
+
+<section class="block" aria-labelledby="ui"><h2 id="ui">7. Designing the screen for an agent</h2>
+<p>Agents need interfaces too, for the people who supervise them. Helix's Annotate tool turns notes pinned to a live page into one prompt for the agent, naming each component and file. And I built a prototype of one long agent run, where an approval is a step inside the run and a failure ends by saying what was left untouched. Its runs are scripted, and no model is called.</p>
+<figure class="card"><img src="../images/run-view/01-waiting.jpg" alt="The agent-run prototype: a run paused at a step that waits for a person's approval." loading="lazy"><figcaption>An agent run waiting on a person, shown as a step in the run rather than a separate alert.</figcaption></figure>
+<div class="ctas"><a class="cta" href="run-view.html">Agent runs →</a><a class="cta ghost" href="../run-view/">Open the prototype</a></div>
+</section>
+
+<section class="block" aria-labelledby="all"><h2 id="all">Every skill, in one table</h2>
+<div class="scroll">
+<table class="tbl">
+<caption>The 28 skills I wrote, and the two of other people's I build on</caption>
+<thead><tr><th scope="col">Skill</th><th scope="col">What it does</th></tr></thead>
+<tbody>
+<tr class="sys"><th scope="rowgroup" colspan="2">HELIX · used by sixteen people at Travelopia</th></tr>
+<tr><th scope="row"><code>helix</code></th><td>Reads the request and pairs the right skills</td></tr>
+<tr><th scope="row"><code>helix-install</code></th><td>Installs or updates Helix in a brand's code</td></tr>
+<tr><th scope="row"><code>helix-design-system-init</code></th><td>Starts a design system from nothing: tokens, themes, specimens</td></tr>
+<tr><th scope="row"><code>helix-explore</code></th><td>A scratchpad with real tokens, permissive on purpose</td></tr>
+<tr><th scope="row"><code>helix-exploration-promote</code></th><td>Turns an exploration into components and a layout</td></tr>
+<tr><th scope="row"><code>helix-component</code></th><td>Builds or changes a component, any size</td></tr>
+<tr><th scope="row"><code>helix-compose-layout</code></th><td>Assembles a page from real components</td></tr>
+<tr><th scope="row"><code>helix-design-system-audit</code></th><td>Loads with every build</td></tr>
+<tr><th scope="row"><code>helix-a11y</code></th><td>The accessibility gate; loads with every build</td></tr>
+<tr><th scope="row"><code>helix-a11y-interactions</code></th><td>Tab order, focus, announcements, errors</td></tr>
+<tr><th scope="row"><code>helix-visual-verify</code></th><td>Catches token drift and missing states</td></tr>
+<tr><th scope="row"><code>helix-tool</code></th><td>Builds a new toolbar tool; refuses inside a brand's code</td></tr>
+<tr><th scope="row"><code>helix-wireframe</code></th><td>Page structure before components exist</td></tr>
+<tr><th scope="row"><code>helix-local-prune</code></th><td>Clears worktrees and dev servers; never touches the remote</td></tr>
+<tr class="sys"><th scope="rowgroup" colspan="2">GROWTH DESIGN</th></tr>
+<tr><th scope="row"><code>growth-design</code></th><td>Runs a ticket as growth work: metric, evidence, hypotheses, plan, readout</td></tr>
+<tr class="sys"><th scope="rowgroup" colspan="2">THE CAPTAIN</th></tr>
+<tr><th scope="row"><code>growth-ops</code></th><td>The morning run over Slack, Jira and GitHub; posts nothing</td></tr>
+<tr><th scope="row"><code>copywriter</code></th><td>Replies in my voice, facts looked up first; never posts</td></tr>
+<tr><th scope="row"><code>captain-eval</code></th><td>Grades the crew blind against what I actually did</td></tr>
+<tr><th scope="row"><code>captain-learn</code></th><td>Turns my edits into lessons, as a pull request I merge</td></tr>
+<tr><th scope="row"><code>captain-interview</code></th><td>Turns my answers into decision rules</td></tr>
+<tr class="sys"><th scope="rowgroup" colspan="2">THE APPLICATION DESK</th></tr>
+<tr><th scope="row"><code>scout</code></th><td>Sorts postings into apply, ask first or drop, quoting the posting</td></tr>
+<tr><th scope="row"><code>reader</code></th><td>Reads a posting the way its hiring manager would</td></tr>
+<tr><th scope="row"><code>writer</code></th><td>Drafts one answer, citing a fact for every claim</td></tr>
+<tr><th scope="row"><code>editor</code></th><td>Fact-checks, scores, then a cold read with no context</td></tr>
+<tr><th scope="row"><code>gate</code></th><td>Refuses every submit, send, publish and push; 67 tests</td></tr>
+<tr class="sys"><th scope="rowgroup" colspan="2">PROJECT 831</th></tr>
+<tr><th scope="row"><code>design-system</code></th><td>Reuse the dashboard's parts and tokens before adding new ones (on a branch)</td></tr>
+<tr class="sys"><th scope="rowgroup" colspan="2">UI, BUILT ON EMIL KOWALSKI'S COURSE</th></tr>
+<tr><th scope="row"><code>rkj-ui</code></th><td>How I build a screen: six areas, plus my house rules</td></tr>
+<tr><th scope="row"><code>rkj-ui-review</code></th><td>Checks a page at six widths in light and dark before it's done</td></tr>
+<tr class="sys"><th scope="rowgroup" colspan="2">OTHER PEOPLE'S, THAT I BUILD ON</th></tr>
+<tr><th scope="row"><code>coss</code></th><td>coss ui's skill; the court-booking app is built to it</td></tr>
+<tr><th scope="row"><code>emil-design-eng</code></th><td>Emil Kowalski's design-engineering rules, next to mine</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section class="block" aria-labelledby="stands"><h2 id="stands">Where it stands</h2>
+<p>The Helix skills are in daily use across Travelopia's brands. The captain runs every weekday, and every draft still comes to me. The desk has been used for real on one round of applications. No agent of mine acts alone yet, because the evals say it shouldn't: 10 of 46 for the captain, 5 of 8 for the desk. Getting those numbers up comes before letting anything send.</p>
+</section>
+
+<footer class="foot">
+  <p>Next: <a href="helix.html">Helix</a> · <a href="captain.html">The captain</a> · <a href="../../index.html">All work</a></p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>
