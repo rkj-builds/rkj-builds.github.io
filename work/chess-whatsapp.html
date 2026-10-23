@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Chess on WhatsApp works — Rahul Jha</title>
+<meta name="description" content="Behind the chess demo on WhatsApp: the route a message takes, the messages WhatsApp receives, the platform's rules, the coach's run, and what the demo can never do.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap read">
+
+<nav class="top" aria-label="Back"><a href="case/chess-clubs.html">← Chess on WhatsApp</a><span>How it works</span></nav>
+<header class="stack-lg">
+  <h1>How Chess on WhatsApp works</h1>
+  <p class="about">What happens between sending <b>PLAYCHESS</b> and seeing a board: the route a message takes, the messages WhatsApp actually receives, the rules they keep, how the coach decides what to say, and what the demo can never do.</p>
+  <dl class="meta"><dt>Read this if</dt><dd>you want to know what to expect before you message the number, or how it's built</dd><dt>Try it</dt><dd><a href="https://wa.me/918747803268?text=PLAYCHESS">Send PLAYCHESS on WhatsApp</a> to +91 87478 03268. "stop" ends it.</dd></dl>
+  <div class="qr"><img src="images/chess-clubs/qr-playchess.svg" alt="QR code that opens WhatsApp with PLAYCHESS typed to +91 87478 03268" width="112" height="112"><p>Reading on a laptop? Scan this with your phone's camera to play on your phone.</p></div>
+</header>
+
+<section class="block" aria-labelledby="expect"><h2 id="expect">What to expect</h2>
+<ol>
+<li><b>A hello, in two languages.</b> First a line saying this is a concept demo. Then the club's own hello in your country's language and English. From India that's Hindi; from Brazil, Portuguese; from elsewhere, English and Hindi. Three buttons: those two languages, and "Other languages", a list of the ten others.</li>
+<li><b>Today's puzzle.</b> The board as a picture, whose move it is, how many tries you have, and three moves to tap. Typing a move works too, as Qe3 or e2e4.</li>
+<li><b>The coach.</b> A wrong move gets a hint that names the piece, then the square. After three tries it shows the answer. A right move gets a reply, then the opponent's answer as a new board.</li>
+<li><b>The end.</b> A link to the puzzle on Chess.com, and buttons for another puzzle or the other language.</li>
+</ol>
+<p>It's a demo, so it forgets you after 30 minutes without a message. Send PLAYCHESS again to start over, or "stop" to end it at any time. Nothing you send is kept by the venue's systems.</p>
+</section>
+
+<section class="block" aria-labelledby="route"><h2 id="route">The route a message takes</h2>
+<p>The number belongs to Project 831, the sports venue I co-founded. Its bot already takes real bookings and payments on WhatsApp, so the chess club runs beside it, never inside it.</p>
+<figure class="card"><svg class="fig" viewBox="0 0 680 250" role="img" aria-label="Your phone sends a message to WhatsApp, which passes it to Project 831's bot. The bot's demo router forwards it to the chess club service, which reads Chess.com's puzzle and answers. The answer goes back through the bot and WhatsApp to your phone. The venue's bookings, inbox and team alerts are never reached."><g font-size="13" font-family="ui-sans-serif, system-ui, sans-serif">
+<rect x="12" y="40" width="136" height="56" rx="8" fill="none" stroke="var(--line)"/><text x="80" y="64" text-anchor="middle" fill="var(--fg)" font-weight="550">Your phone</text><text x="80" y="83" text-anchor="middle" fill="var(--dim)" font-size="12">WhatsApp</text>
+<rect x="188" y="40" width="136" height="56" rx="8" fill="none" stroke="var(--line)"/><text x="256" y="64" text-anchor="middle" fill="var(--fg)" font-weight="550">Meta</text><text x="256" y="83" text-anchor="middle" fill="var(--dim)" font-size="12">WhatsApp Cloud API</text>
+<rect x="364" y="40" width="136" height="56" rx="8" fill="var(--bg)" stroke="var(--fg)"/><text x="432" y="64" text-anchor="middle" fill="var(--fg)" font-weight="550">831's bot</text><text x="432" y="83" text-anchor="middle" fill="var(--dim)" font-size="12">demo router</text>
+<rect x="540" y="40" width="136" height="56" rx="8" fill="var(--bg)" stroke="var(--fg)"/><text x="608" y="64" text-anchor="middle" fill="var(--fg)" font-weight="550">Chess club</text><text x="608" y="83" text-anchor="middle" fill="var(--dim)" font-size="12">puzzle, coach, board</text>
+<g stroke="var(--dim)" stroke-width="1.5" fill="none">
+<path d="M148 56 H186"/><path d="M180 51 L187 56 L180 61"/><path d="M324 56 H362"/><path d="M356 51 L363 56 L356 61"/><path d="M500 56 H538"/><path d="M532 51 L539 56 L532 61"/>
+<path d="M188 80 H150" stroke-dasharray="4 3"/><path d="M156 75 L149 80 L156 85"/><path d="M364 80 H326" stroke-dasharray="4 3"/><path d="M332 75 L325 80 L332 85"/><path d="M540 80 H502" stroke-dasharray="4 3"/><path d="M508 75 L501 80 L508 85"/>
+<path d="M608 166 V98"/><path d="M603 104 L608 97 L613 104"/>
+</g>
+<text x="168" y="34" text-anchor="middle" fill="var(--dim)" font-size="12">1</text><text x="344" y="34" text-anchor="middle" fill="var(--dim)" font-size="12">2</text><text x="520" y="34" text-anchor="middle" fill="var(--dim)" font-size="12">3</text>
+<text x="520" y="112" text-anchor="middle" fill="var(--dim)" font-size="12">4</text><text x="344" y="112" text-anchor="middle" fill="var(--dim)" font-size="12">5</text><text x="168" y="112" text-anchor="middle" fill="var(--dim)" font-size="12">6</text>
+<rect x="540" y="168" width="136" height="56" rx="8" fill="none" stroke="var(--line)"/><text x="608" y="192" text-anchor="middle" fill="var(--muted)">Chess.com API</text><text x="608" y="211" text-anchor="middle" fill="var(--dim)" font-size="12">today's puzzle</text>
+<path d="M432 98 V166" stroke="var(--under)" stroke-width="1.5" stroke-dasharray="2 4" fill="none"/><circle cx="432" cy="132" r="9" fill="var(--bg)" stroke="var(--under)"/><path d="M428 128 L436 136 M436 128 L428 136" stroke="var(--dim)" stroke-width="1.5"/>
+<rect x="364" y="168" width="136" height="56" rx="8" fill="none" stroke="var(--under)" stroke-dasharray="4 3"/><text x="432" y="192" text-anchor="middle" fill="var(--muted)">Bookings, inbox</text><text x="432" y="211" text-anchor="middle" fill="var(--dim)" font-size="12">never reached</text>
+</g></svg><figcaption>Solid arrows carry your message; dashed ones carry the reply. The venue's own systems sit behind the router and never see a demo message.</figcaption></figure>
+<ol>
+<li><b>You send PLAYCHESS.</b> WhatsApp delivers it to Meta's Cloud API.</li>
+<li><b>Meta posts it to 831's bot</b>, as it does with every message to the number.</li>
+<li><b>The demo router claims it before anything else runs.</b> The keyword, a tap on a demo button, or a chat already in a demo goes to the demo. Nothing is logged to the inbox, saved, or sent to the team. The router forwards the message to the chess club service, signed with a shared secret, with a hash in place of your number.</li>
+<li><b>The chess club answers</b> with the messages to send: the hello, a puzzle, the coach's words. It fetches today's puzzle from Chess.com's public API and draws the board as a picture.</li>
+<li><b>The bot checks the answer and sends it</b> from the same number, to you only.</li>
+<li><b>WhatsApp shows it.</b> To draw the board, Meta fetches the picture from the chess club.</li>
+</ol>
+</section>
+
+<section class="block" aria-labelledby="messages"><h2 id="messages">The messages, as WhatsApp receives them</h2>
+<p>Every message is a standard WhatsApp Business type. Nothing is drawn to look like WhatsApp: it is WhatsApp.</p>
+<table class="tbl"><thead><tr><th scope="col">Message</th><th scope="col">WhatsApp type</th><th scope="col">What's in it</th></tr></thead><tbody>
+<tr><th scope="row">Hello</th><td>Reply buttons</td><td>The demo line, the hello in two languages, three buttons, a footer saying it isn't from Chess.com</td></tr>
+<tr><th scope="row">Other languages</th><td>List</td><td>Ten rows in two sections, India and around the world</td></tr>
+<tr><th scope="row">Puzzle</th><td>Reply buttons with an image header</td><td>The board, whose move it is, tries left in the footer, three moves</td></tr>
+<tr><th scope="row">Coach</th><td>Text, or reply buttons</td><td>The coach's words; the same three moves while you're still trying</td></tr>
+</tbody></table>
+<p>The hello, exactly as it went to WhatsApp on 23 Oct for a number in India:</p>
+<figure class="card"><pre class="code">{
+  "type": "interactive",
+  "interactive": {
+    "type": "button",
+    "body": { "text": "*A concept demo for Chess.com, by Rahul Jha.* What follows is what a child would get from their school's chess club: today's puzzle, and a coach who answers in their language.\n\nनमस्ते! यह आपके स्कूल का चेस क्लब है। …\n\nHi! This is your school's chess club. …" },
+    "footer": { "text": "A concept demo by Rahul Jha, not by Chess.com" },
+    "action": { "buttons": [
+      { "type": "reply", "reply": { "id": "demo:chess:lang:hi", "title": "हिंदी" } },
+      { "type": "reply", "reply": { "id": "demo:chess:lang:en", "title": "English" } },
+      { "type": "reply", "reply": { "id": "demo:chess:more", "title": "🌐 Other languages" } }
+    ] }
+  }
+}</pre><figcaption>The ids start with <code>demo:chess:</code>, so a tap finds its way back to the demo without the bot keeping any record of you. The bot adds a time to each id on the way out, and a tap older than 30 minutes is refused.</figcaption></figure>
+</section>
+
+<section class="block" aria-labelledby="rules"><h2 id="rules">WhatsApp's rules, and how each is kept</h2>
+<table class="tbl"><thead><tr><th scope="col">The rule</th><th scope="col">What the club does</th></tr></thead><tbody>
+<tr><th scope="row">A business can't start a chat without an approved template</th><td>On this number you write first, so no template is needed. In the full concept, the morning puzzle is a template.</td></tr>
+<tr><th scope="row">Free replies only within 24 hours of your last message</th><td>Every reply answers something you just sent.</td></tr>
+<tr><th scope="row">At most three reply buttons, 20 characters each</th><td>Three moves, never more. Every title is counted in characters as Meta counts them, so "एक और पहेली" is 11.</td></tr>
+<tr><th scope="row">A body of 1,024 characters, a footer of 60</th><td>Checked before sending. A coach reply that runs long goes as text, with the buttons after it.</td></tr>
+<tr><th scope="row">A list holds ten rows</th><td>Two languages on buttons and ten in the list: all twelve, exactly.</td></tr>
+<tr><th scope="row">Images are JPEG or PNG</th><td>The board is drawn as SVG, then turned into a PNG on the server.</td></tr>
+<tr><th scope="row">A business learns the country, not the place or the phone's language</th><td>The country code picks the local language; a school's district would, in the full concept.</td></tr>
+</tbody></table>
+<p>The checks run on every message before it leaves, and in tests for every language. A message WhatsApp would refuse is never sent.</p>
+</section>
+
+<section class="block" aria-labelledby="coach"><h2 id="coach">How the coach decides what to say</h2>
+<p>The coach is an agent run in three steps, and the model is the last of them.</p>
+<ol>
+<li><b>Read the move.</b> The server plays it on the board with chess.js: right, wrong, not legal here, or not a move at all. The model never judges the move.</li>
+<li><b>Choose what to give away.</b> The first wrong try names the piece. The second names the square. After the third, the answer. The model is only told what this step allows, so it can't give more away by accident.</li>
+<li><b>Write it.</b> Claude writes the words in your language, in a sentence or two, with the words players say at a board. A reply already written for the same moment comes from a 7-day cache. Without a model, capped or failed, the engine's prepared lines answer instead.</li>
+</ol>
+<p>Live coaching is capped at 40 sessions a day, 3 per person and 8 replies a session. On the WhatsApp number today, the coach answers with the engine's lines: the service has no model key yet.</p>
+</section>
+
+<section class="block" aria-labelledby="never"><h2 id="never">What the demo can never do</h2>
+<ul>
+<li><b>Touch the venue.</b> No booking, payment, inbox message or team alert. A test walks the whole chess demo with the database, payments, templates and alerts replaced by traps, and fails if any of them is touched.</li>
+<li><b>Learn your number.</b> The chess club gets a salted hash and the first three digits, for the country. It never sees your number or a WhatsApp token.</li>
+<li><b>Message anyone else.</b> The bot addresses every reply to the person who wrote. The club can't name a recipient.</li>
+<li><b>Ask for money.</b> Only text, reply buttons and lists pass through. Payment requests, forms and anything else are dropped.</li>
+<li><b>Be called by someone else.</b> The club only answers a body signed with the shared secret, and refuses one more than five minutes old.</li>
+<li><b>Stay on against my wishes.</b> One setting on the bot switches every demo off, from its next deploy.</li>
+</ul>
+</section>
+
+<section class="block" aria-labelledby="code"><h2 id="code">Where the code lives <span class="for">for engineers</span></h2>
+<ul>
+<li><b>The chess club:</b> TypeScript, chess.js and Claude, as two functions on Vercel. One answers the bot; one draws boards with resvg and a cut-down DejaVu font. 83 tests.</li>
+<li><b>The router and the forwarder:</b> Node in Project 831's bot. A registry of demos, each with a keyword, start, tap and typed handlers, plus stop words, a 30-minute session and dedupe, all in memory.</li>
+<li>Both repositories are private. I'm glad to walk through either.</li>
+</ul>
+</section>
+
+<footer class="foot">
+  <ul><li><a href="https://wa.me/918747803268?text=PLAYCHESS">Play it on WhatsApp</a> · send PLAYCHESS, "stop" ends it</li></ul>
+  <p>Back: <a href="case/chess-clubs.html">Chess on WhatsApp</a> · <a href="../index.html">All work</a></p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

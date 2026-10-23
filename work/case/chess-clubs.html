@@ -17,16 +17,17 @@
 <header class="stack-lg">
   <h1>Chess on WhatsApp, in every child's language</h1>
   <p class="about">A chess club that lives in a WhatsApp chat: one puzzle a day, and a coach who answers in the child's own language. Nothing to install, nothing new to learn. A concept I built for Chess.com, and it runs on a real number you can message.</p>
-  <p class="muted">India has the youngest world champion and millions of new fans who watch chess on streams. Most of them can't easily play: no club, no coach, and an app in English. They all have WhatsApp. So does my father, who would never find his way around a chess app's menus but uses WhatsApp all day.</p>
+  <p class="muted">India has the youngest world champion. This concept asks one question: what if playing chess started in the app people already open every day, in their own language? My father is the test case. He would never find his way around a chess app's menus, but he uses WhatsApp all day.</p>
   <dl class="meta"><dt>My part</dt><dd>All of it: the idea, the design, the coach, the WhatsApp service, the tests</dd><dt>Built in</dt><dd>React 19 and TypeScript, chess.js, Claude; the WhatsApp Cloud API through Project 831's bot; with Claude Code</dd><dt>When</dt><dd>October 2026</dd><dt>Status</dt><dd>A concept, not an official Chess.com product. Live on WhatsApp since 23 Oct 2026. Translations other than English are drafts.</dd></dl>
   <dl class="glance"><div><b>12 languages</b><span>the coach writes in, with the words players say at a board</span></div><div><b>3 buttons</b><span>under each board: WhatsApp's own limit, never broken</span></div><div><b>1 real number</b><span>you can message to play today's puzzle</span></div><div><b>83 tests</b><span>for the club, plus the 831 bot's own</span></div></dl>
-  <div class="ctas"><a class="cta" href="https://wa.me/918747803268?text=PLAYCHESS">Play it on WhatsApp →</a></div>
-  <p class="dim">Opens a chat with Project 831's second number with PLAYCHESS typed in. Send it, pick a language, and tap a move. "stop" ends it.</p>
+  <div class="ctas"><a class="cta" href="https://wa.me/918747803268?text=PLAYCHESS">Play it on WhatsApp →</a><a class="cta ghost" href="../chess-whatsapp.html">How it works</a></div>
+  <p class="dim">Opens a chat with Project 831's second number, +91 87478 03268, with PLAYCHESS typed in. Send it, pick a language, and tap a move. "stop" ends it.</p>
+  <div class="qr"><img src="../images/chess-clubs/qr-playchess.svg" alt="QR code that opens WhatsApp with PLAYCHESS typed to +91 87478 03268" width="112" height="112"><p>Reading on a laptop? Scan this with your phone's camera to play on your phone.</p></div>
   <figure class="card"><img src="../images/chess-clubs/01-board-room.jpg" alt="The prototype: a phone on a dark chessboard showing a WhatsApp chat in Marathi. The puzzle's board, three move buttons, the child's tapped move Bd2, and the coach's hint with 2 tries left. Beside it, three steps (tap a language, solve today's puzzle, read the coach) and twelve city cards, Pune selected." width="1600" height="1000" loading="lazy"><figcaption>Viewing from Pune: the club speaks Marathi and English. A wrong move gets a hint that names the piece, not the answer.</figcaption></figure>
 </header>
 
 <section class="block" aria-labelledby="problem"><h2 id="problem">The problem</h2>
-<p>A new app is the barrier, not chess. The kid in a small town who watched Gukesh win has a family phone and WhatsApp, and reads Hindi, Tamil or Marathi more easily than English. The grandparent at home has an hour free and WhatsApp open. The school teacher asked to run a chess club has twenty kids and no chess training. Each of them already uses one app confidently, every day.</p>
+<p>The bet is that a new app is a bigger step than chess itself. The people this is for: a kid who watched Gukesh win and shares the family phone; a grandparent with an hour free and WhatsApp open; anyone who reads Hindi, Tamil or Marathi more easily than English. Each of them already uses one app confidently, every day.</p>
 </section>
 
 <section class="block" aria-labelledby="piece-1"><h2 id="piece-1">1. A puzzle and a coach, inside the chat</h2>
@@ -62,6 +63,7 @@
 <li><b>On WhatsApp,</b> Project 831's bot forwards a demo visitor's messages to the club service, signed with HMAC and refused after five minutes. The service answers with the messages to send; the bot sends them from its own number. Board pictures are rendered to PNG on the server.</li>
 <li><b>Guards in tests:</b> the 831 bot's demo test traps the database, payments, templates and team alerts, then walks the chess demo from the keyword to "stop". Nothing may be touched.</li>
 </ul>
+<a class="cta" href="../chess-whatsapp.html">Read how it works →</a>
 </section>
 
 <section class="block" aria-labelledby="stands"><h2 id="stands">Where it stands</h2>
