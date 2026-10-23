@@ -36,21 +36,23 @@
   function readas(root) {
     var tabs = Array.prototype.slice.call(root.querySelectorAll("[role=tab]"));
     var panels = tabs.map(function (t) { return document.getElementById(t.getAttribute("aria-controls")); });
-    function show(i, focus) {
+    function show(i, focus, user) {
       tabs.forEach(function (t, j) {
         var on = i === j;
         t.setAttribute("aria-selected", on ? "true" : "false");
         t.tabIndex = on ? 0 : -1;
         if (panels[j]) panels[j].hidden = !on;
+        // Fade only a panel the reader switched to, never the first one on load.
+        if (panels[j] && on && user) panels[j].dataset.shown = "";
       });
       if (focus) tabs[i].focus();
     }
     tabs.forEach(function (t, i) {
-      t.addEventListener("click", function () { show(i); });
+      t.addEventListener("click", function () { show(i, false, true); });
       t.addEventListener("keydown", function (e) {
         if (e.key === "ArrowRight" || e.key === "ArrowLeft") {
           e.preventDefault();
-          show((i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length, true);
+          show((i + (e.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length, true, true);
         }
       });
     });
@@ -71,8 +73,9 @@
       back.disabled = i === 0;
       next.disabled = i === items.length - 1;
     }
-    back.addEventListener("click", function () { if (i > 0) { i--; show(); } });
-    next.addEventListener("click", function () { if (i < items.length - 1) { i++; show(); } });
+    // data-dir tells the CSS which side the new step comes in from.
+    back.addEventListener("click", function () { if (i > 0) { i--; root.dataset.dir = "back"; show(); } });
+    next.addEventListener("click", function () { if (i < items.length - 1) { i++; root.dataset.dir = "next"; show(); } });
     root.querySelector(".row").hidden = false;
     show();
   }
