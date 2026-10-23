@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The application desk — Rahul Jha</title>
+<meta name="description" content="How I use AI on a job application: a small crew of Claude Code agents that reads the posting, drafts from facts I can show, checks every claim, and never sends anything.">
+<meta name="robots" content="noindex">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../../style.css">
+<script src="../../theme.js"></script>
+<style>
+/* This page's figures. One page accent, warn = refused or failed. ok = fixed, shipped or passed, and wears the site's own link accent.
+   Each is always paired with a word or a mark. */
+:root { --warn: #F0A04B; --ok: var(--accent); }
+@media (prefers-color-scheme: light) { html:not([data-theme]) { --warn: #8F4708; } }
+html[data-theme="light"] { --warn: #8F4708; }
+html[data-theme="dark"] { --warn: #F0A04B; }
+.warn { color: var(--warn); } .ok { color: var(--ok); }
+section.block p b.warn, section.block li b.warn { color: var(--warn); } section.block p b.ok, section.block li b.ok { color: var(--ok); }
+svg.flow text { font-family: var(--font); font-size: 14px; fill: var(--fg); }
+svg.flow .lbl { font-size: 14px; fill: var(--dim); }
+svg.flow .cap { font-size: 14px; letter-spacing: .06em; fill: var(--dim); }
+svg.flow .out { fill: var(--muted); }
+svg.flow .box { fill: var(--bg); stroke: var(--line); }
+svg.flow .box.outside { fill: var(--card); }
+svg.flow .box.me { stroke: var(--fg); }
+svg.flow .band { fill: var(--bg); stroke: var(--line); }
+svg.flow .arrow { fill: none; stroke: var(--dim); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+svg.flow .arrow.refused { stroke: var(--warn); stroke-dasharray: 6 6; }
+svg.flow .arrow.mine { stroke: var(--fg); }
+svg.flow .gate { stroke: var(--warn); stroke-width: 2; }
+svg.flow .warn-t { fill: var(--warn); }
+.rounds { color: var(--dim); font-size: var(--text-sm); line-height: var(--leading-sm); }
+.rounds b { color: var(--fg); font-weight: var(--w-title); }
+section.block ol.lines { list-style: none; padding: 0; gap: 0; border-top: 1px solid var(--rule); }
+ol.lines li { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 20px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+section.block ol.lines li p { color: var(--fg); }
+section.block ol.lines li p.why { color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-sm); display: flex; flex-direction: column; gap: 4px; }
+@media (max-width: 600px) { ol.lines li { grid-template-columns: minmax(0, 1fr); gap: 4px; } }
+/* A figure too wide for a phone scrolls sideways, with a fade at the open edge and a line that says so. The fade lifts at the end where scroll timelines exist. */
+.scroll { overflow-x: auto; }
+.swipe { display: none; color: var(--dim); font-size: var(--text-sm); line-height: var(--leading-sm); }
+@property --fade { syntax: "<length>"; inherits: false; initial-value: 40px; }
+@keyframes unfade { to { --fade: 0px; } }
+@media (max-width: 600px) {
+  .scroll { --fade: 40px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent); mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent); }
+  @supports (animation-timeline: scroll()) { .scroll { animation: unfade linear both; animation-timeline: scroll(self inline); } }
+  .swipe { display: block; }
+}
+table.evalgrid { min-width: 520px; border-collapse: separate; border-spacing: 4px; }
+table.evalgrid th, table.evalgrid td { border-top: 0; padding: 4px 6px; vertical-align: middle; }
+table.evalgrid thead th { text-align: center; font-size: var(--text-sm); }
+table.evalgrid thead th:nth-child(2), table.evalgrid td.q { text-align: left; }
+table.evalgrid tbody th { color: var(--dim); font-weight: var(--w-body); }
+table.evalgrid td { text-align: center; color: var(--fg); font-variant-numeric: tabular-nums; }
+table.evalgrid td.m, table.evalgrid thead th.m { text-align: right; }
+table.evalgrid td.q { color: var(--muted); }
+table.evalgrid td.s { border-radius: 6px; font-variant-numeric: tabular-nums; }
+table.evalgrid td.s1 { background: color-mix(in srgb, var(--fg) 6%, transparent); }
+table.evalgrid td.s2 { background: color-mix(in srgb, var(--fg) 14%, transparent); }
+table.evalgrid td.s3 { background: color-mix(in srgb, var(--fg) 22%, transparent); }
+table.evalgrid td.s4 { background: color-mix(in srgb, var(--fg) 30%, transparent); }
+table.evalgrid td.s5 { background: color-mix(in srgb, var(--fg) 40%, transparent); }
+table.evalgrid td.bad { color: var(--warn); font-weight: var(--w-title); box-shadow: inset 0 0 0 1.5px var(--warn); }
+table.evalgrid td.yes { color: var(--ok); font-weight: var(--w-title); }
+table.evalgrid td.warn { color: var(--warn); }
+table.evalgrid td.no { color: var(--dim); }
+table.evalgrid tfoot td, table.evalgrid tfoot th { border-top: 1px solid var(--rule); font-weight: var(--w-title); }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap read">
+
+<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>The application desk · workflow · Oct 2026</span></nav>
+<header class="stack-lg">
+  <h1>The application desk</h1>
+  <p class="about">How I use AI on a job application. A small crew of Claude Code agents reads the posting, drafts from facts I can show, checks every claim, and hands me the result. It never sends anything.</p>
+  <p class="muted">Chess.com's form asks how AI was used on the application. This page is the answer: the workflow, the scores it got, and where it still falls short. It's a sibling of <a href="captain.html">the captain</a>, a crew of Claude Code agents that works my design queue at Travelopia (Slack, Jira, GitHub) and drafts replies in my voice, and it runs on the same rule. They draft. I decide.</p>
+  <dl class="meta"><dt>My part</dt><dd>The workflow and the rules it runs on. Claude Code built it to my brief.</dd><dt>Built in</dt><dd>Claude Code skills, a Python hook, markdown</dd><dt>When</dt><dd>October 2026</dd><dt>Status</dt><dd>Version 1, on my laptop. Used for real once.</dd></dl>
+  <dl class="glance"><div><b>5 skills</b><span>scout, reader, writer, editor, gate</span></div><div><b>3.8 → 4.6</b><span>of 5, one real answer over three drafts</span></div><div><b>67 tests</b><span>on the gate that refuses to submit, send or push</span></div><div><b>5 of 8</b><span>blind answers passed against mine on the third run, so nothing goes out unread</span></div></dl>
+  <figure class="card"><p class="swipe">Swipe the diagram to see the rest →</p><div class="scroll"><svg class="fig flow" viewBox="16 56 608 456" role="img" aria-label="The posting goes to the reader, then the writer, then the editor, which can send a draft back to the writer up to three rounds, then to me. Below sits the gate. The writer's dashed arrow towards the outside stops at the gate, marked refused. Only my arrow crosses the gate, to the form. Outside my laptop: messages, GitHub and the form.">
+<defs>
+<marker id="head-dim" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 Z" style="fill: var(--dim)"/></marker>
+<marker id="head-warn" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 Z" style="fill: var(--warn)"/></marker>
+<marker id="head-fg" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 Z" style="fill: var(--fg)"/></marker>
+</defs>
+<rect class="band" x="32" y="384" width="576" height="112" rx="12"/>
+<line class="gate" x1="48" y1="352" x2="592" y2="352"/>
+<path class="arrow" d="M148 156 H194" marker-end="url(#head-dim)"/>
+<path class="arrow" d="M296 156 H342" marker-end="url(#head-dim)"/>
+<path class="arrow" d="M444 156 H490" marker-end="url(#head-dim)"/>
+<path class="arrow" d="M542 128 V96 H394 V126" marker-end="url(#head-dim)"/>
+<path class="arrow" d="M542 184 V246" marker-end="url(#head-dim)"/>
+<path class="arrow refused" d="M394 184 V340" marker-end="url(#head-warn)"/>
+<path class="arrow mine" d="M542 304 V414" marker-end="url(#head-fg)"/>
+<rect class="box" x="48" y="128" width="100" height="56" rx="10"/><text x="98" y="156" text-anchor="middle" dominant-baseline="central">The posting</text>
+<rect class="box" x="196" y="128" width="100" height="56" rx="10"/><text x="246" y="156" text-anchor="middle" dominant-baseline="central">Reader</text>
+<rect class="box" x="344" y="128" width="100" height="56" rx="10"/><text x="394" y="156" text-anchor="middle" dominant-baseline="central">Writer</text>
+<rect class="box" x="492" y="128" width="100" height="56" rx="10"/><text x="542" y="156" text-anchor="middle" dominant-baseline="central">Editor</text>
+<rect class="box me" x="492" y="248" width="100" height="56" rx="10"/><text x="542" y="276" text-anchor="middle" dominant-baseline="central" style="font-weight: 550">Me</text>
+<rect class="box outside" x="196" y="416" width="100" height="56" rx="10"/><text class="out" x="246" y="444" text-anchor="middle" dominant-baseline="central">Messages</text>
+<rect class="box outside" x="344" y="416" width="100" height="56" rx="10"/><text class="out" x="394" y="444" text-anchor="middle" dominant-baseline="central">GitHub</text>
+<rect class="box outside" x="492" y="416" width="100" height="56" rx="10"/><text class="out" x="542" y="444" text-anchor="middle" dominant-baseline="central">The form</text>
+<circle cx="394" cy="352" r="8" style="fill: var(--card); stroke: var(--warn); stroke-width: 2"/>
+<path d="M390.5 348.5 L397.5 355.5 M397.5 348.5 L390.5 355.5" style="stroke: var(--warn); stroke-width: 2; stroke-linecap: round"/>
+<text class="lbl" x="468" y="84" text-anchor="middle">revise, up to 3 rounds</text>
+<text class="lbl" x="554" y="219">ships</text>
+<text class="lbl warn-t" x="406" y="268">refused</text>
+<text class="lbl" x="554" y="330" style="fill: var(--fg)">only me</text>
+<text class="cap warn-t" x="48" y="298" style="font-weight: 700">THE GATE</text>
+<text class="lbl" x="48" y="318">refuses every submit, send,</text>
+<text class="lbl" x="48" y="336">publish and push from the desk</text>
+<text class="cap" x="48" y="406">OUTSIDE MY LAPTOP</text>
+</svg></div><figcaption>How an answer gets made. The desk can revise as often as three rounds allow, but anything it tries to send stops at the gate. Only I cross it.</figcaption></figure>
+</header>
+
+<section class="block" aria-labelledby="problem"><h2 id="problem">The problem</h2>
+<p>An answer on an application form can go wrong in three ways. It claims something I can't show. It sounds like everyone else's. Or it's about me, when the question was about them.</p>
+<p>A model that drafts fast makes all three easier. So the desk is built to stop each one before I read the draft.</p>
+</section>
+
+<section class="block" aria-labelledby="facts"><h2 id="facts">1. It knows the work, and only the work</h2>
+<p>The desk reads one file of facts: each project, what I did, and every figure with the page it came from. The figures trace back to one table that every surface of my portfolio uses. If two of my own pages disagree, the file lists the conflict instead of picking the better number. Building it found ten.</p>
+<p>There's a second file for what I like, what I don't, and what I won't do. It's empty until I write it. Until then, a draft that needs a feeling leaves a placeholder with my name on it, rather than inventing one.</p>
+<p>The third source is how I write and decide. The captain had already studied my Slack, Jira and pull-request writing and the calls I make in design reviews. The desk reads that study: the measured shape of my sentences, and the things I argue for, like metric first and every state built before a form is called done. The writer takes its point of view from those, not from thin air. Nothing internal from that study reaches a draft: no names, no tickets, no figures.</p>
+</section>
+
+<section class="block" aria-labelledby="crew"><h2 id="crew">2. Four agents, one question at a time</h2>
+<ul class="crew">
+<li><b>Scout</b><span>Sorts postings by my own rules: remote from India, or a move that's sponsored. It quotes the line in the posting that decides.</span></li>
+<li><b>Reader</b><span>Reads the posting like the person who wrote it: what they really need, ranked; what's hard about the job; what's unknown; and where I'm thin.</span></li>
+<li><b>Writer</b><span>Drafts one answer, with a point of view about the people the company builds for. Every fact in it has a row saying where it came from.</span></li>
+<li><b>Editor</b><span>It checks each claim against the source and scores the draft. Then it hands the answer to an agent that knows nothing, to see what a stranger takes from it.</span></li>
+</ul>
+</section>
+
+<section class="block" aria-labelledby="editor"><h2 id="editor">3. The editor doesn't trust the writer</h2>
+<p>Five scores, 1 to 5: <b>true</b>, <b>specific</b>, <b>about them</b>, <b>short</b> and <b>no clichés</b>. Any false claim fails the draft, whatever the rest says. Then the cold read: a fresh agent gets only the question and the answer, and says what this person does, what it would remember tomorrow, and which phrases sound like filler.</p>
+<p>Its first real job was Chess.com's "What gets you excited about this role?". It took three drafts. The first left their platform, GNS, unexplained (it's Chess.com's AI knowledge and agent platform). The second had a line the cold reader called "polished and generic". The third was the first one the cold reader read correctly: what I do, what I built, and what I want.</p>
+<figure class="card">
+<p class="rounds">Draft 1 <b>3.8</b> → Draft 2 <b>3.8</b> → Draft 3 <b class="ok">4.6 of 5</b>, shipped to me</p>
+<ol class="lines">
+<li><p>GNS, your AI knowledge and agent platform.</p><p class="why"><span><b class="ok">Fix · round 1.</b> The cold reader didn't know what GNS was.</span></p></li>
+<li><p>Your users are experts.</p><p class="why"><span><b class="warn">My call.</b> Their own line; a cold reader heard flattery.</span></p></li>
+<li><p>What they need from an agent's screen is not an explanation: it's which runs are waiting on them, and what a failed run left untouched.</p><p class="why"><span><b class="ok">Fix · round 2.</b> The point of view, made concrete.</span><span><b class="warn">My call.</b> "Not X, it's Y" is my habit; a stranger hears AI.</span></p></li>
+<li><p>My crew of Claude Code agents drafts replies to my Slack, Jira and GitHub queue.</p><p class="why"><span><b class="ok">Fix · round 2.</b> "A crew of agents" alone was vague.</span></p></li>
+<li><p>Its first version was a table of statuses, and I had to read every row to find out if anything was wrong.</p><p class="why"><span><b>Kept</b> from draft 1.</span></p></li>
+<li><p>In my prototype of one run, a failure ends with "Nothing was changed."</p><p class="why"><span><b class="ok">Fix · round 1.</b> Show what the agent did not do; don't say it.</span></p></li>
+<li><p>I'd like to build that for your teams, whose work reaches 250M+ players.</p><p class="why"><span><b class="ok">Fix · round 1.</b> Their teams' work reaches players, not the tools.</span><span><b class="warn">My call.</b> The motive is mine to confirm.</span></p></li>
+</ol>
+<figcaption>The answer that shipped, line by line: what the editor changed, what it kept, and the three lines it left for me. The link to the prototype is left out here. One slip was caught on the way: the writer quoted a source from memory, and the editor checked it against the page.</figcaption></figure>
+</section>
+
+<section class="block" aria-labelledby="gate"><h2 id="gate">4. Nothing goes out without me</h2>
+<p>A prompt is a suggestion. A hook is a guarantee. Before every tool call, a hook in code refuses anything that would submit a form, type into one, send a message, publish a page or push code. When it refuses, the desk saves the thing as a draft and tells me.</p>
+<p>The only way through is a one-off go I type in my own terminal. It covers one action, lasts ten minutes, and is used up. An agent that tries to write that go for itself is refused too.</p>
+</section>
+
+<section class="block" aria-labelledby="eval"><h2 id="eval">5. Graded against my own answers</h2>
+<p>To know if the writer sounds like me, it answered eight questions blind. I already had answers to all eight. A second agent graded each one against mine, on substance, facts, voice and register (whether the length and tone fit the form).</p>
+<p><b>It ran three times.</b> The first passed 3 of 8, and facts did worst: three answers got a fact wrong, one gave a reason I never gave. Giving the writer the reader's notes first made it 4 of 8. Giving it how I write and decide made it <b>5 of 8</b>, with facts at their best yet (3.25, then 4.00, then 4.25).</p>
+<p>Read that loosely. The grader moves about a point per case between runs, and the fifth pass sits exactly on the line. Two things didn't move. Substance stayed at 3.12 all three times: on two questions the writer leads with a different project than I did. And register fell, because it ends form answers with a question to the reader. Both are fixes for the desk, and they're why every answer still comes to me.</p>
+<figure class="card"><p class="swipe">Swipe the table to see every score →</p><div class="scroll"><table class="tbl evalgrid">
+<thead><tr><th scope="col">#</th><th scope="col">Question</th><th scope="col">Substance</th><th scope="col">Facts</th><th scope="col">Voice</th><th scope="col">Register</th><th scope="col" class="m">Mean</th><th scope="col">Pass</th></tr></thead>
+<tbody>
+<tr><th scope="row">q1</th><td class="q">Proud of, built with AI</td><td class="s s1">1</td><td class="s s4">4</td><td class="s s3">3</td><td class="s s3">3</td><td class="m">2.75</td><td class="no">no</td></tr>
+<tr><th scope="row">q2</th><td class="q">How I feel about AI tools</td><td class="s s4">4</td><td class="s s4">4</td><td class="s s4">4</td><td class="s s3">3</td><td class="m">3.75</td><td class="yes">yes</td></tr>
+<tr><th scope="row">q3</th><td class="q">Design systems</td><td class="s s4">4</td><td class="s s5">5</td><td class="s s4">4</td><td class="s s4">4</td><td class="m">4.25</td><td class="yes">yes</td></tr>
+<tr><th scope="row">q4</th><td class="q">What excites you</td><td class="s s4">4</td><td class="s s5">5</td><td class="s s4">4</td><td class="s s3">3</td><td class="m">4.00</td><td class="yes">yes</td></tr>
+<tr><th scope="row">q5</th><td class="q">AI on this application</td><td class="s s3">3</td><td class="s s2 bad">2</td><td class="s s4">4</td><td class="s s2">2</td><td class="m">2.75</td><td class="no">no</td></tr>
+<tr><th scope="row">q6</th><td class="q">Questions for us</td><td class="s s3">3</td><td class="s s5">5</td><td class="s s3">3</td><td class="s s3">3</td><td class="m">3.50</td><td class="yes">yes</td></tr>
+<tr><th scope="row">q7</th><td class="q">Cover letter, Chess.com</td><td class="s s2">2</td><td class="s s4">4</td><td class="s s3">3</td><td class="s s3">3</td><td class="m">3.00</td><td class="no">no</td></tr>
+<tr><th scope="row">q8</th><td class="q">Why HUD</td><td class="s s4">4</td><td class="s s5">5</td><td class="s s4">4</td><td class="s s3">3</td><td class="m">4.00</td><td class="yes">yes</td></tr>
+</tbody>
+<tfoot><tr><td></td><th scope="row">Mean</th><td>3.12</td><td>4.25</td><td>3.62</td><td class="warn">3.00</td><td class="m">3.50</td><td>5 / 8</td></tr></tfoot>
+</table></div><figcaption>The third run: eight blind answers, scored 1 to 5 against mine. A case passes with facts at 4 or more and a mean of 3.5 or more. <b class="warn">Outlined</b>: a fact got wrong. The answers I graded against were drafted with Claude for me to edit; scored against fifteen things I wrote myself, they average 2.75 to 3.25 of 5, depending on the run.</figcaption></figure>
+</section>
+
+<section class="block" aria-labelledby="otherwise"><h2 id="otherwise">Where the data said otherwise</h2>
+<ol class="turns">
+<li><b>My own habit reads as AI.</b><span>Twice, the cold reader flagged a neat reversal as machine writing, the last time "not X, it's Y". It's how I write in Slack. The desk doesn't decide for me; it marks the line and asks.</span></li>
+<li><b>The writer's word count was wrong.</b><span>It counted 94 words by eye; there were 104. Now the editor counts with a tool, not by eye.</span></li>
+<li><b>The answers I graded against were drafts.</b><span>They were drafted with Claude for me to edit. Scored against fifteen things I wrote myself, they average 2.75 to 3.25 of 5. A real voice eval needs answers that are only mine.</span></li>
+<li><b>Facts failed before voice did.</b><span>The writer mostly sounded right and got details wrong. So the editor's first job is the fact-check, before any score.</span></li>
+<li><b>Knowing how I write didn't change the voice score.</b><span>Voice held at about 3.6 across all three runs, even after the desk read the captain's study of my writing. What moved was facts, and most of that came from the reader's notes, not the study.</span></li>
+</ol>
+</section>
+
+<section class="block" aria-labelledby="built"><h2 id="built">How it's built <span class="for">for engineers</span></h2>
+<ul>
+<li><b>Five Claude Code skills,</b> one SKILL.md each, in one repo. Each question is a run folder: reader notes, numbered drafts, numbered editor reports, a final.</li>
+<li><b>The gate</b> is a PreToolUse hook in Python, modelled on the captain's. It classifies each call (submit, fill, send, publish, push, merge) and logs every decision. 67 tests run against a throwaway ledger.</li>
+<li><b>The facts file</b> cites a single table of figures, so the desk and the portfolio can't disagree.</li>
+<li><b>The cold read</b> is a subagent given only the question and the answer: no files, no tools.</li>
+<li><b>The eval</b> kept the reference answers outside the repo until every blind answer was written.</li>
+</ul>
+</section>
+
+<section class="block" aria-labelledby="stands"><h2 id="stands">Where it stands</h2>
+<p>Version 1, on my laptop, used once for real. The voice eval is at 5 of 8 after three runs, so nothing it writes goes out unread. Next: fill in the file only I can write, grade it against answers that are only mine, and run it on the next application.</p>
+</section>
+
+<footer class="foot">
+  <p>Next: <a href="captain.html">The captain</a> · <a href="../../index.html">All work</a></p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>
