@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Everything in WhatsApp — Project 831 — Rahul Jha</title>
+<meta name="description" content="At Project 831, booking, paying, reminders, cancelling, credit, membership hours, renewals and invoices all happen in one WhatsApp chat. Nobody downloads an app. Seven real conversations.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../style.css">
+<script src="../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap read">
+
+<nav class="top" aria-label="Back"><a href="case/p831.html">← Project 831</a><span>Everything in WhatsApp</span></nav>
+<header class="stack-lg">
+  <h1>Everything happens in WhatsApp</h1>
+  <p class="about">At <b>Project 831</b>, my pickleball venue, people book a court, pay, get reminded, cancel, keep their money as credit, check their membership hours, renew a child's club and get the invoice, all in one WhatsApp chat. <b>Nobody downloads an app.</b> That was the first decision, made before any code, and everything else was designed around it.</p>
+  <dl class="meta"><dt>Read this if</dt><dd>you want to see what a customer actually gets, message by message</dd><dt>Messages</dt><dd>the bot's own words, copied from its code on 23 October 2026. Names are invented, first names only.</dd><dt>Numbers</dt><dd>from the venue's database, 29 March to 23 October 2026</dd></dl>
+  <dl class="glance"><div><b>3,702 messages</b><span>from 267 people, into the venue's WhatsApp</span></div><div><b>92% of replies</b><span>sent by the bot: 7,308 of 7,943. The team wrote the other 635.</span></div><div><b>12 invoices</b><span>sent on their own, the first morning they were switched on</span></div><div><b>88 reminders</b><span>sent the evening before a game, with nobody remembering to send them</span></div></dl>
+</header>
+
+<section class="block" aria-labelledby="why"><h2 id="why">Why WhatsApp, and not an app</h2>
+<p>In Jamshedpur, people message a business on WhatsApp. Before there was any software, every booking at the venue was a WhatsApp conversation with a person, and that was the problem: one person, one phone, every evening. The usual way out is to move customers somewhere else, to an app or a website checkout. An app asks for a download, an account and a password before anyone can play an hour of pickleball. So I chose the other way: keep people where they already are, and make the chat do the work the person on the phone used to do.</p>
+<p>I'd spent a year and a half at BiteSpeed designing tools that help brands sell over WhatsApp, so I knew what the platform can carry: forms inside the chat (WhatsApp Flows), payments inside the chat, and approved templates for the messages a business starts. So the rule became: <b>every job a customer has with the venue starts and ends in the chat.</b> The website is there for people who find us on Google, and even it points back. After a web booking the bot writes, "By the way — you can do all of this right here on WhatsApp."</p>
+<p>Customers and parents never install anything. The team does have a dashboard, but the rule held for them too. The coach was given the dashboard and never took it up, so the register takes his entries by chat as well. People don't change their habits for a tool. The tool has to come to the habit.</p>
+</section>
+
+<section class="block" aria-labelledby="s1"><h2 id="s1">1. A court for Saturday, typed in Hinglish</h2>
+<p>Kunal doesn't open a menu. He types the way he'd text a friend. The bot spots "slot milega" and opens the booking form inside the chat. A weekend evening needs half paid upfront, so the payment card arrives in the same chat, and a reminder comes the evening before.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="Kunal books a court for Saturday evening">
+<li class="day">Thursday, 9:42 PM</li>
+<li class="me">sat ko shaam 7 baje slot milega?</li>
+<li class="bot">Courts from <b>₹450/hr</b>. Pick date and slot below.<span class="ft">Project 831 · Jamshedpur</span><span class="btns"><span>Pick a slot</span></span></li>
+<li class="sheet"><span class="hd">Plan your booking</span><dl><dt>What are you playing?</dt><dd>Pickleball</dd><dt>When?</dt><dd>Sat, 24 Oct</dd><dt>Time of day</dt><dd>Evening</dd><dt>How long?</dt><dd>1 hour</dd></dl><span class="go">Show available slots</span></li>
+<li class="sheet"><span class="hd">Pick a start time</span><ul class="slots"><li>5:00 PM</li><li>6:00 PM</li><li class="on">7:00 PM</li><li>8:00 PM · 1 court left</li></ul><span class="go">Continue</span></li>
+<li class="sheet"><span class="hd">Booking summary</span><dl><dt>Date</dt><dd>Sat, 24 Oct</dd><dt>Time</dt><dd>7:00 – 8:00 PM</dd><dt>Duration</dt><dd>1 hour</dd><dt>Total</dt><dd>₹700 total — pay ₹350 now to hold it</dd></dl><span class="go">Confirm booking</span></li>
+<li class="bot"><span class="att"><span class="ic">₹</span><span><b>₹350</b><span>Court deposit · Project 831</span></span></span>Pay ₹350 now to lock the court — the balance of ₹350 is due at the venue.
+
+We're holding it for 15 minutes. Unpaid slots are released automatically.<span class="btns"><span>Review and pay</span></span></li>
+<li class="day">₹350 paid by UPI</li>
+<li class="bot"><b>✅ Booking Confirmed</b>
+
+📅 Sat, 24 Oct
+⏰ 7:00 – 8:00 PM
+🎾 Court 2
+🎒 House kit
+💰 ₹700 total
+
+📍 Near Swarna Vihar, Adarsh Nagar, Sonari, Jamshedpur
+🗺️ <a href="https://maps.app.goo.gl/4fZuiB3FCC8PF2Vp6">maps.app.goo.gl/4fZuiB3FCC8PF2Vp6</a>
+
+See you on the court.
+
+<i>Reply anytime to view or manage your booking.</i>
+
+💰 ₹350 paid · <b>₹350 due at the venue</b></li>
+<li class="day">Friday, 7:00 PM</li>
+<li class="bot">Hi Kunal! 🎾
+
+Reminder: You're playing tomorrow.
+
+📅 Sat, 24 Oct
+⏰ 7:00 – 8:00 PM
+🎾 Court 2
+
+📍 Near Swarna Vihar, Adarsh Nagar, Sonari, Jamshedpur
+
+See you there!
+— Project 831</li>
+</ol>
+<figcaption><b>Behind it</b><ol><li>A keyword matcher reads English and Hinglish. "Slot milega", "court hai kya" and "kal khelna hai" all open the booking.</li><li>The three screens are a WhatsApp Flow. Dates and times are picked, never typed, and only free times are shown.</li><li>The deposit rule is a setting: half upfront on weekend evenings, held for 15 minutes, released on its own if unpaid.</li><li>The payment card is Meta's own, paid by UPI without leaving the chat.</li></ol></figcaption>
+</figure>
+<figure class="card pair"><img src="images/p831/wa-pick-slot.jpg" alt="The real WhatsApp booking flow on a phone: Pick a start time, Thursday 15 October, duration 1 hour, a list of free times, several marked only 1 court left." loading="lazy"><img src="images/p831/wa-confirmed.jpg" alt="The real confirmation message in WhatsApp: booked at 831, Thursday 15 October, 6:00 to 7:00 PM, pay ₹700 at the venue, the address and a map link." loading="lazy"><figcaption>The same flow on a real phone, for a weekday booking paid at the venue.</figcaption></figure>
+</section>
+
+<section class="block" aria-labelledby="s2"><h2 id="s2">2. Price, paddles, directions: answered from what people type</h2>
+<p>Most messages to a venue are the same five questions. Priya asks two of them in one line. The bot answers each from its own wording, offers the next step, and knows when a conversation has ended.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="Priya asks about the price and the location">
+<li class="day">Tuesday, 11:05 AM</li>
+<li class="me">kitne paise lagenge? paddle milega?</li>
+<li class="bot"><b>💰 Pricing</b>
+
+Courts are <b>₹450/hr</b> before 12 noon and <b>₹700/hr</b> after, per court.
+
+The booking flow always shows the applicable total before you confirm.
+
+<i>Pricing is per court, not per person.</i></li>
+<li class="bot">Can I help you with anything else?<span class="btns"><span>🎾 See Slot &amp; Book</span><span>❓ More FAQs</span><span>📋 My Bookings</span></span></li>
+<li class="me">location bhejo</li>
+<li class="bot"><b>📍 Location</b>
+
+Near Swarna Vihar, Adarsh Nagar, Sonari, Jamshedpur
+
+Maps: <a href="https://maps.app.goo.gl/4fZuiB3FCC8PF2Vp6">maps.app.goo.gl/4fZuiB3FCC8PF2Vp6</a>
+
+Look for the terracotta wall. Hard to miss.</li>
+<li class="me">ok thanks</li>
+<li class="day">No reply. "ok" and "thanks" end a conversation; they aren't a question.</li>
+</ol>
+<figcaption><b>Behind it</b><ol><li>A dozen topics, each with its own phrases in English and Hinglish: booking, free slots, price, hours, location, payment, cancelling, court rules, the tournament, the club.</li><li>When a message matches two topics, a priority decides. Booking beats price, so "book a court, what's the rate?" opens the booking.</li><li>A message that matches nothing gets the menu once. A second hello within five minutes alerts a person instead of repeating the bot.</li><li>The answers live in the dashboard's settings, so the venue changes a price without a deploy.</li></ol></figcaption>
+</figure>
+</section>
+
+<section class="block" aria-labelledby="s3"><h2 id="s3">3. Can't make it: cancel in the chat, keep the money as credit</h2>
+<p>Rohit paid a deposit for Sunday, then his plans changed. He cancels from the chat without calling anyone, and the ₹350 he paid doesn't vanish into a refund queue. It stays with the venue as credit and comes off his next booking by itself. If he'd rather have the money back, one tap asks for it.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="Rohit cancels a booking and keeps the deposit as credit">
+<li class="day">Sunday, 2:10 PM</li>
+<li class="me">aaj nahi aa paunga, cancel karna hai</li>
+<li class="bot"><b>❌ Cancellation</b>
+
+Cancel or reschedule any time before your slot — no cut-off. Rain, traffic, plans change. We get it.
+
+To cancel: 📋 My Bookings → Cancel. You can cancel more than one at once.
+
+Just don't ghost us — if you can't make it, cancel so someone else can play.<span class="btns"><span>📋 My Bookings</span></span></li>
+<li class="bot"><b>📋 Your Booking</b>
+
+📅 Sun, 25 Oct
+⏰ 6:00 – 7:00 PM
+🎾 Court 1<span class="btns"><span>🔄 Reschedule</span><span>❌ Cancel</span></span></li>
+<li class="me">❌ Cancel</li>
+<li class="bot">Are you sure you want to cancel?<span class="btns"><span>✅ Yes, Cancel</span><span>⬅️ Keep Booking</span></span></li>
+<li class="me">✅ Yes, Cancel</li>
+<li class="bot">✅ Your booking has been cancelled.
+
+Would you like to make a new booking?</li>
+<li class="bot">💰 The ₹350 you had paid is saved as credit.
+
+It comes off your next booking automatically — you do not need to do anything.<span class="btns"><span>↩️ Refund instead</span></span></li>
+<li class="day">The next Saturday, 6:30 PM · books again in the flow</li>
+<li class="bot">✅ Booked — your ₹350 credit covered the deposit, so there is nothing to pay now.</li>
+</ol>
+<!-- Credits: the code is on branch feat/cancellation-credits-and-refunds (PR #371), not merged to main as of 23 Oct 2026. Shown as live at Rahul's choice, 23 Oct. -->
+<figcaption><b>Behind it</b><ol><li>"Nahi aa paunga" and "cancel karna hai" both match the cancelling topic, which points to My Bookings.</li><li>Cancelling has no notice period. The venue would rather free the court than keep a no-show.</li><li>Paid money becomes a credit with its own ledger: every rupee spent from it names the booking it went to.</li><li>"Refund instead" sends it back through Razorpay. If the refund fails, the credit is put back and the desk is told, so the money is never in neither place.</li></ol></figcaption>
+</figure>
+</section>
+
+<section class="block" aria-labelledby="s4"><h2 id="s4">4. Members: a balance of hours, spent in the chat</h2>
+<p>Ankit is in the 831 Players Club: prepaid court hours, cheaper than paying each time. His wallet is that balance. He asks how much is left in Hindi, and books against it with one tap. Joining happens at the desk, on purpose: nobody buys a pack of court hours from a chat bubble. After that, every hour is booked and counted in the chat.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="Ankit checks his membership hours and books with them">
+<li class="day">Saturday, 8:15 PM</li>
+<li class="me">kitne hours bache?</li>
+<li class="bot"><span class="hd">🪪 831 Players Club</span><b>6 hours</b> left of 10 hours
+Used 4 hours so far · valid till Mon, 30 Nov<span class="btns"><span>🎾 Book a court</span><span>📞 Top up / call us</span></span></li>
+<li class="me">🎾 Book a court</li>
+<li class="bot">You've got <b>6 hours</b> left. How do you want to book this one?<span class="btns"><span>🎾 Use my hours</span><span>💳 Pay normally</span></span></li>
+<li class="me">🎾 Use my hours</li>
+<li class="day">Picks Sunday, 7:00 AM for 1 hour 30 minutes in the flow</li>
+<li class="bot">✅ Booked with your <b>831 Players Club</b> hours!
+
+📅 Sun, 1 Nov
+⏰ 7:00 – 8:30 AM
+🎾 Court 1
+🎒 House kit
+
+Pulled 1 hour 30 minutes — <b>4 hours 30 minutes left</b>.
+
+📍 Near Swarna Vihar, Adarsh Nagar, Sonari, Jamshedpur</li>
+</ol>
+<figcaption><b>Behind it</b><ol><li>"Kitne hours bache", "my hours" and "check balance" all open the member card.</li><li>The booking summary says what the hours will draw before he confirms: "Pay with your hours · draws 1 hour 30 minutes (4 hours 30 minutes left)".</li></ol></figcaption>
+</figure>
+</section>
+
+<section class="block" aria-labelledby="s5"><h2 id="s5">5. A parent renews in two taps, and the invoice follows by itself</h2>
+<p>Neha's son Aarav is in the Off-Screen Club, the venue's weekend fitness club for children. Three days before his month ends, she gets a message with the fee and a button. She pays by UPI in the chat. Minutes later the invoice arrives as a PDF, and nobody at the venue has chased her or typed anything.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="Neha renews her son's membership and gets the invoice">
+<li class="day">Wednesday, 10:00 AM</li>
+<li class="bot"><span class="hd">Membership update</span>Hi Neha, Aarav's Off-Screen Club membership ends on Sat, 31 Oct. The fee for the next month is ₹1,999.
+
+Tap <b>Renew and pay</b> to pay it here in WhatsApp.<span class="ft">Project 831</span><span class="btns"><span>Renew and pay</span><span>Not this month</span></span></li>
+<li class="me">Renew and pay</li>
+<li class="bot"><span class="att"><span class="ic">₹</span><span><b>₹1,999</b><span>Secure payment by UPI or card</span></span></span>Next month of Aarav's Off-Screen Club membership.<span class="btns"><span>Review and pay</span></span></li>
+<li class="day">₹1,999 paid by UPI</li>
+<li class="bot">Thank you, Neha! Aarav's Off-Screen Club membership is renewed from Sun, 1 Nov, and we've received ₹1,999.
+
+— Project 831</li>
+<li class="day">10:14 AM</li>
+<li class="bot"><span class="att"><span class="ic">PDF</span><span><b>INV-0014.pdf</b><span>1 page · PDF</span></span></span>Hi Neha, here is the invoice for Aarav's Off-Screen Club membership.
+
+Invoice number: INV-0014
+Period: 1 Nov – 30 Nov 2026
+Payment: ₹1,999 by UPI in WhatsApp on 28 Oct
+
+The PDF is attached for your records. If anything looks wrong, reply here and we will fix it.<span class="ft">Project 831 × Fit with Arsh</span></li>
+</ol>
+<figcaption><b>Behind it</b><ol><li>A 7 AM job plans the messages: three days before the month ends, on the day, and after. Each one can run on its own or wait for the owner's review.</li><li>Every amount is checked against the register before the message goes out.</li><li>The invoice is drawn on demand and sent between 8 AM and 9 PM: one per parent, one line per payment.</li></ol></figcaption>
+</figure>
+</section>
+
+<section class="block" aria-labelledby="s6"><h2 id="s6">6. The owner hears about every booking, in Hindi</h2>
+<p>My father runs the desk, and he reads Hindi more easily than English. He doesn't open a dashboard to learn what came in. Every booking, cancellation, no-show and payment reaches his own WhatsApp, in Hindi, with the one number he needs: what is still to collect.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="A booking alert in Hindi on the owner's phone">
+<li class="day">Thursday, 9:44 PM</li>
+<li class="bot" lang="hi">एक नई बुकिंग आई है।
+
+ग्राहक का नाम: Kunal
+बुकिंग का दिन और समय: शनिवार, 24 अक्तूबर, 7:00 PM
+कितनी देर के लिए: 1 घंटा
+अभी ₹350 लेने बाकी हैं।</li>
+</ol>
+<figcaption><b>Behind it</b><ol><li>Each person chooses Hindi or English. Numbers, ₹ and times stay in English digits, as he reads them on the bill.</li><li>The template is four plain facts. Meta refused a shorter version for having too few words, so every line is a full sentence.</li><li>Lengths read "1 घंटा 30 मिनट", never a decimal.</li></ol></figcaption>
+</figure>
+</section>
+
+<section class="block" aria-labelledby="s7"><h2 id="s7">7. Even the desk works in the chat</h2>
+<p>When a parent hands me cash at the counter, I don't open a laptop. I type one line to the bot, and the register on the dashboard updates. Recording a payment never messages the parent on its own.</p>
+<figure class="card convo">
+<ol class="chat" aria-label="The desk records a cash payment by typing to the bot">
+<li class="day">Saturday, 5:20 PM</li>
+<li class="me">desk paid 9876543210 cash</li>
+<li class="bot"><b>✅ Payment recorded</b>
+
+🧒 Aarav
+💰 ₹1,999 · cash
+🙋 Collected by Rahul
+
+<i>It is on the dashboard. The parent has <b>not</b> been messaged.</i></li>
+</ol>
+<figcaption><b>Behind it</b><ol><li>Only numbers with a grant can use the desk words. Anyone without money rights reports a payment instead, and the venue confirms it.</li><li>Typing "desk" opens the same jobs as forms: a new enrolment, a payment, stopping a member.</li><li>Stopping a member never deletes them. The month they paid for stays on the register.</li></ol></figcaption>
+</figure>
+</section>
+
+<section class="block" aria-labelledby="rules"><h2 id="rules">What WhatsApp's rules shaped <span class="for">for engineers</span></h2>
+<ul>
+<li><b>The 24-hour window.</b> A business may write freely only within 24 hours of the customer's last message. Everything the venue starts, such as reminders, renewals and invoices, is a template approved by Meta: Utility for facts, Marketing for offers. Utility copy states facts and never persuades, or Meta files it as Marketing.</li>
+<li><b>Two numbers.</b> Parents and broadcasts go from a second number, so the booking number's quality rating is never put at risk.</li>
+<li><b>Forms where typing fails.</b> Dates, times and lengths are picked in a WhatsApp Flow. Free text is only for questions, and the matcher handles those.</li>
+<li><b>Payments in the chat.</b> Meta's order card, settled by Razorpay. A hold expires on its own, and the slot goes back on sale.</li>
+</ul>
+</section>
+
+<footer class="foot">
+  <p><a href="case/p831.html">← Back to Project 831</a> · the desk, Staff Mode and what broke</p>
+  <p><a href="https://rkj-builds.github.io/project-831-case-study/">The full case study</a> · the venue, the money, the people</p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>

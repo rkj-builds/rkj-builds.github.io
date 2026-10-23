@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Project 831 — Rahul Jha</title>
-<meta name="description" content="The software my sports venue runs on, so one caretaker can run the desk while bookings come in by themselves.">
+<meta name="description" content="The software my sports venue runs on: customers book, pay and renew inside WhatsApp with no app to download, and one caretaker runs the desk.">
 <meta name="color-scheme" content="dark light">
 <link rel="stylesheet" href="../../style.css">
 <script src="../../theme.js"></script>
@@ -16,7 +16,7 @@
 <nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Project 831 · co-founder · Mar 2026 to now</span></nav>
 <header class="stack-lg">
   <h1>Project 831</h1>
-  <p class="about">The software my sports venue runs on, so one caretaker can run the desk while bookings come in by themselves.</p>
+  <p class="about">The software my sports venue runs on: customers book, pay and renew inside WhatsApp with no app to download, and one caretaker runs the desk.</p>
   <p class="muted"><b>Project 831</b> is a two-court pickleball venue in Jamshedpur, in eastern India, that I co-founded and run alongside my design job. People book a court by WhatsApp, on the website or at the desk, and parents enrol their children in a weekend fitness club. I designed and built everything it runs on.</p>
   <dl class="meta"><dt>My part</dt><dd>Designed and built the whole system, from zero</dd><dt>With</dt><dd>A co-founder on the venue; Claude Code on the code</dd><dt>When</dt><dd>March to October 2026</dd><dt>Status</dt><dd>Live, in daily use</dd></dl>
   <dl class="glance"><div><b>15% → 74%</b><span>of court bookings made with no one on the phone, May to September</span></div><div><b>69%</b><span>of people who open the WhatsApp booking flow go on to book</span></div><div><b>₹5.6 lakh</b><span>about $6,700, through the system since May</span></div><div><b>1,698 commits</b><span>in 208 days, 70% co-authored with Claude Code</span></div></dl>
@@ -29,9 +29,11 @@
 <p>So the goal was simple: the venue should take its own bookings, and one caretaker should be able to run the desk without doing sums.</p>
 </section>
 
-<section class="block" aria-labelledby="bookings"><h2 id="bookings">1. Bookings that take themselves</h2>
-<p>A customer messages the venue on WhatsApp and gets a booking flow inside the chat: pick a date, a length and a time, and the confirmation arrives with the price and a map. The website, the desk and a phone voice agent take bookings too. All of them ask one place what is free, so they can never offer the same slot twice.</p>
+<section class="block" aria-labelledby="bookings"><h2 id="bookings">1. Everything happens in WhatsApp</h2>
+<p>Nobody downloads an app to use the venue. A customer messages its WhatsApp number and does everything there. They book a court in a form inside the chat, pay the deposit by UPI without leaving it, get a reminder the evening before, cancel and keep the money as credit, check their membership hours, and ask about prices or directions in Hindi or English. Parents renew their child's club in two taps, and the invoice arrives by itself.</p>
+<p>That was a deliberate choice. In Jamshedpur, people already message a business on WhatsApp, so instead of moving them to an app, I made the chat do the work. The website, the desk and a phone voice agent take bookings too, and all of them ask one place what is free, so they can never offer the same slot twice.</p>
 <p>Self-serve went from <b>15% of court bookings in May to 74% in September</b>, and 69% of people who open the WhatsApp flow finish it. By September only 19 bookings in the month needed a person: <b data-estimate>about 3 hours</b><!-- ESTIMATE: 73 − 54 self-serve = 19 manual bookings in September (links.md); 19 × 10 min ≈ 3 h. Replace with the real figure. --> of calls instead of twelve.</p>
+<a class="cta" href="../p831-whatsapp.html">See the conversations, message by message →</a>
 </section>
 
 <section class="block" aria-labelledby="desk"><h2 id="desk">2. A desk one caretaker can run</h2>
@@ -63,7 +65,7 @@
 <section class="block" aria-labelledby="built"><h2 id="built">How it's built <span class="for">for engineers</span></h2>
 <ul>
 <li><b>React 19 and a Vite PWA</b> for the desk, the staff app and the dashboard; serverless functions on Vercel; Postgres underneath.</li>
-<li><b>WhatsApp Cloud API and WhatsApp Flows</b> for booking inside the chat; Razorpay for payments.</li>
+<li><b>WhatsApp Cloud API and WhatsApp Flows</b> for forms inside the chat, Meta's payment cards settled by Razorpay, and templates approved by Meta for every message the venue starts: reminders, renewals, invoices.</li>
 <li><b>One availability module</b> answers for the desk, the website, the bot and the voice agent, and runs again on the server when a booking is written, so a race for the last court comes back as a refusal, not a double booking.</li>
 <li><b>Dates that never slip a day.</b> A date with no time, stored as midnight UTC and shown in a browser behind UTC, becomes the day before. Every date-only value is formatted in UTC.</li>
 <li><b>1,698 commits in 208 days</b>, 70% of them co-authored with Claude Code. I write the spec and review every diff.</li>
