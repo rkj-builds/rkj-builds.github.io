@@ -8,6 +8,7 @@
 <meta name="color-scheme" content="dark light">
 <link rel="stylesheet" href="../../style.css">
 <script src="../../theme.js"></script>
+<script src="case.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -19,19 +20,57 @@
   <p class="about">The software my sports venue runs on: customers book, pay and renew inside WhatsApp with no app to download, and one caretaker runs the desk.</p>
   <p class="muted"><b>Project 831</b> is a two-court pickleball venue in Jamshedpur, in eastern India, that I co-founded and run alongside my design job. People book a court by WhatsApp, on the website or at the desk, and parents enrol their children in a weekend fitness club. I designed and built everything it runs on.</p>
   <dl class="meta"><dt>My part</dt><dd>Designed and built the whole system, from zero</dd><dt>With</dt><dd>A co-founder on the venue; Claude Code on the code</dd><dt>When</dt><dd>March to October 2026</dd><dt>Status</dt><dd>Live, in daily use</dd></dl>
-  <dl class="glance"><div><b>15% → 74%</b><span>of court bookings made with no one on the phone, May to September</span></div><div><b>69%</b><span>of people who open the WhatsApp booking flow go on to book</span></div><div><b>₹5.6 lakh</b><span>about $6,700, through the system since May</span></div><div><b>1,698 commits</b><span>in 208 days, 70% co-authored with Claude Code</span></div></dl>
+  <div class="hero" aria-labelledby="hero-k">
+    <p id="hero-k">Court bookings made with no one on the phone</p>
+    <p class="nums"><s>15%</s><i aria-hidden="true">→</i><span>74%</span></p>
+    <ul class="bars" aria-label="Self-serve share of court bookings">
+      <li><span>May</span><span class="track"><span class="fill" style="width:15%"></span></span><span>15%</span></li>
+      <li class="now"><span>Sep</span><span class="track"><span class="fill" style="width:74%"></span></span><span>74%</span></li>
+    </ul>
+    <p class="dim">69% of people who open the WhatsApp booking flow go on to book. ₹5.6 lakh, about $6,700, has gone through the system since May.</p>
+  </div>
   <figure class="card pair"><img src="../images/p831/wa-pick-slot.jpg" alt="The WhatsApp booking flow: Pick a start time, Thursday 15 October, duration 1 hour, a list of free times, several marked only 1 court left." loading="lazy"><img src="../images/p831/wa-confirmed.jpg" alt="The confirmation message in WhatsApp: booked at 831, Thursday 15 October, 6:00 to 7:00 PM, pay ₹700 at the venue, the address and a map link." loading="lazy"><figcaption>Booking a court without talking to anyone: pick a time inside WhatsApp, get the confirmation a minute later.</figcaption></figure>
 </header>
 
+<nav class="chapters" aria-label="Chapters"><a href="#problem">Why</a><a href="#moments">Seven months</a><a href="#bookings">1 · WhatsApp</a><a href="#desk">2 · The desk</a><a href="#staff">3 · Staff Mode</a><a href="#learnings">4 · What broke</a><a href="#otherwise">Data said otherwise</a><a href="#built">For engineers</a><a href="#stands">Today</a></nav>
+
 <section class="block" aria-labelledby="problem"><h2 id="problem">Why I built it</h2>
-<p>In the first months, a booking was a conversation. Somebody called or messaged the venue's number, and a person checked a paper sheet, quoted a price from memory, held a slot and remembered to collect. That works at ten bookings a week and collapses at fifty, worst in the evening, when the person holding the phone is also the person running the desk.</p>
+<p>In the first months, a booking was a conversation. Somebody called or messaged the venue's number, and a person checked a paper sheet, quoted a price from memory, held a slot and remembered to collect.</p>
+<blockquote class="pull">That works at ten bookings a week and collapses at fifty.</blockquote>
+<p>Worst in the evening, when the person holding the phone is also the person running the desk.</p>
 <p>In May, 72 of the 85 court bookings came in that way. At about ten minutes of calls and messages each, that was <b data-estimate>around 12 hours a month</b><!-- ESTIMATE: 85 − 13 self-serve = 72 manual bookings in May (links.md); 72 × 10 min = 720 min = 12 h. Replace with the real figure. --> on bookings alone, plus "did anyone pay cash today?" most days, and my father driving over to collect it. It meant keeping staff on the phone, and that came straight out of revenue: the venue costs ₹62,000 a month just to open its doors.</p>
 <p>So the goal was simple: the venue should take its own bookings, and one caretaker should be able to run the desk without doing sums.</p>
 </section>
 
+<section class="block" aria-labelledby="moments-h" id="moments"><h2 id="moments-h">Seven months, in five moments</h2>
+<ol class="moments">
+<li><time datetime="2026-03">Mar 2026</time><span class="dot" aria-hidden="true"></span><span><b>Work on the software starts</b><span>Bookings come by call and message, onto a paper sheet at the desk.</span></span></li>
+<li><time datetime="2026-05">May</time><span class="dot" aria-hidden="true"></span><span><b>72 of 85 bookings needed a person</b><span>About 12 hours a month on the phone; 15% booked themselves.</span></span></li>
+<li class="win"><time datetime="2026-09">Sep</time><span class="dot" aria-hidden="true"></span><span><b>74% book themselves</b><span>19 bookings in the month needed a person: about 3 hours.</span></span></li>
+<li class="broke"><time datetime="2026-10-10">10 Oct</time><span class="dot" aria-hidden="true"></span><span><b>The site went down; nothing was deployed</b><span>The free database tier ran out of its disk budget.</span></span></li>
+<li class="win"><time datetime="2026-10-21">21 Oct</time><span class="dot" aria-hidden="true"></span><span><b>Staff Mode in Hindi</b><span>For my dad at the desk, with attendance first.</span></span></li>
+</ol>
+</section>
+
 <section class="block" aria-labelledby="bookings"><h2 id="bookings">1. Everything happens in WhatsApp</h2>
+<div class="readas" data-readas role="tablist" aria-label="Read as" hidden><button type="button" role="tab" id="t-design" aria-controls="p-design">Design</button><button type="button" role="tab" id="t-eng" aria-controls="p-eng">Engineering</button></div>
+<div id="p-design" role="tabpanel" aria-labelledby="t-design" class="stack-read">
 <p>Nobody downloads an app to use the venue. A customer messages its WhatsApp number and does everything there. They book a court in a form inside the chat, pay the deposit by UPI without leaving it, get a reminder the evening before, cancel and keep the money as credit, check their membership hours, and ask about prices or directions in Hindi or English. Parents renew their child's club in two taps, and the invoice arrives by itself.</p>
 <p>That was a deliberate choice. In Jamshedpur, people already message a business on WhatsApp, so instead of moving them to an app, I made the chat do the work. The website, the desk and a phone voice agent take bookings too, and all of them ask one place what is free, so they can never offer the same slot twice.</p>
+</div>
+<div id="p-eng" role="tabpanel" aria-labelledby="t-eng" class="stack-read">
+<p><b>WhatsApp Cloud API and WhatsApp Flows</b> for the forms inside the chat; Meta's payment cards, settled by Razorpay; and a template Meta approved for every message the venue starts: reminders, renewals, invoices.</p>
+<p>The website, the desk, the bot and the voice agent all ask <b>one availability module</b> what is free, and it runs again on the server when a booking is written. A race for the last court comes back as a refusal, not a double booking.</p>
+</div>
+<div class="play" data-steps aria-label="A booking, step by step">
+<div class="steps" aria-hidden="true"></div>
+<span class="k">A booking, in four steps</span>
+<div data-step><span class="t">1. Message the venue</span><p>A customer writes to the venue's WhatsApp number. No app, no account.</p></div>
+<div data-step><span class="t">2. Pick a time in a form inside the chat</span><p>Free times for the day, some marked "1 court left". The court is picked for them.</p></div>
+<div data-step><span class="t">3. Pay the deposit by UPI, without leaving the chat</span><p>Or pay at the venue.</p></div>
+<div data-step><span class="t">4. Confirmed, with the address and a map</span><p>A reminder follows the evening before. Cancelling keeps the money as credit.</p></div>
+<div class="row" hidden><button type="button" class="cta ghost" data-back>Back</button><button type="button" class="cta" data-next>Next step</button></div>
+</div>
 <p>Self-serve went from <b>15% of court bookings in May to 74% in September</b>, and 69% of people who open the WhatsApp flow finish it. By September only 19 bookings in the month needed a person: <b data-estimate>about 3 hours</b><!-- ESTIMATE: 73 − 54 self-serve = 19 manual bookings in September (links.md); 19 × 10 min ≈ 3 h. Replace with the real figure. --> of calls instead of twelve.</p>
 <a class="cta" href="../p831-whatsapp.html">See the conversations, message by message →</a>
 </section>
@@ -39,12 +78,20 @@
 <section class="block" aria-labelledby="desk"><h2 id="desk">2. A desk one caretaker can run</h2>
 <p>There are two apps: a dashboard for the owner and the desk, and a much simpler phone app for whoever is at the counter, Staff Mode (below). The dashboard sees the day as a board: courts across, time down, every booking a block with a name and an amount. Adding a booking asks for a time, not a court, and picks the free court itself. Payment is three plain choices, not a dropdown.</p>
 <figure class="card"><img src="../images/p831/01-bookings-day.jpg" alt="A day view: courts as columns, time down the side, bookings drawn as blocks with names and amounts, held coaching slots hatched, a line marking the current time." loading="lazy"><figcaption>The day as the desk sees it. The header answers the only question the owner asks: how much of today is sold.</figcaption></figure>
+<div class="try inline"><img src="../images/how-i-build/01-coss-desk.jpg" alt="" loading="lazy"><div class="txt"><h3><a href="coss-ui.html">Run the desk yourself</a></h3><p>The same booking product rebuilt on Cal.com's coss ui, on fake data.</p></div><div class="ctas"><a class="cta" href="https://rkj-builds.github.io/slot-picker/">Open the app ↗</a></div></div>
 </section>
 
 <section class="block" aria-labelledby="staff"><h2 id="staff">3. Staff Mode: the desk stops doing maths</h2>
 <p>The person at the desk works standing up, is often mid-conversation, and shouldn't need to be good at sums. A game that starts at 7:40 and is booked for 2 hours 20 minutes ends at 10:00. Nobody at the counter should have to work that out, or argue about the twelve minutes someone played past their hour.</p>
 <p>So the staff app does it. Two taps, Start and Finish. The board shows when each game ends and when its free minutes run out. Overtime follows one published rule, ten minutes free and then fifteen-minute steps, and the screen says one number: <b>"Take this money: ₹175."</b> Since 21 October it opens in Hindi, for my dad at the desk, and asks for attendance before anything else.</p>
 <figure class="card pair"><img src="../staff-mode/img/hindi-courts.jpg" alt="The staff app in Hindi: today's attendance not marked with a Mark attendance button, then Court 1 playing, ends 7:00 PM, extra free till 7:10 PM, paid." loading="lazy"><img src="../staff-mode/img/game.jpg" alt="Game over in the staff app: Take this money ₹175, with the court time and what was already paid." loading="lazy"><figcaption>The board in Hindi, with attendance first. At the end of a game, one number to collect.</figcaption></figure>
+<div class="play" data-extra data-step="15" data-free="10" data-per-hour="700">
+<span class="k">Try the rule: a one-hour game at ₹700 an hour</span>
+<label for="over">Played past the hour <output data-over for="over">12 minutes</output></label>
+<input id="over" type="range" min="0" max="60" step="1" value="12">
+<div class="out"><div><span class="k">Extra time charged</span><b data-charged>15 minutes</b></div><div class="money"><span class="k">Take this money</span><b data-money>₹175</b></div></div>
+</div>
+<details class="eng"><summary>For engineers <span>one rule, two places</span></summary><p>The rule lives in one module. The staff app runs it to show the amount before the desk taps Finish, and the server runs the same module when it records the game, so the screen and the bill can never disagree. A step that isn't a whole number of rupees rounds up to the next ₹10, so the desk is never asked for paise.</p></details>
 <a class="cta" href="../staff-mode/">Read about Staff Mode →</a>
 </section>
 
@@ -54,11 +101,11 @@
 </section>
 
 <section class="block" aria-labelledby="otherwise"><h2 id="otherwise">Where the data said otherwise</h2>
-<ol class="turns">
-<li><b>Per-minute billing was exact, and impossible to defend.</b><span>Charging every minute over was the fairest maths and the worst conversation at the counter. Coarse steps with a free window are easy to say out loud, so that became the rule, published on the bill.</span></li>
-<li><b>A reminder said ₹11,996. The real figure was ₹5,998.</b><span>The planner counted register rows, and one parent had two children with two paid months each. It was caught in review before it went out. Now every amount in a message is checked against the register first.</span></li>
-<li><b>"8.5:00 – 10.5:00 PM".</b><span>A duration divided by sixty was printed as it was. The maths was right and the message read like a bug. Now every length of time a person reads goes through one formatter: "8:30 – 10:30 PM (2 hours)".</span></li>
-<li><b>The site went down, and nothing had been deployed.</b><span>The free database tier ran out of its disk budget on a Friday, and the login screen blamed the user instead. The rule now: rule out capacity before blaming a deploy.</span></li>
+<ol class="shifts">
+<li><b>Per-minute billing was exact, and impossible to defend.</b><dl><div><dt>We thought</dt><dd>Charge every minute over: the fairest maths.</dd></div><div><dt>We saw</dt><dd>The worst conversation at the counter.</dd></div><div><dt>So now</dt><dd>Ten free minutes, then fifteen-minute steps, published on the bill.</dd></div></dl></li>
+<li><b>A reminder said ₹11,996. The real figure was ₹5,998.</b><dl><div><dt>We thought</dt><dd>Count the register rows.</dd></div><div><dt>We saw</dt><dd>One parent, two children, two paid months each. Caught in review before it went out.</dd></div><div><dt>So now</dt><dd>Every amount in a message is checked against the register first.</dd></div></dl></li>
+<li><b>"8.5:00 – 10.5:00 PM".</b><dl><div><dt>We thought</dt><dd>A duration divided by sixty is a time.</dd></div><div><dt>We saw</dt><dd>The maths was right, and the message read like a bug.</dd></div><div><dt>So now</dt><dd>Every length of time goes through one formatter: "8:30 – 10:30 PM (2 hours)".</dd></div></dl></li>
+<li><b>The site went down, and nothing had been deployed.</b><dl><div><dt>We thought</dt><dd>A deploy had broken the login.</dd></div><div><dt>We saw</dt><dd>The free database tier had run out of its disk budget, and the login screen blamed the user.</dd></div><div><dt>So now</dt><dd>Rule out capacity before blaming a deploy.</dd></div></dl></li>
 </ol>
 </section>
 

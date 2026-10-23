@@ -8,6 +8,7 @@
      Body      prose                          --text / --leading   --w-body      --muted
      Meta      dates, tags, labels, nav       --text / --leading   --w-body      --dim
      Small     captions, tables, code, buttons --text-sm / --leading-sm          --dim or --muted
+     Display   case pages only: one headline number (--text-xl) and one pull quote per page (--text-lg)
    Lists of things share one rhythm: a title over one line, 8px above and below, 8px between. */
 
 :root {
@@ -21,6 +22,7 @@
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --text: 16px; --leading: 26px;
   --text-sm: 14px; --leading-sm: 22px;
+  --text-lg: 22px; --leading-lg: 32px; --text-xl: 48px; --leading-xl: 52px;
   --w-body: 400; --w-title: 450; --w-heading: 550;
   color-scheme: dark;
 }
@@ -269,3 +271,96 @@ figure.card .chat { list-style: none; margin: 0; padding: 14px 12px; width: 100%
 .chat .att span { color: var(--dim); }
 .chat .att .ic { flex: none; width: 30px; height: 36px; border-radius: 4px; display: grid; place-items: center; background: var(--chat-link); color: var(--bg); font-weight: var(--w-heading); font-size: var(--text-sm); }
 figure.card.convo figcaption ol { margin: 6px 0 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+
+/* Case page components (23 Oct 2026). Same column; they give a long read a shape.
+   Chapters: the page's map under the header; it sticks while reading and marks where you are (case.js). */
+.chapters { position: sticky; top: 0; z-index: 2; margin: 0 -20px; padding: 10px 20px; background: var(--bg); display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+.chapters::-webkit-scrollbar { display: none; }
+.read > .chapters { margin-top: -56px; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
+.chapters a { flex: none; padding: 4px 12px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--line); color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-sm); text-decoration: none; white-space: nowrap; transition: background-color .15s ease-out, color .15s ease-out; }
+.chapters a:hover { color: var(--fg); box-shadow: inset 0 0 0 1px var(--dim); }
+.chapters a[aria-current="true"] { background: var(--fg); color: var(--bg); box-shadow: none; }
+[hidden] { display: none !important; }
+section.block h2[id], section.block[id] { scroll-margin-top: 72px; }
+/* The headline number: before → after, with one bar each */
+.hero { display: flex; flex-direction: column; gap: 14px; }
+.hero > p { color: var(--dim); }
+.hero .nums { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; font-size: var(--text-xl); line-height: var(--leading-xl); font-weight: var(--w-heading); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.hero .nums s { text-decoration: none; color: var(--dim); }
+.hero .nums i { font-style: normal; font-size: var(--text-lg); color: var(--under); }
+.bars { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; font-size: var(--text-sm); line-height: var(--leading-sm); }
+.bars li { display: grid; grid-template-columns: 40px minmax(0, 1fr) 40px; align-items: center; gap: 12px; color: var(--dim); }
+.bars li > :last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.bars .track { height: 8px; border-radius: 4px; background: var(--card); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; }
+.bars .fill { display: block; height: 100%; border-radius: 4px; background: var(--under); }
+.bars li.now { color: var(--fg); }
+.bars li.now .fill { background: var(--accent); }
+/* One pull quote per page */
+blockquote.pull { margin: 0; padding: 0; font-size: var(--text-lg); line-height: var(--leading-lg); font-weight: var(--w-title); letter-spacing: -0.01em; color: var(--fg); text-wrap: balance; }
+/* Moments: a timeline of dated steps; the accent dot marks a result, the plain one a step, the hollow one a failure */
+section.block ol.moments { list-style: none; padding: 0; gap: 0; }
+ol.moments li { display: grid; grid-template-columns: 64px 12px minmax(0, 1fr); gap: 0 14px; color: var(--muted); }
+ol.moments time { color: var(--dim); font-size: var(--text-sm); line-height: var(--leading); }
+ol.moments .dot { display: flex; flex-direction: column; align-items: center; }
+ol.moments .dot::before { content: ""; width: 9px; height: 9px; margin-top: 9px; border-radius: 99px; background: var(--under); flex: none; }
+ol.moments .dot::after { content: ""; flex: 1; width: 1px; margin-top: 4px; background: var(--line); }
+ol.moments li:last-child .dot::after { display: none; }
+ol.moments li.win .dot::before { background: var(--accent); }
+ol.moments li.broke .dot::before { background: none; box-shadow: inset 0 0 0 1.5px var(--dim); }
+ol.moments li > span:last-child { padding-bottom: 20px; }
+ol.moments b { display: block; color: var(--fg); font-weight: var(--w-title); }
+ol.moments li > span:last-child > span { display: block; font-size: var(--text-sm); line-height: var(--leading-sm); }
+@media (max-width: 420px) { ol.moments li { grid-template-columns: 52px 12px minmax(0, 1fr); gap: 0 10px; } }
+/* Where the data said otherwise, as cards: we thought, we saw, so now */
+section.block ol.shifts { list-style: none; padding: 0; gap: 12px; }
+ol.shifts li { display: flex; flex-direction: column; gap: 12px; padding: 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+ol.shifts li > b { color: var(--fg); }
+ol.shifts dl { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; font-size: var(--text-sm); line-height: var(--leading-sm); }
+ol.shifts dt { color: var(--dim); }
+ol.shifts dd { margin: 2px 0 0; color: var(--muted); }
+ol.shifts div:last-child dt { color: var(--accent); }
+ol.shifts div:last-child dd { color: var(--fg); }
+@media (max-width: 560px) { ol.shifts dl { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
+/* For engineers: the detail folds inside the chapter it belongs to */
+details.eng { border-radius: 12px; box-shadow: inset 0 0 0 1px var(--line); }
+details.eng > summary { list-style: none; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px 16px; cursor: pointer; color: var(--fg); font-weight: var(--w-title); }
+details.eng > summary::-webkit-details-marker { display: none; }
+details.eng > summary::after { content: "+"; margin-left: auto; color: var(--dim); font-weight: var(--w-body); }
+details.eng[open] > summary::after { content: "−"; }
+details.eng > summary span { color: var(--dim); font-weight: var(--w-body); }
+details.eng > summary:hover::after { color: var(--fg); }
+details.eng > summary:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; border-radius: 12px; }
+details.eng > :not(summary) { margin: 0 16px 16px; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-sm); }
+details.eng ul { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; }
+details.eng b { color: var(--fg); font-weight: var(--w-title); }
+/* Try it here: the home page's live card, inline at the end of a chapter */
+.try.inline { flex-direction: row; align-items: center; gap: 14px; flex-wrap: wrap; }
+.try.inline img { width: 120px; flex: none; aspect-ratio: 16 / 10; }
+.try.inline .txt { display: flex; flex-direction: column; gap: 2px; flex: 999 1 220px; min-width: 0; }
+.try.inline .ctas { margin: 0; padding: 0; }
+@media (max-width: 480px) { .try.inline img { width: 100%; } }
+/* Read as: one chapter in two readings. Without script both show, one after the other. */
+.readas { display: inline-flex; padding: 3px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--line); align-self: flex-start; }
+.readas button { font: inherit; font-size: var(--text-sm); line-height: var(--leading-sm); min-height: 32px; padding: 4px 12px; border: 0; border-radius: 7px; background: none; color: var(--muted); cursor: pointer; }
+.readas button[aria-selected="true"] { background: var(--fg); color: var(--bg); }
+.readas button:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+.stack-read { display: flex; flex-direction: column; gap: 26px; }
+/* Play: a small working piece of the product, inside a card */
+.play { display: flex; flex-direction: column; gap: 14px; padding: 16px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); }
+.play .steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.play .steps span { height: 4px; border-radius: 4px; background: var(--line); transition: background-color .2s ease-out; }
+.play .steps span.on { background: var(--accent); }
+.play .k { color: var(--dim); font-size: var(--text-sm); line-height: var(--leading-sm); font-variant-numeric: tabular-nums; }
+.play .t { color: var(--fg); font-weight: var(--w-title); }
+.play p { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-sm); }
+.play .row { display: flex; gap: 8px; flex-wrap: wrap; }
+.play .row .cta { margin: 0; }
+.play .cta[disabled] { opacity: .4; cursor: default; }
+.play button.cta { font: inherit; font-size: var(--text-sm); line-height: var(--leading-sm); font-weight: var(--w-title); border: 0; cursor: pointer; }
+.play label { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-sm); }
+.play label output { color: var(--fg); font-variant-numeric: tabular-nums; }
+.play input[type=range] { width: 100%; margin: 0; font-size: var(--text); accent-color: var(--accent); min-height: 24px; }
+.play .out { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.play .out b { display: block; color: var(--fg); font-size: var(--text-lg); line-height: var(--leading-lg); font-weight: var(--w-heading); font-variant-numeric: tabular-nums; }
+.play .out .money b { color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .chapters a, .play .steps span { transition: none; } }

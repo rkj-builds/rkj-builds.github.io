@@ -8,6 +8,7 @@
 <meta name="color-scheme" content="dark light">
 <link rel="stylesheet" href="../../style.css">
 <script src="../../theme.js"></script>
+<script src="case.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -26,6 +27,8 @@
   <figure class="card"><img src="../images/chess-clubs/01-board-room.jpg" alt="The prototype: a phone on a dark chessboard showing a WhatsApp chat in Marathi. The puzzle's board, three move buttons, the child's tapped move Bd2, and the coach's hint with 2 tries left. Beside it, three steps (tap a language, solve today's puzzle, read the coach) and twelve city cards, Pune selected." width="1600" height="1000" loading="lazy"><figcaption>Viewing from Pune: the club speaks Marathi and English. A wrong move gets a hint that names the piece, not the answer. <a href="../chess-clubs/?from=pune">Try it in your browser</a></figcaption></figure>
 </header>
 
+<nav class="chapters" aria-label="Chapters"><a href="#problem">The problem</a><a href="#piece-1">1 · Puzzle and coach</a><a href="#piece-2">2 · WhatsApp's rules</a><a href="#piece-3">3 · A real number</a><a href="#turns">Work said otherwise</a><a href="#built">For engineers</a><a href="#stands">Today</a></nav>
+
 <section class="block" aria-labelledby="problem"><h2 id="problem">The problem</h2>
 <p>The bet is that a new app is a bigger step than chess itself. The people this is for: a kid who watched Gukesh win and shares the family phone; a grandparent with an hour free and WhatsApp open; anyone who reads Hindi, Tamil or Marathi more easily than English. Each of them already uses one app confidently, every day.</p>
 </section>
@@ -34,25 +37,29 @@
 <p>In the concept, the daily puzzle from Chess.com's public API arrives every morning as a picture of the board with three moves to tap. Typing a move works too. A wrong move gets a hint that names the piece, then the square; the answer only after three tries. When it's solved, the message links to the puzzle on Chess.com: that's the way back to the app, for the ones who keep coming.</p>
 <p>The coach is a careful agent run. The server works out whether the move is right before the model writes a word, and the model is only told as much of the answer as the child has earned. If the model is capped, slow or unavailable, the engine's own words answer instead, in the same language.</p>
 <figure class="card side"><img src="../images/chess-clubs/02-phone.jpg" alt="The chat in Tamil on a phone: the child's move Bb4 quoting the board it answered, the coach's praise, then the next board with the opponent's reply Kxh2 highlighted and three moves to tap." width="780" height="1688" loading="lazy"><figcaption>In Tamil. The opponent's reply is a new board, with the last move tinted.</figcaption></figure>
+<div class="try inline"><img src="../images/chess-clubs/01-board-room.jpg" alt="" loading="lazy"><div class="txt"><h3><a href="../chess-clubs/?from=pune">Try it in your browser</a></h3><p>The 3D prototype: pick a city, solve today's puzzle, read the coach.</p></div><div class="ctas"><a class="cta" href="../chess-clubs/?from=pune">Open the prototype</a></div></div>
 </section>
 
 <section class="block" aria-labelledby="piece-2"><h2 id="piece-2">2. Only what WhatsApp can actually send</h2>
-<p>A prototype that WhatsApp couldn't send is a drawing. So every message follows the Cloud API's rules: a business can only start a chat with a template Meta approved; after the child replies, a 24-hour window opens; reply buttons stop at three, each at 20 characters. The prototype checks every message against those limits before it shows it, and a panel beside the phone says which rule each one follows.</p>
+<blockquote class="pull">A prototype that WhatsApp couldn't send is a drawing.</blockquote>
+<p>So every message follows the Cloud API's rules: a business can only start a chat with a template Meta approved; after the child replies, a 24-hour window opens; reply buttons stop at three, each at 20 characters. The prototype checks every message against those limits before it shows it, and a panel beside the phone says which rule each one follows.</p>
 <p>WhatsApp tells a business the country a number is from, and never its location or the phone's language. So the club's language comes from the place: in Pune it offers Marathi and English, in Chennai Tamil and English. On the real number, the country code picks the local language, and the other ten are one tap away in a WhatsApp list.</p>
 </section>
 
 <section class="block" aria-labelledby="piece-3"><h2 id="piece-3">3. On a real number, safely</h2>
 <p>Message PLAYCHESS to Project 831's second WhatsApp number and you play today's puzzle. Project 831 is the sports venue I co-founded, and its bot already handles real bookings and payments on WhatsApp, so the demo had to be unable to touch any of that. A demo router in the bot answers the keyword before anything is logged, saved or shown to the team; the chess club itself runs as a separate service. It never sees your phone number or a WhatsApp token: only a hash, and the first three digits for the country.</p>
 <figure class="card side"><img src="../images/chess-clubs/03-board-picture.jpg" alt="Today's puzzle board as WhatsApp receives it: a PNG of a green and cream board, White to move." width="800" height="800" loading="lazy"><figcaption>WhatsApp takes a PNG, not an SVG, so the service draws each position as a picture, in Chess.com's board colours.</figcaption></figure>
-<a class="cta" href="p831.html">Read about Project 831 →</a>
+<details class="eng"><summary>For engineers <span>how the demo can't touch the bookings</span></summary><p>Project 831's bot forwards a demo visitor's messages to the club service, signed with HMAC and refused after five minutes. The service answers with the messages to send, and the bot sends them from its own number. The bot's demo test traps the database, payments, templates and team alerts, then walks the chess demo from the keyword to "stop": nothing may be touched.</p></details>
+<div class="try inline"><img src="../images/chess-clubs/02-phone.jpg" alt="" loading="lazy" style="object-position:center 30%"><div class="txt"><h3><a href="https://wa.me/918747803268?text=PLAYCHESS">Play it on WhatsApp</a></h3><p>Send PLAYCHESS to +91 87478 03268. "stop" ends it.</p></div><div class="ctas"><a class="cta" href="https://wa.me/918747803268?text=PLAYCHESS">Play on WhatsApp ↗</a></div></div>
+<a class="cta ghost" href="p831.html">Read about Project 831 →</a>
 </section>
 
 <section class="block" aria-labelledby="turns"><h2 id="turns">Where the work said otherwise</h2>
-<ol class="turns">
-<li><b>A menu of twelve languages became two on screen.</b><span>The first version let a viewer switch between every language. A child doesn't browse twelve scripts, and WhatsApp can't say where they are anyway. Now the place offers its own language and English, and the rest sit one tap further.</span></li>
-<li><b>The quick-reply chips weren't real.</b><span>I'd drawn chips under every message, like a web chat. WhatsApp has nothing like them. They became reply buttons: three at most, 20 characters, and a template before anything else.</span></li>
-<li><b>Instant replies made the chat jump.</b><span>The engine answers in a frame, and the screen leapt before you could read it. Now it keeps WhatsApp's rhythm: delivered, read, typing, then the reply, with timings taken from a motion study.</span></li>
-<li><b>"Good morning" at midnight.</b><span>On the real number, people write at any hour, so the greeting lost its morning: "Here's today's puzzle."</span></li>
+<ol class="shifts">
+<li><b>A menu of twelve languages became two on screen.</b><dl><div><dt>I thought</dt><dd>Let a viewer switch between every language.</dd></div><div><dt>I saw</dt><dd>A child doesn't browse twelve scripts, and WhatsApp can't say where they are anyway.</dd></div><div><dt>So now</dt><dd>The place offers its own language and English; the rest sit one tap further.</dd></div></dl></li>
+<li><b>The quick-reply chips weren't real.</b><dl><div><dt>I thought</dt><dd>Chips under every message, like a web chat.</dd></div><div><dt>I saw</dt><dd>WhatsApp has nothing like them.</dd></div><div><dt>So now</dt><dd>Reply buttons: three at most, 20 characters, and a template before anything else.</dd></div></dl></li>
+<li><b>Instant replies made the chat jump.</b><dl><div><dt>I thought</dt><dd>Answer as soon as the engine does, in a frame.</dd></div><div><dt>I saw</dt><dd>The screen leapt before you could read it.</dd></div><div><dt>So now</dt><dd>WhatsApp's rhythm: delivered, read, typing, then the reply, timed from a motion study.</dd></div></dl></li>
+<li><b>"Good morning" at midnight.</b><dl><div><dt>I thought</dt><dd>The puzzle arrives in the morning.</dd></div><div><dt>I saw</dt><dd>On the real number, people write at any hour.</dd></div><div><dt>So now</dt><dd>The greeting lost its morning: "Here's today's puzzle."</dd></div></dl></li>
 </ol>
 </section>
 
