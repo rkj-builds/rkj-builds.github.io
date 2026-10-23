@@ -16,6 +16,7 @@
   --col: 644px;
   --tile-frame: #101010; --tile-bg: #0b0b0b; --tile-ring: 0 0 0 1px rgba(255,255,255,.08);
   --chat-bg: #0b0b0b; --chat-them: #1f1f1f; --chat-me: #1b2c23; --chat-link: #7cc4a4;
+  --accent: #7cc4a4; --accent-under: rgba(124,196,164,.4);
   --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
   --text: 16px; --leading: 26px;
@@ -29,6 +30,7 @@
     --card: #f3f3f1; --line: #e3e3e0; --rule: #e8e8e5; --under: #c4c4c0;
     --tile-frame: #fcfcfc; --tile-bg: #fff; --tile-ring: 0 0 0 1px rgba(0,0,0,.06), 0 1px 2px -1px rgba(0,0,0,.06), 0 2px 4px 0 rgba(0,0,0,.04);
     --chat-bg: #ebe7e0; --chat-them: #ffffff; --chat-me: #d9f2de; --chat-link: #0b6b62;
+    --accent: #0b6b62; --accent-under: rgba(11,107,98,.35);
     color-scheme: light;
   }
 }
@@ -37,6 +39,7 @@ html[data-theme="light"] {
   --card: #f3f3f1; --line: #e3e3e0; --rule: #e8e8e5; --under: #c4c4c0;
   --tile-frame: #fcfcfc; --tile-bg: #fff; --tile-ring: 0 0 0 1px rgba(0,0,0,.06), 0 1px 2px -1px rgba(0,0,0,.06), 0 2px 4px 0 rgba(0,0,0,.04);
   --chat-bg: #ebe7e0; --chat-them: #ffffff; --chat-me: #d9f2de; --chat-link: #0b6b62;
+    --accent: #0b6b62; --accent-under: rgba(11,107,98,.35);
   color-scheme: light;
 }
 html[data-theme="dark"] {
@@ -44,6 +47,7 @@ html[data-theme="dark"] {
   --card: #171717; --line: #262626; --rule: #222222; --under: #4a4a4a;
   --tile-frame: #101010; --tile-bg: #0b0b0b; --tile-ring: 0 0 0 1px rgba(255,255,255,.08);
   --chat-bg: #0b0b0b; --chat-them: #1f1f1f; --chat-me: #1b2c23; --chat-link: #7cc4a4;
+  --accent: #7cc4a4; --accent-under: rgba(124,196,164,.4);
   color-scheme: dark;
 }
 
@@ -54,8 +58,10 @@ body {
   font: var(--w-body) var(--text)/var(--leading) var(--font);
   -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
-a { color: var(--fg); text-decoration: underline; text-decoration-color: var(--under); text-underline-offset: 3px; }
-a:hover { text-decoration-color: var(--fg); }
+/* Links wear the one accent, the site's own chat-link green, so what can be followed reads at a glance.
+   Rows, buttons and the top bar set their own colours. */
+a { color: var(--accent); text-decoration: underline; text-decoration-color: var(--accent-under); text-underline-offset: 3px; }
+a:hover { text-decoration-color: var(--accent); }
 a:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; border-radius: 2px; }
 p, ul, ol, dl, h1, h2, h3, figure { margin: 0; }
 h1, h2, h3 { font-size: var(--text); font-weight: var(--w-heading); line-height: var(--leading); }
@@ -101,6 +107,20 @@ section.block ol, section.block ul { padding-left: 20px; display: flex; flex-dir
 @media (hover: hover) { .rows a:hover .chev { opacity: 1; transform: none; } }
 .rows a:focus-visible .chev { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .rows .chev { transition: none; } }
+/* Try it live: things a reviewer can open and use now, before the list of work. Two cards a row, one on a phone.
+   Each card's title opens its write-up; its filled button opens the live thing. */
+.live { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 -8px; }
+@media (max-width: 700px) { .live { grid-template-columns: minmax(0, 1fr); } }
+.try { display: flex; flex-direction: column; gap: 12px; padding: 12px; border-radius: 16px; background: var(--card); box-shadow: var(--tile-ring); }
+.try img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: left top; border-radius: 10px; box-shadow: var(--tile-ring); background: var(--tile-bg); }
+.try h3 { margin: 0; font-size: var(--text); line-height: var(--leading); font-weight: var(--w-title); }
+.try h3 a { color: var(--fg); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.try h3 a::before { content: ""; width: 6px; height: 6px; border-radius: 99px; background: var(--accent); flex: none; }
+.try h3 a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+.try p { margin: 0; color: var(--muted); font-size: var(--text-sm); line-height: var(--leading-sm); }
+.try .ctas { margin-top: auto; padding-top: 4px; }
+.head-row { display: flex; align-items: baseline; justify-content: space-between; gap: 4px 16px; flex-wrap: wrap; }
+.head-row p { margin: 0; color: var(--dim); font-size: var(--text-sm); line-height: var(--leading-sm); }
 .writing { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
 .writing li { padding: 8px 0; }
 .writing li a { display: block; font-weight: var(--w-title); text-decoration: none; }
@@ -141,7 +161,7 @@ figure.card.pair figcaption { width: 100%; }
 @media print {
   @page { size: A4; margin: 13mm 15mm; }
   html, body { background: #fff !important; color: #111 !important; }
-  html, html[data-theme="dark"] { --bg: #fff; --fg: #111; --muted: #3a3a3a; --dim: #666; --rule: #ddd; --line: #ddd; --under: #bbb; }
+  html, html[data-theme="dark"] { --bg: #fff; --fg: #111; --muted: #3a3a3a; --dim: #666; --rule: #ddd; --line: #ddd; --under: #bbb; --accent: #0b6b62; --accent-under: #9cc9c3; }
   :root { --text: 11.5px; --leading: 17px; --text-sm: 10.5px; --leading-sm: 15px; }
   .wrap { padding: 0; gap: 16px; max-width: none; }
   .top, .theme, .no-print { display: none !important; }
