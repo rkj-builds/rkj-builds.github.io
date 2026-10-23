@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chess on WhatsApp, in every child's language — Rahul Jha</title>
+<meta name="description" content="A concept for Chess.com: a daily puzzle and a coach in a WhatsApp chat, in the local language and English, live on a real number you can message.">
+<meta name="color-scheme" content="dark light">
+<link rel="stylesheet" href="../../style.css">
+<script src="../../theme.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<main id="main" class="wrap read">
+
+<nav class="top" aria-label="Back"><a href="../../index.html">← Rahul Jha</a><span>Chess on WhatsApp · Concept for Chess.com · Oct 2026</span></nav>
+<header class="stack-lg">
+  <h1>Chess on WhatsApp, in every child's language</h1>
+  <p class="about">A chess club that lives in a WhatsApp chat: one puzzle a day, and a coach who answers in the child's own language. Nothing to install, nothing new to learn. A concept I built for Chess.com, and it runs on a real number you can message.</p>
+  <p class="muted">India has the youngest world champion and millions of new fans who watch chess on streams. Most of them can't easily play: no club, no coach, and an app in English. They all have WhatsApp. So does my father, who would never find his way around a chess app's menus but uses WhatsApp all day.</p>
+  <dl class="meta"><dt>My part</dt><dd>All of it: the idea, the design, the coach, the WhatsApp service, the tests</dd><dt>Built in</dt><dd>React 19 and TypeScript, chess.js, Claude; the WhatsApp Cloud API through Project 831's bot; with Claude Code</dd><dt>When</dt><dd>October 2026</dd><dt>Status</dt><dd>A concept, not an official Chess.com product. Live on WhatsApp since 23 Oct 2026. Translations other than English are drafts.</dd></dl>
+  <dl class="glance"><div><b>12 languages</b><span>the coach writes in, with the words players say at a board</span></div><div><b>3 buttons</b><span>under each board: WhatsApp's own limit, never broken</span></div><div><b>1 real number</b><span>you can message to play today's puzzle</span></div><div><b>83 tests</b><span>for the club, plus the 831 bot's own</span></div></dl>
+  <div class="ctas"><a class="cta" href="https://wa.me/918747803268?text=PLAYCHESS">Play it on WhatsApp →</a></div>
+  <p class="dim">Opens a chat with Project 831's second number with PLAYCHESS typed in. Send it, pick a language, and tap a move. "stop" ends it.</p>
+  <figure class="card"><img src="../images/chess-clubs/01-board-room.jpg" alt="The prototype: a phone on a dark chessboard showing a WhatsApp chat in Marathi. The puzzle's board, three move buttons, the child's tapped move Bd2, and the coach's hint with 2 tries left. Beside it, three steps (tap a language, solve today's puzzle, read the coach) and twelve city cards, Pune selected." width="1600" height="1000" loading="lazy"><figcaption>Viewing from Pune: the club speaks Marathi and English. A wrong move gets a hint that names the piece, not the answer.</figcaption></figure>
+</header>
+
+<section class="block" aria-labelledby="problem"><h2 id="problem">The problem</h2>
+<p>A new app is the barrier, not chess. The kid in a small town who watched Gukesh win has a family phone and WhatsApp, and reads Hindi, Tamil or Marathi more easily than English. The grandparent at home has an hour free and WhatsApp open. The school teacher asked to run a chess club has twenty kids and no chess training. Each of them already uses one app confidently, every day.</p>
+</section>
+
+<section class="block" aria-labelledby="piece-1"><h2 id="piece-1">1. A puzzle and a coach, inside the chat</h2>
+<p>In the concept, the daily puzzle from Chess.com's public API arrives every morning as a picture of the board with three moves to tap. Typing a move works too. A wrong move gets a hint that names the piece, then the square; the answer only after three tries. When it's solved, the message links to the puzzle on Chess.com: that's the way back to the app, for the ones who keep coming.</p>
+<p>The coach is a careful agent run. The server works out whether the move is right before the model writes a word, and the model is only told as much of the answer as the child has earned. If the model is capped, slow or unavailable, the engine's own words answer instead, in the same language.</p>
+<figure class="card side"><img src="../images/chess-clubs/02-phone.jpg" alt="The chat in Tamil on a phone: the child's move Bb4 quoting the board it answered, the coach's praise, then the next board with the opponent's reply Kxh2 highlighted and three moves to tap." width="780" height="1688" loading="lazy"><figcaption>In Tamil. The opponent's reply is a new board, with the last move tinted.</figcaption></figure>
+</section>
+
+<section class="block" aria-labelledby="piece-2"><h2 id="piece-2">2. Only what WhatsApp can actually send</h2>
+<p>A prototype that WhatsApp couldn't send is a drawing. So every message follows the Cloud API's rules: a business can only start a chat with a template Meta approved; after the child replies, a 24-hour window opens; reply buttons stop at three, each at 20 characters. The prototype checks every message against those limits before it shows it, and a panel beside the phone says which rule each one follows.</p>
+<p>WhatsApp tells a business the country a number is from, and never its location or the phone's language. So the club's language comes from the place: in Pune it offers Marathi and English, in Chennai Tamil and English. On the real number, the country code picks the local language, and the other ten are one tap away in a WhatsApp list.</p>
+</section>
+
+<section class="block" aria-labelledby="piece-3"><h2 id="piece-3">3. On a real number, safely</h2>
+<p>Message PLAYCHESS to Project 831's second WhatsApp number and you play today's puzzle. Project 831 is the sports venue I co-founded, and its bot already handles real bookings and payments on WhatsApp, so the demo had to be unable to touch any of that. A demo router in the bot answers the keyword before anything is logged, saved or shown to the team; the chess club itself runs as a separate service. It never sees your phone number or a WhatsApp token: only a hash, and the first three digits for the country.</p>
+<figure class="card side"><img src="../images/chess-clubs/03-board-picture.jpg" alt="Today's puzzle board as WhatsApp receives it: a PNG of a green and cream board, White to move." width="800" height="800" loading="lazy"><figcaption>WhatsApp takes a PNG, not an SVG, so the service draws each position as a picture, in Chess.com's board colours.</figcaption></figure>
+<a class="cta" href="p831.html">Read about Project 831 →</a>
+</section>
+
+<section class="block" aria-labelledby="turns"><h2 id="turns">Where the work said otherwise</h2>
+<ol class="turns">
+<li><b>A menu of twelve languages became two on screen.</b><span>The first version let a viewer switch between every language. A child doesn't browse twelve scripts, and WhatsApp can't say where they are anyway. Now the place offers its own language and English, and the rest sit one tap further.</span></li>
+<li><b>The quick-reply chips weren't real.</b><span>I'd drawn chips under every message, like a web chat. WhatsApp has nothing like them. They became reply buttons: three at most, 20 characters, and a template before anything else.</span></li>
+<li><b>Instant replies made the chat jump.</b><span>The engine answers in a frame, and the screen leapt before you could read it. Now it keeps WhatsApp's rhythm: delivered, read, typing, then the reply, with timings taken from a motion study.</span></li>
+<li><b>"Good morning" at midnight.</b><span>On the real number, people write at any hour, so the greeting lost its morning: "Here's today's puzzle."</span></li>
+</ol>
+</section>
+
+<section class="block" aria-labelledby="built"><h2 id="built">How it's built <span class="for">for engineers</span></h2>
+<ul>
+<li><b>React 19, TypeScript and chess.js</b> for the prototype; the puzzles come live from Chess.com's public API, with public-domain puzzles if it can't be reached.</li>
+<li><b>The coach</b> is one serverless function: the server's verdict, a hint ladder, a 7-day reply cache, caps per day, per visitor and per session, and engine-written fallbacks. Claude when there's a key; the engine's words when there isn't.</li>
+<li><b>On WhatsApp,</b> Project 831's bot forwards a demo visitor's messages to the club service, signed with HMAC and refused after five minutes. The service answers with the messages to send; the bot sends them from its own number. Board pictures are rendered to PNG on the server.</li>
+<li><b>Guards in tests:</b> the 831 bot's demo test traps the database, payments, templates and team alerts, then walks the chess demo from the keyword to "stop". Nothing may be touched.</li>
+</ul>
+</section>
+
+<section class="block" aria-labelledby="stands"><h2 id="stands">Where it stands</h2>
+<p>Live on WhatsApp, not measured yet: no one has used it but me. On the real number the coach currently answers with the engine's words, since it has no model key. The non-English text is a draft until native speakers check it, Tamil's piece names most of all. Next would be spoken hints in Hindi for people who don't read easily, and a teacher's view of who solved today's puzzle.</p>
+</section>
+
+<footer class="foot">
+  <ul><li><a href="https://wa.me/918747803268?text=PLAYCHESS">Play it on WhatsApp</a> · send PLAYCHESS, "stop" ends it</li></ul>
+  <p>Next: <a href="run-view.html">Agent runs</a> · <a href="../../index.html">All work</a></p>
+</footer>
+<footer class="foot theme"><p></p><button type="button" data-theme-toggle aria-label="Switch colour theme">Theme: system</button></footer>
+
+</main>
+</body>
+</html>
