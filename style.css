@@ -115,9 +115,11 @@ section.block ol, section.block ul { padding-left: 20px; display: flex; flex-dir
 @media (prefers-reduced-motion: reduce) { .rows .chev { transition: none; } }
 /* Try it live: things a reviewer can open and use now, before the list of work. Two cards a row, one on a phone.
    Each card's title opens its write-up; its filled button opens the live thing. */
-.live { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0 -8px; }
-@media (max-width: 700px) { .live { grid-template-columns: minmax(0, 1fr); } }
-.try { display: flex; flex-direction: column; gap: 12px; padding: 12px; border-radius: 16px; background: var(--card); box-shadow: var(--tile-ring); }
+/* The grid reaches into the page margin by the card padding, so the inside of a card lines up with the text above it. */
+.live { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin: 0 -16px; }
+@media (max-width: 700px) { .live { grid-template-columns: minmax(0, 1fr); margin: 0 -8px; } }
+/* Concentric corners: the image radius (10px) plus the padding (16px) ≈ the card radius (24px). Text lines up with the image edge. */
+.try { display: flex; flex-direction: column; gap: 14px; padding: 16px 16px 20px; border-radius: 24px; background: var(--card); box-shadow: var(--tile-ring); }
 .try img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: left top; border-radius: 10px; box-shadow: var(--tile-ring); background: var(--tile-bg); }
 .try h3 { margin: 0; font-size: var(--text); line-height: var(--leading); font-weight: var(--w-title); }
 .try h3 a { color: var(--fg); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
@@ -234,6 +236,7 @@ kbd { font: var(--text-sm)/1 var(--mono); padding: 2px 5px; border-radius: 4px; 
   font-size: var(--text-sm); line-height: var(--leading-sm); font-weight: var(--w-title); text-decoration: none; -webkit-tap-highlight-color: transparent;
   transition: transform 160ms ease-out, filter 150ms ease, background-color 150ms ease, box-shadow 150ms ease; }
 .cta:active { transform: scale(.97); }
+button.cta { border: 0; font: inherit; font-size: var(--text-sm); line-height: var(--leading-sm); font-weight: var(--w-title); cursor: pointer; }
 .cta:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .cta.ghost { color: var(--fg); background: color-mix(in srgb, var(--fg) 4%, transparent);
   box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 5%, transparent), 0 0 0 1px color-mix(in srgb, var(--fg) 14%, transparent); }
