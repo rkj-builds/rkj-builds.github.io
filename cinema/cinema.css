@@ -1,0 +1,99 @@
+/* The coss ui portfolio (rkj-site/cinema/). Its own small system, kept apart from style.css so no
+   existing page changes. Type is coss ui's own: Cal Sans (display and UI) and Paper Mono (labels),
+   both OFL, from coss-ui/packages/ui/src/fonts. Colours are coss tokens. */
+@font-face { font-family: "Cal Sans"; src: url("fonts/CalSansVF.woff2") format("woff2-variations"); font-weight: 400 700; font-display: swap; }
+@font-face { font-family: "Paper Mono"; src: url("fonts/PaperMono-Regular.woff2") format("woff2"); font-display: swap; }
+
+:root {
+  --bg: #f4f4f5; --card: #ffffff; --fg: #262626; --body: #3f3f43; --muted: #5f5f63; --dim: #75757a;
+  --border: rgba(0, 0, 0, 0.08); --fill: rgba(0, 0, 0, 0.04); --solid: #262626; --on-solid: #fafafa; --on-solid-muted: #b9b9bd;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111112; --card: #1a1a1b; --fg: #ededed; --body: #c9c9cc; --muted: #a1a1a6; --dim: #8e8e93;
+    --border: rgba(255, 255, 255, 0.09); --fill: rgba(255, 255, 255, 0.06); --solid: #ededed; --on-solid: #141414; --on-solid-muted: #4b4b4f;
+    --shadow: none;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font-family: "Cal Sans", ui-sans-serif, system-ui, sans-serif; font-optical-sizing: auto; font-synthesis: none;
+  font-size: 16px; line-height: 26px;
+}
+a { color: inherit; }
+img { max-width: 100%; height: auto; display: block; }
+.mono { font-family: "Paper Mono", ui-monospace, monospace; }
+:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; border-radius: 6px; }
+
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 16px; background: var(--card); padding: 8px 12px; border-radius: 8px; }
+
+/* Home: a booking profile. Each project is an event type. */
+.profile { max-width: 640px; margin: 0 auto; padding: 48px 16px 40px; display: flex; flex-direction: column; gap: 20px; }
+.who { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; }
+.who img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+.who h1 { margin: 6px 0 0; font-size: 24px; line-height: 30px; font-weight: 600; }
+.who p { margin: 0; max-width: 500px; color: var(--muted); font-size: 15px; line-height: 23px; text-wrap: pretty; }
+.links { display: flex; gap: 14px; font-size: 14px; color: var(--muted); }
+.links a { text-decoration: none; }
+.links a:hover { color: var(--fg); }
+
+.events { list-style: none; margin: 0; padding: 0; background: var(--card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow); overflow: hidden; }
+.events li + li { border-top: 1px solid var(--border); }
+.events a { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 16px 20px; text-decoration: none; transition: background-color 150ms ease; }
+@media (hover: hover) { .events a:hover { background: var(--fill); } }
+.events .t { font-size: 16px; font-weight: 600; line-height: 22px; }
+.events .d { display: block; margin-top: 2px; color: var(--muted); font-size: 14px; line-height: 21px; text-wrap: pretty; }
+.events .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+.events .go { color: var(--muted); }
+.events .book { background: var(--solid); color: var(--on-solid); }
+.events .book .d, .events .book .go { color: var(--on-solid-muted); }
+@media (hover: hover) { .events .book:hover { background: var(--solid); opacity: 0.92; } }
+.chip { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border-radius: 6px; background: var(--fill); font-size: 12px; line-height: 22px; color: var(--fg); }
+
+.foot { text-align: center; font-size: 11px; color: var(--dim); }
+.foot a { color: var(--muted); }
+
+/* Case study: one structure for every project. Outcome title, meta, the product, then labelled sections. */
+.case { max-width: 680px; margin: 0 auto; padding: 40px 16px 0; display: flex; flex-direction: column; gap: 22px; }
+.back { font-size: 12px; color: var(--muted); text-decoration: none; }
+.back:hover { color: var(--fg); }
+.case h1 { margin: 0; font-size: clamp(32px, 6vw, 46px); line-height: 1.07; font-weight: 600; text-wrap: balance; }
+.lede { margin: 0; font-size: 18px; line-height: 28px; color: var(--body); text-wrap: pretty; }
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.meta { margin: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; font-size: 14px; line-height: 21px; }
+.meta dt { font-family: "Paper Mono", ui-monospace, monospace; font-size: 12px; color: var(--muted); }
+.meta dd { margin: 2px 0 0; }
+@media (max-width: 560px) { .meta { grid-template-columns: 1fr 1fr; } }
+
+.hero { max-width: 1120px; margin: 36px auto 0; padding: 0 16px; }
+.hero figure, .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.hero img, .shot img { width: 100%; border-radius: 12px; border: 1px solid var(--border); background: var(--card); }
+figcaption { font-size: 14px; line-height: 21px; color: var(--muted); }
+/* Two phone screenshots stay side by side at every width; stacked, each would be a screen and a half tall. */
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 760px; margin: 0 auto; }
+
+.body { max-width: 680px; margin: 56px auto 0; padding: 0 16px 48px; display: flex; flex-direction: column; gap: 52px; }
+.sec { display: flex; flex-direction: column; gap: 12px; }
+.lab { font-family: "Paper Mono", ui-monospace, monospace; font-size: 12px; line-height: 18px; color: var(--muted); }
+.sec h2 { margin: 0; font-size: 22px; line-height: 1.27; font-weight: 600; text-wrap: balance; }
+.sec p { margin: 0; color: var(--body); text-wrap: pretty; }
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--border); }
+.rows li { display: grid; grid-template-columns: 160px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 15px; line-height: 23px; color: var(--body); }
+.rows b { font-weight: 600; color: var(--fg); }
+@media (max-width: 560px) { .rows li { grid-template-columns: 1fr; gap: 2px; } }
+.big { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.big div { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 6px; }
+.big b { font-size: 30px; line-height: 1; font-weight: 600; font-variant-numeric: tabular-nums; }
+.big span { font-size: 13px; line-height: 18px; color: var(--muted); }
+@media (max-width: 640px) { .big { grid-template-columns: 1fr 1fr; } }
+
+.ctas { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; height: 44px; padding: 0 18px; border-radius: 8px; font-size: 15px; text-decoration: none; border: 1px solid var(--border); background: var(--card); transition: transform 160ms ease-out, opacity 150ms ease; }
+.btn.solid { background: var(--solid); color: var(--on-solid); border-color: var(--solid); }
+.btn:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) { .btn, .events a { transition: none; } .btn:active { transform: none; } }

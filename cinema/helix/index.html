@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Helix: ten brand designers at Travelopia stopped handing over pictures and started merging code.">
+<title>Helix · Rahul Jha</title>
+<link rel="preload" href="../fonts/CalSansVF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../cinema.css">
+</head>
+<body>
+<main>
+  <header class="case">
+    <a class="back mono" href="../">← All work</a>
+    <h1>Ten brand designers stopped handing over pictures and started merging code</h1>
+    <p class="lede">Helix is where each Travelopia brand's design system lives as working code. A designer goes from access to a first merged page in under an hour, and sixteen people have merged 290 changes through it.</p>
+    <div class="tags"><span class="chip">Design system</span><span class="chip">Design engineering</span><span class="chip">AI</span></div>
+    <dl class="meta">
+      <div><dt>Industry</dt><dd>Travel, ten brands</dd></div>
+      <div><dt>Status</dt><dd>Live on ten brands</dd></div>
+      <div><dt>Team</dt><dd>Designed and built by me; sixteen people ship through it</dd></div>
+    </dl>
+    <div class="ctas"><a class="btn solid" href="../../work/helix-playground/">Try the playground ↗</a></div>
+  </header>
+
+  <div class="hero">
+    <figure>
+      <img src="../../work/images/helix/01-overview.jpg" alt="The Helix overview: what needs a designer, what's in progress, and what moved since they last looked." width="1600" height="1089">
+      <figcaption>The overview a designer opens in the morning. Helix lives in Travelopia's code, so the playground above rebuilds its ideas on two invented brands you can switch between.</figcaption>
+    </figure>
+  </div>
+
+  <div class="body">
+    <section class="sec" aria-labelledby="ov"><span class="lab" id="ov">Overview</span><h2>How might we let the one designer at each brand ship real pages, without an engineer rebuilding them?</h2></section>
+
+    <section class="sec" aria-labelledby="cx"><span class="lab" id="cx">Context</span><p>Travelopia is a group of travel brands: yacht charters, canal holidays, adventure trips. Each has its own website, and almost every brand has one designer. Each kept its design system somewhere different, and nobody had time to keep it in step with the code.</p></section>
+
+    <section class="sec" aria-labelledby="pr"><span class="lab" id="pr">Problem</span><h2>A design was a picture, and the build drifted from it</h2><p>A designer drew a screen and handed it to an engineer, and the build slowly moved away from the picture. Even reviewing cost money: leaving a comment on a preview needed a paid seat, $205 each, so feedback came back as email.</p></section>
+
+    <section class="sec" aria-labelledby="tr"><span class="lab" id="tr">What we tried first</span><h2>The AI tools made screens fast, but not the brand's code</h2>
+      <ul class="rows">
+        <li><b>v0</b><span>Writes React in its own components, not the brand's.</span></li>
+        <li><b>Lovable</b><span>A whole app from a prompt, with none of the brand's system in it.</span></li>
+        <li><b>Figma Make</b><span>Prototypes from the design, but redrawn, so the build still starts again.</span></li>
+        <li><b>Helix</b><span>The brand's design, its code and written rules in one place, so whatever gets made comes out consistent, and for a reason.</span></li>
+      </ul>
+    </section>
+
+    <section class="sec" aria-labelledby="sl"><span class="lab" id="sl">Solution</span><h2>The brand's design system, its code and its rules, in one workspace</h2>
+      <ul class="rows">
+        <li><b>Reads the brand's code</b><span>Colour, type and spacing come from the brand's stylesheet on every load, so the page can't say anything the code doesn't. A new brand is an install.</span></li>
+        <li><b>First merge, under an hour</b><span>A Get started page of seven steps; the first command is a skill that does the setup.</span></li>
+        <li><b>Rules that load in time</b><span>Fourteen skills for Claude Code and OpenCode. The design audit and the accessibility check load with every build.</span></li>
+        <li><b>Tools on the real page</b><span>Ten tools in one dock. Inspect names a component and its tokens; Annotate turns notes on elements into one prompt for the agent.</span></li>
+        <li><b>Comments, in-house</b><span>Pinned to the element, one sign-in with a work address. The $205 seat became nothing.</span></li>
+      </ul>
+      <figure class="shot"><img src="../../work/images/helix/03-design-system.jpg" alt="The design-system page: colour ramps, type, spacing and radius, all drawn from the brand's stylesheet." width="1600" height="1089" loading="lazy"><figcaption>The design-system page has no content of its own. Everything on it is read from the brand's stylesheet.</figcaption></figure>
+    </section>
+
+    <section class="sec" aria-labelledby="it"><span class="lab" id="it">Iterations</span><h2>Four times the data said otherwise</h2>
+      <ul class="rows">
+        <li><b>Accent at 3.4:1</b><span>The first accent failed contrast. It was replaced, not shipped; every accent is now a pair that passes on every surface.</span></li>
+        <li><b>The phone question</b><span>In nearly every review, four minutes in, someone asked about the phone. So the preview opens desktop and phone together, scroll kept in step.</span></li>
+        <li><b>About fifty lost comments</b><span>A guessed project name fell through to a default. Now nothing is guessed: the name is set once.</span></li>
+        <li><b>The slow check</b><span>The accessibility check was switched off once for being slow. I made it fast instead of lowering the bar.</span></li>
+      </ul>
+      <figure class="shot"><img src="../../work/images/helix/52-fullscreen-both.jpg" alt="The fullscreen preview with the desktop and phone frames side by side." width="1600" height="1089" loading="lazy"><figcaption>Both widths at once. Scrolling keeps them on the same content, not the same percentage.</figcaption></figure>
+    </section>
+
+    <section class="sec" aria-labelledby="tw"><span class="lab" id="tw">Teamwork</span><h2>Ten brand teams, one workspace each</h2><p>Nine brands have built their design systems in it and eight run comments. Anyone can add a tool: a skill scaffolds it, checks it against the toolbar's rules and opens the pull request, so the tenth tool cost an afternoon.</p></section>
+
+    <section class="sec" aria-labelledby="im"><span class="lab" id="im">Impact</span><h2>Designers who handed over pictures now hand over code</h2>
+      <div class="big"><div><b>10</b><span>brands live</span></div><div><b>&lt;1 hr</b><span>to a first merged page</span></div><div><b>290</b><span>changes merged by 16 people</span></div><div><b>$0</b><span>per comment, was $205 a seat</span></div></div>
+    </section>
+
+    <section class="sec" aria-labelledby="ws"><span class="lab" id="ws">Where it stands</span><p>Live on ten brands. The next brand is an install. <a href="../../work/case/helix.html">The longer write-up</a> covers the skills, the toolbar and how comments are built.</p></section>
+
+    <div class="ctas"><a class="btn solid" href="https://cal.com/rahul-kumar-jha-ll9vhj/30min">Book 30 min with Rahul</a><a class="btn" href="../p831/">Next: Project 831 →</a></div>
+    <p class="foot mono" style="text-align: start;">Built with coss ui, Cal.com's open-source design system. Not a Cal.com page.</p>
+  </div>
+</main>
+</body>
+</html>

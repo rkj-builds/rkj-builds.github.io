@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Project 831: a sports venue that runs on WhatsApp. Self-serve went from 15% to 74% of court bookings.">
+<title>Project 831 · Rahul Jha</title>
+<link rel="preload" href="../fonts/CalSansVF.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../cinema.css">
+</head>
+<body>
+<main>
+  <header class="case">
+    <a class="back mono" href="../">← All work</a>
+    <h1>A venue that takes its own bookings: self-serve went from 15% to 74%</h1>
+    <p class="lede">Project 831 is a two-court pickleball venue in Jamshedpur that I co-founded. Customers book, pay and renew inside WhatsApp, with no app to download, and one caretaker runs the desk. I designed and built everything it runs on.</p>
+    <div class="tags"><span class="chip">Product design</span><span class="chip">Design engineering</span><span class="chip">WhatsApp</span></div>
+    <dl class="meta">
+      <div><dt>Industry</dt><dd>Sports venue, India</dd></div>
+      <div><dt>Status</dt><dd>Live since March, in daily use</dd></div>
+      <div><dt>Team</dt><dd>Me on the software, a co-founder on the venue</dd></div>
+    </dl>
+    <div class="ctas"><a class="btn solid" href="https://wa.me/918747803268?text=TRY831%20%C2%B7%20show%20me%20the%20booking%20bot">Try the booking bot on WhatsApp ↗</a></div>
+  </header>
+
+  <div class="hero">
+    <figure>
+      <div class="pair">
+        <img src="../../work/images/p831/wa-pick-slot.jpg" alt="Inside WhatsApp: picking a free time for a court in a form." width="690" height="1495">
+        <img src="../../work/images/p831/wa-confirmed.jpg" alt="Inside WhatsApp: the booking confirmed, with the address and a map." width="690" height="1495">
+      </div>
+      <figcaption>Booking a court without talking to anyone: pick a time inside WhatsApp, get the confirmation a minute later. The bot above is the same flow on a made-up venue; it stops at payment.</figcaption>
+    </figure>
+  </div>
+
+  <div class="body">
+    <section class="sec" aria-labelledby="ov"><span class="lab" id="ov">Overview</span><h2>How might we let a venue take its own bookings, so one caretaker can run the desk without doing sums?</h2></section>
+
+    <section class="sec" aria-labelledby="cx"><span class="lab" id="cx">Context</span><p>In the first months, a booking was a conversation. Somebody called or messaged the venue's number, and a person checked a paper sheet, quoted a price from memory, held a slot and remembered to collect. That works at ten bookings a week and collapses at fifty, worst in the evening, when the person on the phone is also the person running the desk.</p></section>
+
+    <section class="sec" aria-labelledby="pr"><span class="lab" id="pr">Problem</span><h2>72 of 85 bookings in May needed a person</h2><p>At about ten minutes of calls and messages each, that was around 12 hours a month on bookings alone, plus "did anyone pay cash today?" most days. It meant keeping staff on the phone, and that came straight out of revenue.</p></section>
+
+    <section class="sec" aria-labelledby="ap"><span class="lab" id="ap">The choice</span><h2>No app. The chat does the work.</h2><p>In Jamshedpur, people already message a business on WhatsApp, so instead of moving them to an app, I made the chat do the work: book in a form inside the chat, pay the deposit by UPI without leaving it, get a reminder the evening before, cancel and keep the money as credit, and ask about prices in Hindi or English.</p></section>
+
+    <section class="sec" aria-labelledby="sl"><span class="lab" id="sl">Solution</span><h2>One system behind every way in</h2>
+      <ul class="rows">
+        <li><b>WhatsApp booking</b><span>A form inside the chat, UPI in the chat, a reminder the night before. Parents renew their child's club in two taps and the invoice arrives by itself.</span></li>
+        <li><b>One availability module</b><span>The website, the desk, the bot and a phone voice agent all ask one place what's free, and it runs again on the server when a booking is written. A race for the last court is a refusal, never a double booking.</span></li>
+        <li><b>A desk for the owner</b><span>Courts across, time down, every booking a block with a name and an amount. Adding a booking asks for a time, not a court.</span></li>
+        <li><b>Staff Mode</b><span>Two taps, Start and Finish. Overtime follows one published rule, and the screen says one number: "Take this money: ₹175". In Hindi since 21 October, for my dad at the desk.</span></li>
+      </ul>
+      <figure class="shot"><img src="../../work/images/p831/01-bookings-day.jpg" alt="The desk's day view: courts across, time down, each booking a block with a name and an amount." width="1600" height="1000" loading="lazy"><figcaption>The day as the desk sees it. The header answers the only question the owner asks: how much of today is sold.</figcaption></figure>
+    </section>
+
+    <section class="sec" aria-labelledby="it"><span class="lab" id="it">Iterations</span><h2>Where the data said otherwise</h2>
+      <ul class="rows">
+        <li><b>Per-minute billing</b><span>Exact, and impossible to defend at the counter. Now: ten free minutes, then fifteen-minute steps, published on the bill.</span></li>
+        <li><b>₹11,996 vs ₹5,998</b><span>A reminder counted register rows; one parent had two children. Caught in review. Every amount in a message is now checked against the register first.</span></li>
+        <li><b>"8.5:00 – 10.5:00 PM"</b><span>The maths was right and the message read like a bug. Every length of time now goes through one formatter.</span></li>
+        <li><b>The site went down</b><span>Nothing had been deployed: the free database tier ran out of its disk budget. Now capacity is ruled out before blaming a deploy.</span></li>
+      </ul>
+    </section>
+
+    <section class="sec" aria-labelledby="tw"><span class="lab" id="tw">Teamwork</span><h2>Built with a co-founder, a caretaker and Claude Code</h2><p>My co-founder runs the venue; my dad runs the desk. 1,698 commits in 208 days, 70% of them co-authored with Claude Code. I write the spec and review every diff. Each failure gets a short write-up the week it happens.</p></section>
+
+    <section class="sec" aria-labelledby="im"><span class="lab" id="im">Impact</span><h2>The venue takes its own bookings</h2>
+      <div class="big"><div><b>74%</b><span>self-serve in September, from 15% in May</span></div><div><b>69%</b><span>of people who open the WhatsApp flow book</span></div><div><b>~3 hrs</b><span>a month on the phone, from about 12</span></div><div><b>₹5.6L</b><span>through the system since May</span></div></div>
+    </section>
+
+    <section class="sec" aria-labelledby="ws"><span class="lab" id="ws">Where it stands</span><p>Live since March and in daily use. October so far is 65% self-serve. The paper sheet runs alongside Staff Mode for the first weeks so the two can be compared every night. <a href="../../work/case/p831.html">The longer write-up</a> has the desk, Staff Mode and the engineering in full.</p></section>
+
+    <div class="ctas"><a class="btn solid" href="https://cal.com/rahul-kumar-jha-ll9vhj/30min">Book 30 min with Rahul</a><a class="btn" href="../helix/">Helix →</a></div>
+    <p class="foot mono" style="text-align: start;">Built with coss ui, Cal.com's open-source design system. Not a Cal.com page.</p>
+  </div>
+</main>
+</body>
+</html>
