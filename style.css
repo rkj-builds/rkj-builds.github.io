@@ -100,8 +100,9 @@ section.block ol, section.block ul { padding-left: 20px; display: flex; flex-dir
 /* Home: project rows and writing list */
 .rows { list-style: none; padding: 0; margin: 0 -8px; display: flex; flex-direction: column; gap: 8px; }
 .rows a { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 16px; text-decoration: none; }
-.rows .tile { flex: none; display: flex; padding: 3px; border-radius: 8px; background: var(--tile-frame); box-shadow: var(--tile-ring); }
-.rows .in { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; height: 48px; border-radius: 5px; overflow: hidden; background: var(--tile-bg); box-shadow: var(--tile-ring); color: var(--muted); }
+/* The tile is as tall as the row's text: 48px for a one-line row, taller when the description wraps, so it never sits short beside three lines. */
+.rows .tile { flex: none; align-self: stretch; display: flex; padding: 3px; border-radius: 8px; background: var(--tile-frame); box-shadow: var(--tile-ring); }
+.rows .in { position: relative; display: flex; align-items: center; justify-content: center; width: 40px; min-height: 48px; border-radius: 5px; overflow: hidden; background: var(--tile-bg); box-shadow: var(--tile-ring); color: var(--muted); }
 .rows .glyph { width: 24px; height: 24px; }
 .rows .in img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left top; }
 .rows.glyphs .in img { display: none; }
