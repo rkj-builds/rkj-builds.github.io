@@ -41,6 +41,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .head.mid { align-items: center; text-align: center; top: 1.9cqw; }
 h2 { margin: 0; font-size: 7.2cqw; line-height: 0.95; font-weight: 400; text-wrap: balance; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55); }
 .head.mid h2 { font-size: 6.1cqw; line-height: 0.96; }
+/* Scene 1's line runs to two lines; smaller so both stay in the sky, above the boom. */
+@media (min-width: 900px) { [data-sc="1"] h2 { font-size: 5.6cqw; } }
 .cr { margin: 0; line-height: 1.8; color: var(--dim); font-size: max(11px, 0.78cqw); }
 
 .under { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 0 16px; text-align: center; }
