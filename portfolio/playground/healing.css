@@ -1,0 +1,107 @@
+/* The healing space (playground/healing.js): a painted room in 27 layers, a two-minute journey, then the ways on.
+   The whole page is the room (canvas K2): dark whatever the site's theme, a name and a way back in the nav,
+   and it ends on the live waveform (scope.js) instead of the footer the work pages share.
+   Every full-frame layer is the master plate (1672 × 941); the room box has that shape and the layers fill it. */
+:root.dark-room { color-scheme: dark;
+  --bg: #0a0908; --ink: #f3ead8; --body: #d8cfbd; --mute: #a39b8b;
+  --line: rgba(243, 234, 216, 0.12); --fill: rgba(243, 234, 216, 0.04); --frame: rgba(243, 234, 216, 0.14);
+  --btn-bg: #f3ead8; --btn-fg: #0a0908; --card: #141210; }
+.nav .back { padding: 8px 4px; margin: -8px -4px; transition: color 150ms ease; }
+.nav .back:hover { color: var(--ink); }
+.xf.last { margin-top: 72px; padding-top: 8px; }   /* not "end": that is the case pages' closing block, a flex column */
+.scope { display: block; width: 100%; height: 150px; }
+.endrow { padding-block: 40px 80px; display: flex; justify-content: space-between; align-items: flex-end; gap: 16px 24px; flex-wrap: wrap; }
+.endrow a { display: inline-flex; gap: 14px; font-size: clamp(32px, 3.4vw, 44px); line-height: 1.05; }
+.endrow a span { display: inline-block; transition: transform 220ms cubic-bezier(.2, .7, .2, 1); }
+@media (hover: hover) { .endrow a:hover span { transform: translateX(4px); } }
+@media (max-width: 760px) { .scope { height: 110px; } .endrow { padding-block: 28px 56px; } }
+@media (prefers-reduced-motion: reduce) { .endrow a span { transition: none; } .endrow a:hover span { transform: none; } }
+
+.room-wrap { position: relative; height: calc(100svh - 96px); min-height: 560px; overflow: hidden; background: #0a0908; color: #f3ead8; -webkit-user-select: none; user-select: none; }
+.room-wrap :focus-visible { outline-color: #f3ead8; }
+.room { position: absolute; opacity: 0; transition: opacity 1400ms ease; }
+.ready .room { opacity: 1; }
+.ly { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
+.ly.light, .ly.glow, .dim { will-change: opacity; }   /* only what breathes is kept on the GPU; a dozen full-frame textures would thrash it */
+.ly.world { transition: opacity 300ms ease; }
+.ly.world.swap { opacity: 0; }
+.ly.glow { transform-origin: 50% 78.4%; }   /* the floating bowl of light; "glow", so the bowls room's .bowl rules never touch it */
+.ly.gong { opacity: 0; transform-origin: 88.8% 49.7%; }
+.dim { position: absolute; inset: 0; pointer-events: none; }
+.dim.w { background: #050812; }
+.dim.r { background: #06070a; }
+.fx { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.prog { position: absolute; left: 0; bottom: 0; height: 1px; width: 0; background: rgba(243, 234, 216, 0.4); }
+
+/* Words sit in the calm upper third. */
+.words { position: absolute; left: 50%; translate: -50% 0; top: calc(var(--rt) + var(--rh) * 0.08); width: min(64vw, calc(var(--rw) * 0.56)); text-align: center; pointer-events: none; }
+.stagetext { margin: 0; font-family: var(--serif); font-weight: 400; font-size: clamp(26px, 3.4vw, 54px); line-height: 1.12; text-wrap: balance; text-shadow: 0 2px 28px rgba(0, 0, 0, 0.55); opacity: 0; transition: opacity 700ms ease; }
+.stagetext.on { opacity: 1; }
+.stagesub { margin: 14px 0 0; text-wrap: balance; transition: opacity 600ms ease; }
+.room-wrap.run .stagesub, .room-wrap.end .stagesub { opacity: 0; }
+
+/* The door: three stage flats at the pool's left end, the Begin plaque and the headphones switch at its right. */
+/* Wide rooms are cropped at the sides, so the props keep 24px from the stage's edge rather than the plate's. */
+.doors { position: absolute; left: max(calc(var(--rl) + var(--rw) * 0.05), 24px); top: calc(var(--rt) + var(--rh) * 0.66); width: min(calc(var(--rw) * 0.4), 44%); display: flex; justify-content: space-between; gap: 2%; transition: opacity 600ms ease; }
+.door { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 0; background: none; border: 0; color: inherit; font: inherit; cursor: pointer; opacity: 0.74; transition: opacity 400ms ease; }
+.door img { width: 100%; filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45)); transition: transform 500ms cubic-bezier(.2, .7, .2, 1); }
+.door:hover { opacity: 0.92; }
+.door.on { opacity: 1; }
+.door.on img { transform: translateY(-8px); }
+.room-wrap .lab { color: #f3ead8; opacity: 0.78; }
+.begin { position: absolute; right: max(calc(100% - var(--rl) - var(--rw) * 0.94), 24px); top: calc(var(--rt) + var(--rh) * 0.71); display: flex; align-items: flex-end; gap: 24px; transition: opacity 600ms ease; }
+.plaque { position: relative; width: clamp(180px, 16vw, 240px); aspect-ratio: 3 / 1; padding: 0; background: none; border: 0; cursor: pointer; font-family: var(--serif); font-size: clamp(22px, 2vw, 30px); letter-spacing: 0.04em; color: #3b2a12; filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.45)); transition: transform 400ms cubic-bezier(.2, .7, .2, 1); }
+.plaque img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.plaque span { position: relative; }
+.plaque:hover { transform: translateY(-2px); }
+.plaque:active { transform: scale(0.98); }
+/* A fixed width, so the lever stays put when its label changes length ("Sound on" / "Sound off"). */
+.sw { width: 124px; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0; background: none; border: 0; color: #f3ead8; font: inherit; cursor: pointer; }
+.sw .lab { white-space: nowrap; }
+.sw .k { position: relative; width: 52px; height: 52px; }
+.sw .k img { position: absolute; inset: 0; width: 100%; height: 100%; transition: opacity 200ms ease; }
+.sw .k .up { opacity: 0; }
+.sw[aria-pressed="true"] .k .up { opacity: 1; }
+.sw[aria-pressed="true"] .k .down { opacity: 0; }
+
+/* While it runs: the door's props fade, the sound switch and Leave appear. At the end, the ways on.
+   What is faded out is also hidden, so the keyboard never lands on an invisible control. */
+.doors, .begin { transition: opacity 600ms ease, visibility 0s; }
+.run .doors, .run .begin, .end .doors, .end .begin { opacity: 0; visibility: hidden; transition: opacity 600ms ease, visibility 0s 600ms; }
+.ctl { position: absolute; top: 16px; right: 8px; }
+.leave { position: absolute; top: 24px; left: 20px; padding: 8px 10px; background: none; border: 0; font-family: var(--mono); font-size: 12px; color: #f3ead8; cursor: pointer; }
+.leave:hover { text-decoration: underline; text-underline-offset: 4px; }
+.ctl, .leave, .ways { opacity: 0; visibility: hidden; transition: opacity 600ms ease, visibility 0s 600ms; }
+.run .ctl, .end .ctl, .run .leave, .end .leave { opacity: 0.8; visibility: visible; transition: opacity 600ms ease, visibility 0s; }
+.ways { position: absolute; left: var(--rl); width: var(--rw); top: calc(var(--rt) + var(--rh) * 0.86); display: flex; justify-content: center; gap: 8px 32px; flex-wrap: wrap; font-family: var(--serif); font-size: 21px; }
+.ways a, .ways button { padding: 2px 0; background: none; border: 0; border-bottom: 1px solid rgba(243, 234, 216, 0.35); color: #f3ead8; font: inherit; cursor: pointer; }
+.ways a:hover, .ways button:hover { border-color: #f3ead8; }
+.end .ways { opacity: 1; visibility: visible; transition: opacity 900ms ease 600ms, visibility 0s 600ms; }
+
+/* Upright phones: the plate's middle 60% fills the width; the words above the room, the props below, like a stage in a dark hall. */
+.room-wrap.portrait { height: max(calc(100svh - 72px), 720px); }
+.portrait .words { top: 0; height: var(--rt); width: calc(100% - 32px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding-top: 44px; box-sizing: border-box; }
+.portrait .stagetext { font-size: clamp(24px, 7vw, 32px); }
+.portrait .doors { left: 16px; right: 16px; width: auto; top: calc(var(--rt) + var(--rh) + 14px); gap: 12px; }
+.portrait .door img { filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45)); }
+.portrait .begin { left: 16px; right: 16px; top: auto; bottom: 18px; justify-content: center; gap: 28px; }
+.portrait .plaque { width: 168px; font-size: 22px; }
+.portrait .sw .k { width: 44px; height: 44px; }
+.portrait .ways { left: 16px; right: 16px; width: auto; top: auto; bottom: 44px; gap: 14px 24px; font-size: 19px; }
+@media (max-width: 760px) { .room-wrap { height: calc(100svh - 72px); } }
+@media (prefers-reduced-motion: reduce) { .door img, .plaque, .ly.world { transition: none; } .plaque:hover, .door.on img { transform: none; } }
+
+/* The bowls room: the painted bowls from above, each on its own transparent canvas, so the button is the bowl's own size. */
+.bowl { background: none; box-shadow: none; }
+.bowl img { position: absolute; left: 50%; top: 50%; width: calc(100% * var(--env)); max-width: none; translate: -50% -50%; pointer-events: none; filter: drop-shadow(0 12px 16px rgba(0, 0, 0, 0.28)); transition: filter 300ms ease; }
+.bowl:hover { box-shadow: none; }
+.bowl:hover img { filter: drop-shadow(0 14px 18px rgba(0, 0, 0, 0.34)) brightness(1.04); }
+.bowl.on, .bowl.rub { box-shadow: none; }
+.rip { box-shadow: inset 0 0 0 1.5px rgba(214, 170, 96, 0.9); }
+.bhead { position: relative; }
+.striker { position: absolute; right: var(--g); bottom: 24px; width: 150px; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.28)); }
+.notes { padding-block: 0 48px; display: flex; flex-direction: column; gap: 10px; }
+.notes p { margin: 0; max-width: 680px; }
+.cards a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--frame); }
+.cards a:hover { text-decoration-color: currentColor; }
+@media (max-width: 760px) { .striker { display: none; } }
