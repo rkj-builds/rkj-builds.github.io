@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<meta name="robots" content="noindex">
+<meta name="description" content="Resources: book the court, not the person. A Cal.com feature people have asked for since 2023, built for real on coss ui, with the WhatsApp agent that found the gap.">
+<title>Resources: book the court, not the person · Rahul Jha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../portfolio/site.css">
+<style>
+/* This page's own pieces, on the portfolio's tokens: the asks as a ledger, a pulled quote, three phone slots, three ways side by side, an API block. */
+.asks { list-style: none; margin: 0; padding: 0; max-width: 920px; border-top: 1px solid var(--line); }
+.asks li { display: grid; grid-template-columns: 120px minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 1.5; }
+.asks .y { font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--mute); padding-top: 3px; }
+.asks b { display: block; font-weight: 500; }
+.asks q { display: block; margin-top: 4px; color: var(--body); font-family: var(--serif); font-size: 17px; }
+.asks q::before, .asks q::after { content: ""; }
+.asks .a { color: var(--mute); }
+.asks .a b { display: inline; color: var(--ink); }
+.quote { max-width: 680px; margin-top: 28px; padding: 20px 24px; border-left: 2px solid var(--ink); background: var(--card); border-radius: 0 12px 12px 0; }
+.quote p { margin: 0; font-family: var(--serif); font-size: 21px; line-height: 1.4; }
+.quote small { display: block; margin-top: 8px; font-size: 13px; line-height: 1.5; color: var(--mute); }
+.phones { margin-top: 36px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; max-width: 920px; }
+.slot { aspect-ratio: 9 / 16; border: 1.5px dashed var(--frame); border-radius: 22px; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--mute); }
+.ways { margin-top: 36px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.way { border: 1px solid var(--line); border-radius: 14px; padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 14px; font-size: 15px; line-height: 1.5; color: var(--body); }
+.way.pick { box-shadow: inset 0 0 0 1px var(--ink); }
+.way h3 { margin: 0; font-size: 19px; line-height: 1.3; font-weight: 500; color: var(--ink); }
+.way .k { font-family: var(--mono); font-size: 12px; line-height: 18px; color: var(--mute); display: block; }
+.way .built { align-self: flex-start; font-family: var(--mono); font-size: 11px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink); border: 1px solid var(--ink); border-radius: 999px; padding: 2px 10px; }
+.api { margin-top: 28px; max-width: 720px; border-radius: 12px; background: var(--card); padding: 20px 22px; font-family: var(--mono); font-size: 13px; line-height: 2; white-space: pre-wrap; overflow-wrap: anywhere; }
+.api span { color: var(--mute); }
+.list { margin: 28px 0 0; padding: 0; list-style: none; max-width: 680px; }
+.list li { border-top: 1px solid var(--line); padding: 14px 0; display: flex; flex-direction: column; gap: 4px; }
+.list b { font-weight: 500; }
+.list span { font-size: 15px; line-height: 1.5; color: var(--body); }
+.mark { display: inline-block; margin-left: 10px; font-family: var(--mono); font-size: 11px; line-height: 18px; color: var(--mute); border: 1px solid var(--frame); border-radius: 999px; padding: 0 8px; vertical-align: middle; }
+.stills { display: grid; gap: 40px; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+.two img { width: 100%; }
+#who p { margin: 16px 0 0; font-size: 19px; line-height: 1.65; color: var(--body); max-width: 680px; text-wrap: pretty; }
+@media (max-width: 860px) { .ways { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) {
+  .asks li { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .phones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .two { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="col"><nav class="nav" aria-label="Main">
+  <a class="name" href="../../../portfolio/">Rahul Jha</a>
+  <ul>
+    <li><a href="../">For Cal.com</a></li>
+    <li class="hide-sm"><a href="../../../portfolio/#work">Work</a></li>
+    <li class="hide-sm"><a href="../../../resume.html">Résumé</a></li>
+    <li><button type="button" class="theme">Dark</button></li>
+    <li><a class="btn2 sm" href="https://cal.com/rahul-kumar-jha-ll9vhj/30min">Book a call</a></li>
+  </ul>
+</nav></header>
+<main id="main">
+
+<div class="col head"><span class="lab">A proposal for Cal.com · built on coss ui · November 2026</span><h1 class="s">Resources: book the court, not the person.</h1></div>
+<div class="col intro">
+  <p>Three years of people asking Cal.com to book a room, a table, a court or a racquet, each sent away with a workaround. I hit the same wall building a WhatsApp agent on Cal.com’s API for my own venue. So I built the missing piece in Cal.com’s own components. It is working, further down.</p>
+  <dl class="meta"><div><dt class="lab">For</dt><dd>Cal.com, “what you’d build here”</dd></div><div><dt class="lab">Status</dt><dd>A working prototype, every state; nothing in cal.com yet</dd></div><div><dt class="lab">Built with</dt><dd>Claude Code; every commit co-authored</dd></div><div><dt class="lab">My part</dt><dd>The research, the design, the build, the tests</dd></div></dl>
+  <div class="ctas"><a class="btn" href="https://rkj-builds.github.io/slot-picker/#/components/resources">Open the prototype ↗</a><a class="btn2" href="https://github.com/rkj-builds/slot-picker">The code</a></div>
+</div>
+
+<section class="show" id="ask"><div class="col">
+  <span class="lab">The ask</span>
+  <h2 class="s">Three years of the same request, each answered with a workaround</h2>
+  <p class="lead">Cal.com schedules people. The people asking it to schedule things have been told to make a user per room, a booking page per court, or to try Seats. Every line below is quoted from Cal.com’s public tracker and blog, with its date and number.</p>
+  <ul class="asks vis">
+    <li><span class="y">May 2023<br>#9156</span><div><b>A coworking space: tables and meeting rooms</b><q>Best would be possible if people could reserve upfront with some payment deposit?</q></div><div class="a"><b>Cal.com:</b> “we will likely focus on booking humans for the next couple months.” Closed. People were still asking on the thread in 2026.</div></li>
+    <li><span class="y">Feb 2024<br>#13745</span><div><b>Rooms, projectors, cars, medical equipment</b><q>In my opinion this is a very important feature and essential for cal.com too.</q></div><div class="a"><b>Cal.com:</b> labelled “needs design”; “something we’re likely to do at some stage… there’s likely a decent amount of complexity to it”; rooms as team members, “a bit hacky”. Closed as not planned.</div></li>
+    <li><span class="y">Oct 2025<br>#24724</span><div><b>A racquet-hire shop with two racquets</b><q>This would make availability context-dependent rather than global.</q></div><div class="a"><b>Cal.com:</b> “Would this be similar to Seats?” Seats lock every booking to the same start and end, the author replied. Still open, awaiting approval.</div></li>
+    <li><span class="y">Sep 2026<br>the blog</span><div><b>“8 Best Court Scheduling Software”, Cal.com first</b><q>Create a separate booking page for each court, sport, or session type.</q></div><div class="a"><b>The product’s answer</b> is the workaround, written up as the feature.</div></li>
+  </ul>
+  <div class="vis"><img class="shot" src="img/asked.webp" alt="GitHub issue 13745 on calcom/cal.com, opened 19 February 2024: resource booking / checking multiple calendars. Rooms, projectors, cars or medical equipment. Closed as not planned; labelled needs design." width="1400" height="600" loading="lazy"></div>
+  <span class="lab cap">#13745, as it stands: closed as not planned, still labelled “needs design”.</span>
+</div></section>
+
+<section class="show" id="wall"><div class="col">
+  <span class="lab">The wall</span>
+  <h2 class="s">One account, two courts: book one and both look taken</h2>
+  <p class="lead">Project 831 is the two-court pickleball venue I co-founded in Jamshedpur. On 1 November I put a WhatsApp agent in front of its two courts, each set up as its own link on my Cal.com account. The first booking, Court 1 at 7 pm, made Court 2 busy too. Every booking belongs to its host, and the host is busy for all their links at once.</p>
+  <div class="quote"><p>“Cal.com events/booked slots are making you busy for the same slot across all of your individual events.”</p><small>Cal.com help, Link Specific Checking for Conflicts. The setting that sounds like the fix only picks which calendars are checked.</small></div>
+  <div class="vis"><img class="shot" src="img/busy.webp" alt="Cal.com's help centre: Cal.com events and booked slots are making you busy for the same slot across all of your individual events, regardless of the calendar you are adding this event to." width="690" height="250" loading="lazy"></div>
+  <span class="lab cap">The help page, as it reads today.</span>
+  <p class="lead">The agent keeps the courts itself now: it reads each court’s bookings, works out which one is free, and books with Cal.com’s conflict check turned off for that one call. It works. Every venue on Cal.com would have to write the same thing, or make a user per court.</p>
+  <!-- NEEDS RAHUL: three screens from his phone, unedited: the offer, the plan, Booked (its reference is 6BJQBEJ7). The dashed slots hold their place until they arrive. -->
+  <div class="phones" aria-label="Three screens from the agent's chat, to come">
+    <div class="slot">From the chat: “court tomorrow 7 to 8 pm, 4 of us”, and the offer</div>
+    <div class="slot">From the chat: the plan, Confirm and pay</div>
+    <div class="slot">From the chat: Booked, with its Cal.com reference</div>
+  </div>
+  <span class="lab cap">The chat from 1 November, to be added as it was on the phone. The dashed slots hold its three screens until then.</span>
+</div></section>
+
+<section class="show" id="choice"><div class="col">
+  <span class="lab">The choice</span>
+  <h2 class="s">Build it in Cal.com’s own components, not draw it</h2>
+  <p class="lead">A drawing is an opinion. A working thing in coss ui, Cal.com’s own library, with every state, the keyboard, dark mode and right-to-left, is a pull request waiting for a data model. So the proposal is a prototype you can click, documented the way coss documents a component: preview and code, the API read from the type, the states, the keys.</p>
+</div></section>
+
+<section class="show" id="working"><div class="col">
+  <span class="lab">Resources, working</span>
+  <h2 class="s">A resource has hours, a capacity and its own bookings</h2>
+  <p class="lead">Resources sits beside Availability, on any account. A link says who is booked: a person, as today, or any free one of a list of resources. The host’s calendar stays free. Bookings get a view by resource. The data is Project 831’s real hours and the booking the agent made.</p>
+  <div class="stills">
+    <div>
+      <div class="vis"><img class="shot" src="img/list.webp" alt="Cal.com's sidebar with Resources beside Availability, marked New. The Resources page lists Court 1 and Court 2: 1 booking at a time, up to 4 people, Monday to Friday 6:00 am to 10:00 pm, Saturday and Sunday to 11:00 pm, one upcoming." width="958" height="550" loading="lazy"></div>
+      <span class="lab cap">1 · Resources, a new page beside Availability: a list of things, with their hours and how many bookings each takes at once.</span>
+    </div>
+    <div>
+      <div class="vis"><img class="shot" src="img/resource.webp" alt="A resource's own editor: Basics, Hours, Date overrides and Links down the left; Name, Kind, Bookings at once and People per booking; an Offered switch and Save in the header." width="958" height="550" loading="lazy"></div>
+      <span class="lab cap">2 · A resource: hours in Availability’s own shape, a capacity in two plain numbers, and the links that book it.</span>
+    </div>
+    <div>
+      <div class="vis"><img class="shot" src="img/link.webp" alt="The link's settings with a new page under Setup, Who is booked: A person, or A resource, any free one of Court 1 and Court 2. Under it, the booking page live: 7:00 pm offered." width="958" height="1336" loading="lazy"></div>
+      <span class="lab cap">3 · The link’s new page, Who is booked. The booking page below it is live: flip to “A person” and 7 pm goes busy.</span>
+    </div>
+    <div>
+      <div class="vis"><div class="two"><img src="img/person.webp" alt="The booking page as a person, today: 6:30, 7:00 and 7:30 pm struck through, because Court 1's booking makes the host busy for every link." width="466" height="830" loading="lazy"><img src="img/taken.webp" alt="The booking page with every court taken at 7 pm: the start reads as taken, where a waitlist would fit." width="466" height="830" loading="lazy"></div></div>
+      <span class="lab cap">4 · The two ways a start can be gone. Left: as a person, today, one booking anywhere makes 7 pm busy. Right: as a resource, only when every court is taken.</span>
+    </div>
+    <div>
+      <div class="vis"><img class="shot" src="img/bookings.webp" alt="Bookings, by resource: Monday 2 November, Court 1 and Court 2 across, hours down, Rahul's 7 to 8 pm booking on Court 1, from WhatsApp." width="958" height="550" loading="lazy"></div>
+      <span class="lab cap">5 · Bookings by resource: the venue’s evening, court by court. The same bookings as the list, turned sideways.</span>
+    </div>
+    <div>
+      <div class="vis"><img class="shot" src="img/book.webp" alt="The public booking page: Book a court, 1 hour, Project 831, Monday 2 November, every start offered including 7:00 pm, because Court 2 is free." width="958" height="515" loading="lazy"></div>
+      <span class="lab cap">6 · The booking page. 7 pm is free because Court 2 is; pick it and the summary says where it lands.</span>
+    </div>
+  </div>
+  <div class="ctas" style="margin-top: 40px"><a class="btn" href="https://rkj-builds.github.io/slot-picker/#/components/resources">Click through every screen ↗</a><a class="btn2" href="https://rkj-builds.github.io/slot-picker/#/components/resources?screen=link">Flip the link to “A person”</a></div>
+</div></section>
+
+<section class="show" id="ways"><div class="col">
+  <span class="lab">Three ways to build it</span>
+  <h2 class="s">I weighed three framings and built the one that works for one account</h2>
+  <p class="lead">Each reuses something Cal.com has. Only one of them works for the venues that keep asking, which are mostly one person with a few things.</p>
+  <div class="ways">
+    <div class="way"><h3>A · Make a court a team member</h3><div><span class="k">Reuses</span>Round robin, which already picks a free host</div><div><span class="k">Costs Cal.com</span>A kind of host with no login; no API change</div><div><span class="k">Works for</span>Teams only, a paid plan</div></div>
+    <div class="way pick"><span class="built">Built</span><h3>B · Resources, a page of its own</h3><div><span class="k">Reuses</span>Availability’s hours, Bookings, the Seats idea of “n at once”</div><div><span class="k">Costs Cal.com</span>A Resource model, slots by resource, a resourceId on a booking, one page and one view</div><div><span class="k">Works for</span>Any account, one person up</div></div>
+    <div class="way"><h3>C · Mark a schedule as a thing</h3><div><span class="k">Reuses</span>Schedules and the link’s Availability page</div><div><span class="k">Costs Cal.com</span>A flag and a capacity on Schedule; slots across schedules</div><div><span class="k">Works for</span>Any account, but “schedule” then means two things</div></div>
+  </div>
+  <span class="lab cap">B is what people see. Underneath, a resource is still shaped like a host: the schedule a host has, minus the calendar and the login, plus how many it takes at once. That is why A is the first step of building B, not a rival to it.</span>
+</div></section>
+
+<section class="show" id="api"><div class="col">
+  <span class="lab">The API</span>
+  <h2 class="s">One change: slots say which resource is free</h2>
+  <p class="lead">The agent needs to ask which resource is free and book that one. The workaround it carries today, keeping the courts itself and booking past the conflict, goes. Every venue on Cal.com gets the same without writing an agent.</p>
+  <div class="api" role="group" aria-label="The proposed API change">GET  /v2/slots?eventTypeId=…&amp;start=2026-11-02&amp;end=2026-11-02
+     cal-api-version: 2024-09-04
+<span>  →  { "2026-11-02": [ { "start": "2026-11-02T19:00:00+05:30", "resources": ["court-2"] }, … ] }</span>
+
+POST /v2/bookings  { "eventTypeId": …, "start": "2026-11-02T19:00:00+05:30", "resourceId": "court-2", … }
+<span>  →  201, the booking, with "resourceId": "court-2"</span></div>
+  <ul class="list">
+    <li><b>What it would take in cal.com<span class="mark">estimate</span></b><span data-estimate="">A Resource table with a schedule and a capacity; a resource list on an event type; the slots service counting a resource’s own bookings instead of the host’s; a resourceId on Booking; one page and one view in the app. An estimate from the outside, from reading Cal.com’s public code.</span></li>
+    <li><b>What it doesn’t touch</b><span>Teams, round robin, seats, payments, workflows. On a team link the resource list sits where Assignment is; on a personal link it is the new page.</span></li>
+    <li><b>What the prototype already holds</b><span>The model as pure functions with their own tests: when a resource is free, which free one a booking lands on, and a day of slots two ways, as Cal.com sees it today and with resources, so the wall and the fix sit side by side.</span></li>
+  </ul>
+</div></section>
+
+<section class="show" id="measure"><div class="col">
+  <span class="lab">What I’d measure</span>
+  <h2 class="s">If Cal.com shipped it, three numbers would say whether it was right</h2>
+  <ul class="list">
+    <li><b>Links switched from “a person” to “a resource”</b><span>In the first month. This is the request the three issues stood for; the switch is the vote.</span></li>
+    <li><b>Starts refused because every resource was taken</b><span>Counted on the booking page. That is demand the venue couldn’t serve, and the place a waitlist earns its keep.</span></li>
+    <li><b>Bookings landed by the API</b><span>With a resourceId, by clients like the agent, which stop keeping the courts themselves the day this ships.</span></li>
+  </ul>
+</div></section>
+
+<section class="show" id="who"><div class="col">
+  <span class="lab">Who built it</span>
+  <h2 class="s">I design products, build them, and measure what they move</h2>
+  <p>Before this I recorded sound for films. Now I run the numbers on what I ship: at Project 831, self-serve bookings went from 15% in May to 74% in September 2026; at Travelopia, ten brand teams use a design-system tool I made. I’d like to do this at Cal.com.</p>
+  <div class="ctas" style="margin-top: 28px"><a class="btn" href="https://cal.com/rahul-kumar-jha-ll9vhj/30min">Book a call, on Cal.com</a><a class="btn2" href="../">Everything for Cal.com</a><a class="btn2" href="../../../portfolio/">The portfolio</a></div>
+</div></section>
+
+</main>
+<footer class="col foot"><span>Rahul Jha · design engineer</span><a href="mailto:rahul.rkj55@gmail.com">Email</a><a href="https://github.com/rkj-builds">GitHub</a><a href="https://www.linkedin.com/in/rahuljha5/">LinkedIn</a><a href="https://rkj-builds.github.io/slot-picker/#/components/resources">The prototype</a></footer>
+<script src="../../../portfolio/theme.js" defer></script>
+</body>
+</html>
